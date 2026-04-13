@@ -1,0 +1,2486 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    bool isNeoSpray = currentController == "OEE" && currentAction.StartsWith("NeoSpray");
+    bool isNeoSpraySidebar = currentController == "OEE" && (currentAction == "NeoSprayOEE" || currentAction == "NeoSprayAvailability" || currentAction == "NeoSprayPerformance" || currentAction == "NeoSprayQuality" || currentAction == "NeoSprayMore" || currentAction == "NeoSprayLayout");
+    string appSubtitle = "Studio";
+    int mobileBreakpoint = 1030;
+
+    switch (currentController)
+    {
+        case "PM":
+            appSubtitle = "Preventive Maintenance";
+            mobileBreakpoint = 1030;
+            break;
+        case "SampleTracking":
+            appSubtitle = "Sample Tracking";
+            mobileBreakpoint = 1110;
+            break;
+        case "OEE" when isNeoSpray:
+            appSubtitle = "OEE Neo Spray";
+            mobileBreakpoint = 880;
+            break;
+        default:
+            appSubtitle = string.IsNullOrEmpty(currentController) ? "Studio" : currentController;
+            mobileBreakpoint = 1030;
+            break;
+    }
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HDP @appSubtitle</title>
+    <link rel="icon" type="image/png" href="@Url.Content("~/Asset/HDPStudio/mattel.png")" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg-1: #000000;
+            --text-1: #ffffff;
+            --text-2: #c4c4c4;
+            --border-1: rgba(255, 255, 255, 0.15);
+            --border-2: rgba(255, 255, 255, 0.25);
+            --glow-1: rgba(214, 188, 162, 0.08);
+            --glow-2: rgba(214, 188, 162, 0.04);
+            --glow-3: rgba(214, 188, 162, 0.03);
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            padding-top: 60px;
+            margin: 0;
+            box-sizing: border-box;
+            background-color: var(--bg-1);
+            background-image: radial-gradient(1200px 800px at 10% -10%, var(--glow-1) 0%, transparent 60%), radial-gradient(1000px 700px at 110% 10%, var(--glow-2) 0%, transparent 55%), radial-gradient(900px 600px at 50% 110%, var(--glow-3) 0%, transparent 60%);
+            background-attachment: fixed;
+            font-family: "Manrope", "Segoe UI", sans-serif;
+            color: var(--text-1);
+        }
+
+        .header {
+            padding: 0 10px;
+            height: 60px;
+            border-bottom: 1px solid var(--border-1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-link {
+            text-decoration: none;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--text-1);
+        }
+
+        .subtitle {
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            text-transform: none;
+            color: var(--text-2);
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding-right: 8px;
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 12px;
+            border: 1px solid var(--border-1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-2);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            height: 32px;
+            line-height: 1;
+            font-family: "Manrope", "Segoe UI", sans-serif;
+            box-sizing: border-box;
+            text-decoration: none;
+        }
+
+            .tab-btn:hover,
+            .tab-btn-hover {
+                background-color: rgba(255, 255, 255, 0.12);
+                border-color: var(--text-1);
+                color: var(--text-1);
+            }
+
+            .tab-btn.active {
+                background-color: var(--text-1);
+                color: var(--bg-1);
+                border-color: var(--text-1);
+                font-weight: 700;
+            }
+
+                .tab-btn.active:hover {
+                    background-color: #ffffff;
+                    border-color: #ffffff;
+                }
+
+            .tab-btn i {
+                font-size: 10px;
+                transition: transform 0.3s ease;
+                opacity: 0.8;
+            }
+
+            .tab-btn .tab-plus {
+                font-size: 9px;
+            }
+
+            .tab-btn:hover i,
+            .tab-btn.active i {
+                opacity: 1;
+            }
+
+        .tab-dropdown.open .tab-btn i.fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .tab-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tab-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background-color: #141417;
+            border: 1px solid var(--border-2);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.7);
+            min-width: 200px;
+            width: max-content;
+            z-index: 1000;
+            padding: 6px;
+            backdrop-filter: blur(12px);
+        }
+
+        .tab-dropdown.open .tab-dropdown-menu {
+            display: block;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            color: var(--text-2);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+        }
+
+            .tab-dropdown-item:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                color: var(--text-1);
+            }
+
+            .tab-dropdown-item i {
+                font-size: 14px;
+                color: var(--text-2);
+                width: 16px;
+                text-align: center;
+                opacity: 0.8;
+            }
+
+            .tab-dropdown-item:hover i {
+                color: var(--text-1);
+                opacity: 1;
+            }
+
+        .dropdown-item-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-check {
+            display: none;
+            visibility: hidden;
+        }
+
+        .dropdown-check.visible {
+            display: inline-block;
+            visibility: visible;
+        }
+
+        .tab-dropdown-menu:has(> .tab-dropdown-item > .dropdown-check.visible, > .tab-dropdown-item > .dropdown-item-label > .dropdown-check.visible) > .tab-dropdown-item > .dropdown-check,
+        .tab-dropdown-menu:has(> .tab-dropdown-item > .dropdown-check.visible, > .tab-dropdown-item > .dropdown-item-label > .dropdown-check.visible) > .tab-dropdown-item > .dropdown-item-label > .dropdown-check {
+            display: inline-block;
+        }
+
+        .nested-dropdown-menu:has(> .tab-dropdown-item > .dropdown-check.visible) > .tab-dropdown-item > .dropdown-check {
+            display: inline-block;
+        }
+
+        .tab-dropdown-item i.dropdown-check {
+            color: var(--text-1);
+        }
+
+        .has-nested {
+            justify-content: space-between;
+        }
+
+            .has-nested i.fa-chevron-right {
+                font-size: 10px;
+                margin-left: auto;
+            }
+
+        .nested-dropdown-menu {
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(-5px);
+            position: absolute;
+            top: -4px;
+            left: calc(100% - 2px);
+            background-color: #141417;
+            border: 1px solid var(--border-2);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.7);
+            min-width: 150px;
+            width: max-content;
+            z-index: 1001;
+            padding: 6px;
+            backdrop-filter: blur(12px);
+            transition: opacity 0.3s ease 0.5s, transform 0.3s ease 0.5s, visibility 0s linear 0.8s;
+        }
+
+            .nested-dropdown-menu.open-left {
+                left: auto;
+                right: calc(100% - 2px);
+            }
+
+        .tab-dropdown-menu:has(> .tab-dropdown-item:hover) > .tab-dropdown-item:not(:hover) > .nested-dropdown-menu,
+        .nested-dropdown-menu:has(> .tab-dropdown-item:hover) > .tab-dropdown-item:not(:hover) > .nested-dropdown-menu {
+            transition: opacity 0.1s ease, transform 0.1s ease, visibility 0s linear 0.1s;
+        }
+
+        .tab-dropdown-item:hover > .nested-dropdown-menu {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0s;
+        }
+
+        .app-launcher {
+            background: none;
+            border: none;
+            color: var(--text-2);
+            padding: 8px;
+            margin-right: 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            transition: background-color 0.2s ease;
+        }
+
+            .app-launcher:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: var(--text-1);
+            }
+
+            .app-launcher.active {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .app-launcher img {
+                width: 18px;
+                height: 18px;
+                opacity: 0.8;
+                filter: invert(1);
+                transition: opacity 0.2s;
+            }
+
+            .app-launcher:hover img,
+            .app-launcher.active img {
+                opacity: 1;
+            }
+
+        .app-launcher-modal {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 10px;
+            background: #141417;
+            border: 1px solid var(--border-2);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            z-index: 1001;
+            width: 500px;
+            backdrop-filter: blur(12px);
+            max-height: calc(100vh - 112px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+            .app-launcher-modal::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .app-launcher-modal::-webkit-scrollbar-track {
+                background: transparent;
+                margin: 8px 0;
+            }
+
+            .app-launcher-modal::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.15);
+                border-radius: 3px;
+            }
+
+                .app-launcher-modal::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                }
+
+            .app-launcher-modal.show {
+                display: block;
+                animation: fadeIn 0.15s ease-out;
+            }
+
+            .app-launcher-modal .modal-header-section {
+                margin-bottom: 16px;
+            }
+
+            .app-launcher-modal .modal-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-1);
+                margin: 0;
+                font-family: "Manrope", "Segoe UI", sans-serif;
+            }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-2);
+            transition: all 0.2s ease;
+            background: transparent;
+        }
+
+            .app-item:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                color: var(--text-1);
+            }
+
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 8px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 8px;
+        }
+
+        .app-name {
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.3;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            font-family: "Manrope", "Segoe UI", sans-serif;
+        }
+
+        .modal-divider {
+            border-top: 1px solid var(--border-1);
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+        }
+
+            .modal-overlay.show {
+                display: block;
+            }
+
+        .mattel-logo {
+            height: 48px;
+            margin-right: 12px;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-1);
+            font-size: 20px;
+            padding: 8px;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 60px);
+            background-color: var(--bg-1);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+
+            .mobile-menu-overlay.active {
+                display: block;
+                animation: fadeIn 0.2s ease-out;
+            }
+
+        .mobile-nav-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-1);
+            color: var(--text-1);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            gap: 10px;
+        }
+
+            .mobile-nav-link:hover {
+                color: var(--text-1);
+                text-decoration: none;
+            }
+
+        .mobile-nav-submenu {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+            .mobile-nav-submenu.open {
+                display: block;
+            }
+
+        .mobile-nav-sublink {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0 12px 10px;
+            color: var(--text-2);
+            text-decoration: none;
+            font-size: 14px;
+            gap: 10px;
+        }
+
+            .mobile-nav-sublink.justify-start {
+                justify-content: flex-start;
+            }
+
+            .mobile-nav-sublink:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-nav-sublink:hover {
+                color: var(--text-1);
+                background-color: rgba(255, 255, 255, 0.05);
+                text-decoration: none;
+            }
+
+        .mobile-nested-submenu {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            margin: 4px 10px;
+        }
+
+            .mobile-nested-submenu.open {
+                display: block;
+            }
+
+        .mobile-nested-sublink {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            color: var(--text-2);
+            text-decoration: none;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+            .mobile-nested-sublink:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-nested-sublink:hover {
+                color: var(--text-1);
+                background-color: rgba(255, 255, 255, 0.05);
+                text-decoration: none;
+            }
+
+        @@media (max-width: @(mobileBreakpoint)px) {
+            .tab-bar {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+
+        @@media (max-width: 600px) {
+            .app-launcher-modal {
+                left: 10px;
+                right: 10px;
+                width: auto;
+            }
+
+            .apps-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @@media (max-width: 450px) {
+            .app-launcher-modal {
+                left: 5px;
+                right: 5px;
+                padding: 14px;
+            }
+
+            .apps-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .header-left {
+                max-width: calc(100% - 40px);
+            }
+
+            .brand-link {
+                flex: 1;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .brand {
+                display: flex;
+                width: 100%;
+            }
+
+            .subtitle {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: block;
+                min-width: 0;
+            }
+
+            .title {
+                flex-shrink: 0;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px 16px;
+            border-top: 1px solid var(--border-1);
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        .hdp-auth-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1001;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+        .hdp-auth-overlay.show {
+            display: block;
+        }
+
+        .hdp-auth-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            background: #141417;
+            border: 1px solid var(--border-2);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.9);
+            z-index: 1002;
+            width: 400px;
+            max-width: 90vw;
+            backdrop-filter: blur(16px);
+            opacity: 0;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+            .hdp-auth-modal.show {
+                display: block;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+        .hdp-auth-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-1);
+        }
+
+            .hdp-auth-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--text-1);
+            }
+
+        .hdp-auth-close {
+            background: none;
+            border: none;
+            color: var(--text-2);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+            .hdp-auth-close:hover {
+                color: var(--text-1);
+                background: rgba(255,255,255,0.1);
+            }
+
+        .hdp-auth-body {
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .hdp-form-group {
+            margin-bottom: 16px;
+        }
+
+            .hdp-form-group label {
+                display: block;
+                font-size: 13px;
+                color: var(--text-2);
+                margin-bottom: 8px;
+                font-weight: 500;
+            }
+
+            .hdp-form-group input, .hdp-form-group select {
+                width: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--border-2);
+                padding: 10px 12px;
+                border-radius: 8px;
+                color: var(--text-1);
+                font-family: inherit;
+                font-size: 14px;
+                transition: all 0.2s;
+                box-sizing: border-box;
+            }
+
+                .hdp-form-group input:focus, .hdp-form-group select:focus {
+                    outline: none;
+                    border-color: #ffffff;
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .hdp-form-group select option {
+                    background: #141417;
+                    color: white;
+                }
+
+        .hdp-auth-error {
+            color: #ff4d4f;
+            background: rgba(255, 77, 79, 0.1);
+            border: 1px solid rgba(255, 77, 79, 0.2);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .hdp-auth-success {
+            color: #52c41a;
+            background: rgba(82, 196, 26, 0.1);
+            border: 1px solid rgba(82, 196, 26, 0.2);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .hdp-auth-btn {
+            width: 100%;
+            background: var(--text-1);
+            color: var(--bg-1);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            box-sizing: border-box;
+        }
+
+            .hdp-auth-btn:hover {
+                background: #e0e0e0;
+            }
+
+            .hdp-auth-btn:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+
+        .hdp-auth-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-2);
+        }
+
+            .hdp-auth-footer a {
+                color: var(--text-1);
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .hdp-auth-footer a:hover {
+                    text-decoration: underline;
+                }
+        .hdp-field-error {
+            color: #ff4d4f;
+            font-size: 11px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .hdp-forgot-wrapper {
+            text-align: right;
+            margin-top: 6px;
+        }
+
+        .hdp-forgot-link {
+            font-size: 12px;
+            color: var(--text-2);
+            text-decoration: underline;
+        }
+
+        #hdpRegisterModal {
+            width: 450px;
+        }
+
+        .hdp-auth-body-scroll {
+            max-height: 70vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .hdp-required {
+            color: #ff4d4f;
+        }
+
+        /* ── Right Sidebar ── */
+        body.has-rs-strip {
+            padding-right: 54px;
+        }
+
+        .rs-strip {
+            position: fixed;
+            right: 0;
+            top: 60px;
+            width: 54px;
+            height: calc(100vh - 60px);
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            border-left: 1px solid var(--border-1);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            gap: 4px;
+            box-sizing: border-box;
+        }
+
+        .rs-strip-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            background: none;
+            color: var(--text-2);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: background-color 0.15s ease, color 0.15s ease;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+            .rs-strip-btn:hover {
+                background-color: rgba(255, 255, 255, 0.08);
+                color: var(--text-1);
+            }
+
+            .rs-strip-btn.active {
+                background-color: rgba(255, 255, 255, 0.15);
+                color: var(--text-1);
+            }
+
+        .rs-filter-dot {
+            display: none;
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #56d364;
+            box-shadow: 0 0 4px rgba(86, 211, 100, 0.7);
+            pointer-events: none;
+        }
+
+            .rs-filter-dot.visible {
+                display: block;
+            }
+
+        .rs-panel {
+            position: fixed;
+            right: 54px;
+            top: 68px;
+            width: 280px;
+            height: calc(100vh - 76px);
+            background-color: #262624;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-1);
+            border-radius: 12px;
+            z-index: 49;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(calc(100% + 62px));
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+            .rs-panel.open {
+                transform: translateX(0);
+            }
+
+        .rs-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-1);
+            flex-shrink: 0;
+        }
+
+        .rs-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-1);
+        }
+
+            .rs-panel-title i {
+                font-size: 13px;
+                color: var(--text-2);
+            }
+
+        .rs-panel-close {
+            background: none;
+            border: none;
+            color: var(--text-2);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .rs-panel-close:hover {
+                color: var(--text-1);
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+        .rs-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        }
+
+            .rs-panel-body::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .rs-panel-body::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.15);
+                border-radius: 2px;
+            }
+
+        .rs-section {
+            display: none;
+        }
+
+            .rs-section.rs-active {
+                display: block;
+            }
+
+        .rs-placeholder {
+            text-align: center;
+            color: var(--text-2);
+            font-size: 13px;
+            padding: 32px 0;
+            opacity: 0.6;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Changelog / Devlog */
+        .rs-changelog-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .rs-changelog-item {
+            position: relative;
+            padding-left: 14px;
+        }
+
+            .rs-changelog-item::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 6px;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background-color: var(--text-2);
+                opacity: 0.4;
+            }
+
+        .rs-cl-date {
+            font-size: 11px;
+            color: var(--text-2);
+            opacity: 0.6;
+            margin-bottom: 4px;
+        }
+
+        .rs-cl-desc {
+            font-size: 12px;
+            color: var(--text-2);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .rs-cl-divider {
+            border: none;
+            border-top: 1px solid var(--border-1);
+            margin: 4px 0 0 0;
+        }
+
+        /* ── Filter Panel ── */
+        .rs-filter-group {
+            margin-bottom: 16px;
+        }
+
+        .rs-filter-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-2);
+            margin-bottom: 6px;
+        }
+
+        .rs-filter-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-1);
+            border-radius: 8px;
+            color: var(--text-1);
+            font-size: 13px;
+            font-family: "Manrope", "Segoe UI", sans-serif;
+            padding: 7px 10px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23c4c4c4' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 28px;
+        }
+
+            .rs-filter-select:hover,
+            .rs-filter-select:focus {
+                border-color: var(--border-2);
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .rs-filter-select option {
+                background-color: #141417;
+                color: var(--text-1);
+            }
+
+        input.rs-filter-select.rs-filter-date {
+            background-image: none;
+            padding-right: 10px;
+            color-scheme: dark;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .rs-filter-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .rs-filter-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: "Manrope", "Segoe UI", sans-serif;
+            cursor: pointer;
+            border: 1px solid var(--border-1);
+            transition: all 0.2s ease;
+        }
+
+        .rs-filter-btn-apply {
+            background: rgba(214, 188, 162, 0.15);
+            color: var(--text-1);
+            border-color: rgba(214, 188, 162, 0.35);
+        }
+
+            .rs-filter-btn-apply:hover {
+                background: rgba(214, 188, 162, 0.25);
+                border-color: rgba(214, 188, 162, 0.55);
+            }
+
+        .rs-filter-btn-clear {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-2);
+        }
+
+            .rs-filter-btn-clear:hover {
+                background: rgba(255, 255, 255, 0.09);
+                color: var(--text-1);
+            }
+
+        .rs-filter-active-badge {
+            display: none;
+            font-size: 10px;
+            font-weight: 700;
+            background: rgba(214, 188, 162, 0.2);
+            color: rgba(214, 188, 162, 0.9);
+            border: 1px solid rgba(214, 188, 162, 0.3);
+            border-radius: 10px;
+            padding: 2px 8px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+            .rs-filter-active-badge.visible {
+                display: block;
+            }
+
+        /* ── Multi-Select ── */
+        .rs-multiselect {
+            position: relative;
+            width: 100%;
+        }
+
+        .rs-multiselect-toggle {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-1);
+            border-radius: 8px;
+            color: var(--text-1);
+            font-size: 13px;
+            font-family: "Manrope", "Segoe UI", sans-serif;
+            padding: 7px 10px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+            .rs-multiselect-toggle:hover,
+            .rs-multiselect.open .rs-multiselect-toggle {
+                border-color: var(--border-2);
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+        .rs-multiselect-label {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rs-multiselect-arrow {
+            font-size: 10px;
+            color: var(--text-2);
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .rs-multiselect.open .rs-multiselect-arrow {
+            transform: rotate(180deg);
+        }
+
+        .rs-multiselect-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #1e2230;
+            border: 1px solid var(--border-2);
+            border-radius: 8px;
+            max-height: 190px;
+            overflow-y: auto;
+            z-index: 1200;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        }
+
+            .rs-multiselect-dropdown::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .rs-multiselect-dropdown::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.15);
+                border-radius: 2px;
+            }
+
+        .rs-multiselect.open .rs-multiselect-dropdown {
+            display: block;
+        }
+
+        .rs-multiselect-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            font-size: 12px;
+            color: var(--text-1);
+            cursor: pointer;
+            transition: background 0.15s ease;
+            user-select: none;
+            margin: 0;
+        }
+
+            .rs-multiselect-option:hover {
+                background: rgba(255, 255, 255, 0.07);
+            }
+
+            .rs-multiselect-option input[type="checkbox"] {
+                accent-color: rgba(214, 188, 162, 0.9);
+                flex-shrink: 0;
+                cursor: pointer;
+                margin: 0;
+            }
+
+        .rs-multiselect-all {
+            border-bottom: 1px solid var(--border-1);
+            font-weight: 700;
+            color: var(--text-2);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body class="@(isNeoSpraySidebar ? "has-rs-strip" : "")">
+    <div class="hdp-auth-overlay" onclick="closeHdpAuthModals()"></div>
+    <div class="modal-overlay" onclick="closeAppLauncher()"></div>
+    <div class="app-launcher-modal" id="appLauncherModal">
+        <div class="modal-header-section">
+            <h3 class="modal-title">HDP Studio apps</h3>
+        </div>
+        <div class="apps-grid">
+            <a href="~/OEE/HDPOEEStudio" class="app-item" target="_blank" title="OEE Studio">
+                <div class="app-icon" style="background-image: url('@Url.Content("~/Asset/HDPStudio/mattel.png")')"></div>
+                <span class="app-name">OEE Studio</span>
+            </a>
+            <a href="~/OEE/NeoSprayLayout" class="app-item" target="_blank" title="OEE Neo Spray">
+                <div class="app-icon" style="background-image: url('@Url.Content("~/Asset/HDPStudio/mattel.png")')"></div>
+                <span class="app-name">OEE Neo Spray</span>
+            </a>
+            <a href="~/PM" class="app-item" target="_blank" title="Preventive Maintenance">
+                <div class="app-icon" style="background-image: url('@Url.Content("~/Asset/HDPStudio/mattel.png")')"></div>
+                <span class="app-name">Preventive Maintenance</span>
+            </a>
+            <a href="~/SampleTracking" class="app-item" target="_blank" title="Sample Tracking">
+                <div class="app-icon" style="background-image: url('@Url.Content("~/Asset/HDPStudio/mattel.png")')"></div>
+                <span class="app-name">Sample Tracking</span>
+            </a>
+        </div>
+        <div class="modal-divider"></div>
+        <div class="modal-header-section" style="margin-top: 12px;">
+            <h3 class="modal-title">Ex-HDP Studio apps</h3>
+        </div>
+        <div class="apps-grid">
+            <a href="~/" class="app-item" target="_blank" title="INSIDE">
+                <div class="app-icon" style="background-image: url('@Url.Content("~/Asset/HDPStudio/mattel.png")')"></div>
+                <span class="app-name">INSIDE</span>
+            </a>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="header-left">
+            <button class="app-launcher" title="App launcher" onclick="toggleAppLauncher()">
+                <img src="~/Asset/HDPStudio/dots-nine-icon.png" alt="App Launcher" />
+            </button>
+            <img class="mattel-logo" src="~/Asset/HDPStudio/mattel.png" alt="Mattel Logo" />
+            <a href="@(isNeoSpray ? Url.Action("NeoSprayLayout", "OEE") : Url.Action("Index", string.IsNullOrEmpty(currentController) ? "PM" : currentController))" class="brand-link">
+                <div class="brand">
+                    <span class="title">HDP</span>
+                    <span class="subtitle">@appSubtitle</span>
+                </div>
+            </a>
+        </div>
+        <div class="tab-bar">
+            @if (currentController == "SampleTracking")
+            {
+                <a href="@Url.Action("Index", "SampleTracking")" class="tab-btn @(ViewBag.ActiveTab == "input" ? "active" : "")">
+                    <span>Input</span>
+                </a>
+                <a href="@Url.Action("ViewData", "SampleTracking")" class="tab-btn @(ViewBag.ActiveTab == "view" ? "active" : "")">
+                    <span>View</span>
+                </a>
+                <button class="tab-btn @(ViewBag.ActiveTab == "generate-qr" ? "active" : "")">
+                    <span>Generate QR</span>
+                </button>
+                <a href="@Url.Action("ScanOut", "SampleTracking")" class="tab-btn @(ViewBag.ActiveTab == "scan-out" ? "active" : "")">
+                    <span>Scan Out</span>
+                </a>
+                <a href="@Url.Action("ScanIn", "SampleTracking")" class="tab-btn @(ViewBag.ActiveTab == "scan-in" ? "active" : "")">
+                    <span>Scan In</span>
+                </a>
+                <a href="#" class="tab-btn @(ViewBag.ActiveTab == "scan" ? "active" : "")">
+                    <span>Scan</span>
+                </a>
+                <a href="#" class="tab-btn @(ViewBag.ActiveTab == "generate-report" ? "active" : "")">
+                    <span>Generate Report</span>
+                </a>
+            }
+            else if (isNeoSpray)
+            {
+                <a href="@Url.Action("NeoSprayOEE", "OEE")" class="tab-btn @(ViewBag.ActiveTab == "oee" ? "active" : "")">
+                    <span>OEE</span>
+                </a>
+                <a href="@Url.Action("NeoSprayAvailability", "OEE")" class="tab-btn @(ViewBag.ActiveTab == "availability" ? "active" : "")">
+                    <span>Availability</span>
+                </a>
+                <a href="@Url.Action("NeoSprayPerformance", "OEE")" class="tab-btn @(ViewBag.ActiveTab == "performance" ? "active" : "")">
+                    <span>Performance</span>
+                </a>
+                <a href="@Url.Action("NeoSprayQuality", "OEE")" class="tab-btn @(ViewBag.ActiveTab == "quality" ? "active" : "")">
+                    <span>Quality</span>
+                </a>
+                <div class="tab-dropdown">
+                    <button class="tab-btn @(ViewBag.ActiveTab == "live-preview" || ViewBag.ActiveTab == "live-layout" || ViewBag.ActiveTab == "report" ? "active" : "")">
+                        <span>More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="tab-dropdown-menu">
+                        <a href="@Url.Action("NeoSprayMore", "OEE")" class="tab-dropdown-item" data-tab="live-preview">
+                            <i class="fas fa-check dropdown-check @(ViewBag.ActiveTab == "live-preview" ? "visible" : "")"></i>
+                            <span>Live Preview</span>
+                        </a>
+                        <a href="@Url.Action("NeoSprayLayout", "OEE")" class="tab-dropdown-item" data-tab="live-layout">
+                            <i class="fas fa-check dropdown-check @(ViewBag.ActiveTab == "live-layout" ? "visible" : "")"></i>
+                            <span>Live Layout</span>
+                        </a>
+                        <a href="@Url.Action("NeoSprayReport", "OEE")" class="tab-dropdown-item" data-tab="report">
+                            <i class="fas fa-check dropdown-check @(ViewBag.ActiveTab == "report" ? "visible" : "")"></i>
+                            <span>Report (Power BI)</span>
+                        </a>
+                    </div>
+                </div>
+            }
+            else if (currentController == "PM" || string.IsNullOrEmpty(currentController))
+            {
+                <div class="tab-dropdown">
+                    <button class="tab-btn @(ViewBag.ActiveTab == "tampo" ? "active" : "")" data-tab="tampo">
+                        <span>Tampo</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="tab-dropdown-menu">
+                        <div class="tab-dropdown-item has-nested">
+                            <span class="dropdown-item-label">
+                                <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachineGroup == "bbd" ? "visible" : "")"></i>
+                                BBD
+                            </span>
+                            <i class="fas fa-chevron-right"></i>
+                            <div class="nested-dropdown-menu">
+                                <a href="#" class="tab-dropdown-item" data-machine="bbd-a">
+                                    <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "bbd-a" ? "visible" : "")"></i>
+                                    <span>A</span>
+                                </a>
+                                <a href="#" class="tab-dropdown-item" data-machine="bbd-b">
+                                    <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "bbd-b" ? "visible" : "")"></i>
+                                    <span>B</span>
+                                </a>
+                                <a href="@Url.Action("C03FormBBD", "PM")" class="tab-dropdown-item" data-machine="bbd-c">
+                                    <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "bbd-c" ? "visible" : "")"></i>
+                                    <span>C</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="tab-dropdown-item has-nested">
+                            <span class="dropdown-item-label">
+                                <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachineGroup == "cmyk" ? "visible" : "")"></i>
+                                CMYK
+                            </span>
+                            <i class="fas fa-chevron-right"></i>
+                            <div class="nested-dropdown-menu">
+                                <a href="#" class="tab-dropdown-item" data-machine="cmyk-a">
+                                    <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "cmyk-a" ? "visible" : "")"></i>
+                                    <span>A</span>
+                                </a>
+                                <a href="#" class="tab-dropdown-item" data-machine="cmyk-b">
+                                    <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "cmyk-b" ? "visible" : "")"></i>
+                                    <span>B</span>
+                                </a>
+                                <a href="@Url.Action("C03FormCMYK", "PM")" class="tab-dropdown-item" data-machine="cmyk-c">
+                                    <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "cmyk-c" ? "visible" : "")"></i>
+                                    <span>C</span>
+                                </a>
+                            </div>
+                        </div>
+                        <a href="@Url.Action("C03FormAccessories", "PM")" class="tab-dropdown-item" data-machine="accessories">
+                            <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "accessories" ? "visible" : "")"></i>
+                            <span>Accessories</span>
+                        </a>
+                        <a href="#" class="tab-dropdown-item" data-machine="semi-auto-earhole">
+                            <i class="fas fa-check dropdown-check @(ViewBag.ActiveMachine == "semi-auto-earhole" ? "visible" : "")"></i>
+                            <span>Semi-Auto Earhole</span>
+                        </a>
+                    </div>
+                </div>
+                <button class="tab-btn @(ViewBag.ActiveTab == "dij" ? "active" : "")" data-tab="dij">
+                    <span>DIJ</span>
+                </button>
+                <a href="@Url.Action("C07Form", "PM")" class="tab-btn @(ViewBag.ActiveTab == "auto-spray" ? "active" : "")" data-tab="auto-spray">
+                    <span>Auto Spray</span>
+                </a>
+                <button class="tab-btn @(ViewBag.ActiveTab == "manual-spray" ? "active" : "")" data-tab="manual-spray">
+                    <span>Manual Spray</span>
+                </button>
+                <button class="tab-btn @(ViewBag.ActiveTab == "neo-spray" ? "active" : "")" data-tab="neo-spray">
+                    <span>Neo Spray</span>
+                </button>
+            }
+            <div class="tab-dropdown">
+                <button class="tab-btn tab-btn-hover">
+                    <i class="fas fa-user-circle" style="font-size: 14px;"></i>
+                    <span>Account</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="tab-dropdown-menu">
+                    @if (Session["us_usrname"] != null)
+                    {
+                        <a href="@Url.Action("Index", "Profile")" class="tab-dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="#" class="tab-dropdown-item" onclick="handleHdpLogout(); event.preventDefault();">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Log Out</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="#" class="tab-dropdown-item" onclick="openHdpLoginModal(); event.preventDefault();">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Log In</span>
+                        </a>
+                        <a href="#" class="tab-dropdown-item" onclick="openHdpRegisterModal(); event.preventDefault();">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Register</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <div class="mobile-menu-overlay">
+        @if (currentController == "SampleTracking")
+        {
+            <a href="@Url.Action("Index", "SampleTracking")" class="mobile-nav-link @(ViewBag.ActiveTab == "input" ? "active" : "")">Input</a>
+            <a href="@Url.Action("ViewData", "SampleTracking")" class="mobile-nav-link @(ViewBag.ActiveTab == "view" ? "active" : "")">View</a>
+            <a href="#" class="mobile-nav-link @(ViewBag.ActiveTab == "generate-qr" ? "active" : "")">Generate QR</a>
+            <a href="@Url.Action("ScanOut", "SampleTracking")" class="mobile-nav-link @(ViewBag.ActiveTab == "scan-out" ? "active" : "")">Scan Out</a>
+            <a href="@Url.Action("ScanIn", "SampleTracking")" class="mobile-nav-link @(ViewBag.ActiveTab == "scan-in" ? "active" : "")">Scan In</a>
+            <a href="#" class="mobile-nav-link @(ViewBag.ActiveTab == "scan" ? "active" : "")">Scan</a>
+            <a href="#" class="mobile-nav-link @(ViewBag.ActiveTab == "generate-report" ? "active" : "")">Generate Report</a>
+        }
+        else if (isNeoSpray)
+        {
+            <a href="@Url.Action("NeoSprayOEE", "OEE")" class="mobile-nav-link @(ViewBag.ActiveTab == "oee" ? "active" : "")">OEE</a>
+            <a href="@Url.Action("NeoSprayAvailability", "OEE")" class="mobile-nav-link @(ViewBag.ActiveTab == "availability" ? "active" : "")">Availability</a>
+            <a href="@Url.Action("NeoSprayPerformance", "OEE")" class="mobile-nav-link @(ViewBag.ActiveTab == "performance" ? "active" : "")">Performance</a>
+            <a href="@Url.Action("NeoSprayQuality", "OEE")" class="mobile-nav-link @(ViewBag.ActiveTab == "quality" ? "active" : "")">Quality</a>
+            <div class="mobile-nav-group">
+                <a href="#" class="mobile-nav-link @(ViewBag.ActiveTab == "live-preview" || ViewBag.ActiveTab == "live-layout" || ViewBag.ActiveTab == "report" ? "active" : "")" data-toggle="submenu">
+                    <span>More</span>
+                    <span><i class="fas fa-plus tab-plus"></i></span>
+                </a>
+                <div class="mobile-nav-submenu">
+                    <a href="@Url.Action("NeoSprayMore", "OEE")" class="mobile-nav-sublink">Live Preview</a>
+                    <a href="@Url.Action("NeoSprayLayout", "OEE")" class="mobile-nav-sublink">Live Layout</a>
+                    <a href="@Url.Action("NeoSprayReport", "OEE")" class="mobile-nav-sublink">Report (Power BI)</a>
+                </div>
+            </div>
+        }
+        else if (currentController == "PM" || string.IsNullOrEmpty(currentController))
+        {
+            <div class="mobile-nav-group">
+                <a href="#" class="mobile-nav-link" data-toggle="submenu">
+                    <span>Tampo</span>
+                    <span>
+                        <i class="fas fa-plus tab-plus"></i>
+                    </span>
+                </a>
+                <div class="mobile-nav-submenu">
+                    <div class="mobile-nav-sublink-group">
+                        <a href="#" class="mobile-nav-sublink has-nested" data-toggle="nested-submenu">
+                            <span>BBD</span>
+                            <span><i class="fas fa-plus tab-plus"></i></span>
+                        </a>
+                        <div class="mobile-nested-submenu">
+                            <a href="#" class="mobile-nested-sublink" data-machine="bbd-a">A</a>
+                            <a href="#" class="mobile-nested-sublink" data-machine="bbd-b">B</a>
+                            <a href="@Url.Action("C03FormBBD", "PM")" class="mobile-nested-sublink" data-machine="bbd-c">C</a>
+                        </div>
+                    </div>
+                    <div class="mobile-nav-sublink-group">
+                        <a href="#" class="mobile-nav-sublink has-nested" data-toggle="nested-submenu">
+                            <span>CMYK</span>
+                            <span><i class="fas fa-plus tab-plus"></i></span>
+                        </a>
+                        <div class="mobile-nested-submenu">
+                            <a href="#" class="mobile-nested-sublink" data-machine="cmyk-a">A</a>
+                            <a href="#" class="mobile-nested-sublink" data-machine="cmyk-b">B</a>
+                            <a href="@Url.Action("C03FormCMYK", "PM")" class="mobile-nested-sublink" data-machine="cmyk-c">C</a>
+                        </div>
+                    </div>
+                    <a href="@Url.Action("C03FormAccessories", "PM")" class="mobile-nav-sublink" data-machine="accessories">Accessories</a>
+                    <a href="#" class="mobile-nav-sublink" data-machine="semi-auto-earhole">Semi-Auto Earhole</a>
+                </div>
+            </div>
+            <a href="#" class="mobile-nav-link" data-tab="dij">DIJ</a>
+            <a href="@Url.Action("C07Form", "PM")" class="mobile-nav-link" data-tab="auto-spray">Auto Spray</a>
+            <a href="#" class="mobile-nav-link" data-tab="manual-spray">Manual Spray</a>
+            <a href="#" class="mobile-nav-link" data-tab="neo-spray">Neo Spray</a>
+        }
+        <div class="mobile-nav-group">
+            <a href="#" class="mobile-nav-link" data-toggle="submenu">
+                <span><i class="fas fa-user-circle fa-fw"></i> Account</span>
+                <span><i class="fas fa-plus tab-plus"></i></span>
+            </a>
+            <div class="mobile-nav-submenu">
+                @if (Session["us_usrname"] != null)
+                {
+                    <a href="@Url.Action("Index", "Profile")" class="mobile-nav-sublink justify-start">
+                        <i class="fas fa-user fa-fw"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="#" class="mobile-nav-sublink justify-start" onclick="handleHdpLogout(); event.preventDefault();">
+                        <i class="fas fa-sign-out-alt fa-fw"></i>
+                        <span>Log Out</span>
+                    </a>
+                }
+                else
+                {
+                    <a href="#" class="mobile-nav-sublink justify-start" onclick="openHdpLoginModal(); closeMobileMenu(); event.preventDefault();">
+                        <i class="fas fa-sign-in-alt fa-fw"></i>
+                        <span>Log In</span>
+                    </a>
+                    <a href="#" class="mobile-nav-sublink justify-start" onclick="openHdpRegisterModal(); closeMobileMenu(); event.preventDefault();">
+                        <i class="fas fa-user-plus fa-fw"></i>
+                        <span>Register</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    @{
+        var bodyContent = RenderBody();
+    }
+
+    @if (Session["us_usrname"] != null || currentController == "Docs" || isNeoSpray)
+    {
+        @bodyContent
+
+        if (currentController != "OEE" && !string.IsNullOrEmpty(currentController))
+        {
+            <footer class="footer">
+                <div class="footer-text">&copy; @DateTime.Now.Year Mattel &middot; HDP Studio</div>
+            </footer>
+        }
+    }
+    else
+    {
+        <div class="hdp-unauth-container" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 60px); padding: 20px; box-sizing: border-box; margin-top: -60px;">
+            <div class="hdp-unauth-content" style="background: rgba(20, 20, 23, 0.7); border: 1px solid var(--border-2); padding: 40px; border-radius: 16px; backdrop-filter: blur(12px); max-width: 400px; width: 100%; text-align: center; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5); z-index: 10;">
+                <i class="fas fa-lock" style="font-size: 48px; color: var(--text-2); margin-bottom: 24px; opacity: 0.8;"></i>
+                <h2 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 700; color: var(--text-1); font-family: 'Manrope', 'Segoe UI', sans-serif;">Authentication Required</h2>
+                <p style="margin: 0 0 30px 0; font-size: 14px; color: var(--text-2); line-height: 1.5;">Please log in to your account to access the @appSubtitle application data and features.</p>
+                <button class="hdp-auth-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="openHdpLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Log In</span>
+                </button>
+            </div>
+        </div>
+    }
+
+    @RenderSection("scripts", required: false)
+
+    @if (isNeoSpraySidebar)
+    {
+        <!-- Right Sidebar Strip -->
+        <div class="rs-strip" id="rsSidebarStrip">
+            <button class="rs-strip-btn" id="rsBtn-filter" title="Filter" onclick="toggleRightPanel('filter')">
+                <i class="fas fa-sliders"></i>
+                <span class="rs-filter-dot" id="rsFilterDot"></span>
+            </button>
+            <div style="margin-top: auto;"></div>
+            <button class="rs-strip-btn" id="rsBtn-changelog" title="Changelog" onclick="toggleRightPanel('changelog')">
+                <i class="fas fa-clock-rotate-left"></i>
+            </button>
+            <button class="rs-strip-btn" id="rsBtn-settings" title="Settings" onclick="toggleRightPanel('settings')">
+                <i class="fas fa-gear"></i>
+            </button>
+        </div>
+
+        <!-- Right Sidebar Panel -->
+        <div class="rs-panel" id="rsSidebarPanel">
+            <div class="rs-panel-header">
+                <div class="rs-panel-title">
+                    <i id="rsPanelIcon" class="fas fa-gear"></i>
+                    <span id="rsPanelTitleText">Settings</span>
+                </div>
+                <button class="rs-panel-close" title="Close" onclick="closeRightPanel()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="rs-panel-body">
+                <div class="rs-section rs-active" id="rs-settings">
+                    @* <p class="rs-placeholder">Settings panel content</p> *@
+                </div>
+                <div class="rs-section" id="rs-filter">
+                    <div class="rs-filter-group">
+                        <label class="rs-filter-label">Year</label>
+                        <div class="rs-multiselect" id="rsFilterYear">
+                            <button type="button" class="rs-multiselect-toggle" onclick="toggleMultiSelect('rsFilterYear')">
+                                <span class="rs-multiselect-label">All</span>
+                                <i class="fas fa-chevron-down rs-multiselect-arrow"></i>
+                            </button>
+                            <div class="rs-multiselect-dropdown">
+                                <label class="rs-multiselect-option rs-multiselect-all">
+                                    <input type="checkbox" class="rs-ms-all-check" onchange="toggleSelectAll(this,'rsFilterYear')" />
+                                    <span>Select All</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rs-filter-group">
+                        <label class="rs-filter-label">Month</label>
+                        <div class="rs-multiselect" id="rsFilterMonth">
+                            <button type="button" class="rs-multiselect-toggle" onclick="toggleMultiSelect('rsFilterMonth')">
+                                <span class="rs-multiselect-label">All</span>
+                                <i class="fas fa-chevron-down rs-multiselect-arrow"></i>
+                            </button>
+                            <div class="rs-multiselect-dropdown">
+                                <label class="rs-multiselect-option rs-multiselect-all">
+                                    <input type="checkbox" class="rs-ms-all-check" onchange="toggleSelectAll(this,'rsFilterMonth')" />
+                                    <span>Select All</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rs-filter-group">
+                        <label class="rs-filter-label">Week Ending</label>
+                        <div class="rs-multiselect" id="rsFilterWE">
+                            <button type="button" class="rs-multiselect-toggle" onclick="toggleMultiSelect('rsFilterWE')">
+                                <span class="rs-multiselect-label">All</span>
+                                <i class="fas fa-chevron-down rs-multiselect-arrow"></i>
+                            </button>
+                            <div class="rs-multiselect-dropdown">
+                                <label class="rs-multiselect-option rs-multiselect-all">
+                                    <input type="checkbox" class="rs-ms-all-check" onchange="toggleSelectAll(this,'rsFilterWE')" />
+                                    <span>Select All</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rs-filter-group">
+                        <label class="rs-filter-label" for="rsFilterDate">Date</label>
+                        <input type="date" class="rs-filter-select rs-filter-date" id="rsFilterDate" />
+                    </div>
+                    <div class="rs-filter-group">
+                        <label class="rs-filter-label">Shift</label>
+                        <div class="rs-multiselect" id="rsFilterShift">
+                            <button type="button" class="rs-multiselect-toggle" onclick="toggleMultiSelect('rsFilterShift')">
+                                <span class="rs-multiselect-label">All</span>
+                                <i class="fas fa-chevron-down rs-multiselect-arrow"></i>
+                            </button>
+                            <div class="rs-multiselect-dropdown">
+                                <label class="rs-multiselect-option rs-multiselect-all">
+                                    <input type="checkbox" class="rs-ms-all-check" onchange="toggleSelectAll(this,'rsFilterShift')" />
+                                    <span>Select All</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rs-filter-group">
+                        <label class="rs-filter-label">Machine</label>
+                        <div class="rs-multiselect" id="rsFilterMachine">
+                            <button type="button" class="rs-multiselect-toggle" onclick="toggleMultiSelect('rsFilterMachine')">
+                                <span class="rs-multiselect-label">All</span>
+                                <i class="fas fa-chevron-down rs-multiselect-arrow"></i>
+                            </button>
+                            <div class="rs-multiselect-dropdown">
+                                <label class="rs-multiselect-option rs-multiselect-all">
+                                    <input type="checkbox" class="rs-ms-all-check" onchange="toggleSelectAll(this,'rsFilterMachine')" />
+                                    <span>Select All</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rs-filter-actions">
+                        <button class="rs-filter-btn rs-filter-btn-apply" onclick="applyNeoSprayFilter()">
+                            <i class="fas fa-check" style="margin-right:5px;"></i>Apply
+                        </button>
+                        <button class="rs-filter-btn rs-filter-btn-clear" onclick="clearNeoSprayFilter()">
+                            <i class="fas fa-xmark" style="margin-right:5px;"></i>Clear
+                        </button>
+                    </div>
+                    <div class="rs-filter-active-badge" id="rsFilterActiveBadge">Filter active</div>
+                </div>
+                <div class="rs-section" id="rs-changelog">
+                    <ul class="rs-changelog-list">
+                        @* <li class="rs-changelog-item">
+                            <div class="rs-cl-date">Apr 8, 2026</div>
+                            <p class="rs-cl-desc">Added right sidebar with Settings, Filter, and Changelog panels.</p>
+                            <hr class="rs-cl-divider" />
+                        </li> *@
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- HDP Auth Modals -->
+    <div class="hdp-auth-modal" id="hdpLoginModal">
+        <div class="hdp-auth-header">
+            <h3>Log In</h3>
+            <button class="hdp-auth-close" onclick="closeHdpAuthModals()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="hdp-auth-body">
+            <div class="hdp-auth-error" id="hdpLoginErrorMsg"></div>
+            <form id="hdpLoginForm" onsubmit="submitHdpLogin(event)">
+                @Html.AntiForgeryToken()
+                <div class="hdp-form-group">
+                    <label>Username</label>
+                    <input type="text" name="us_usrname" required autocomplete="username" />
+                </div>
+                <div class="hdp-form-group">
+                    <label>Password</label>
+                    <input type="password" name="us_pwd" required autocomplete="current-password" />
+                    <div class="hdp-forgot-wrapper">
+                        <a href="@Url.Action("ForgotPassword", "Home")" class="hdp-forgot-link">Forgot password?</a>
+                    </div>
+                </div>
+                <button type="submit" class="hdp-auth-btn" id="hdpLoginSubBtn">Log In</button>
+            </form>
+            <div class="hdp-auth-footer">
+                Don't have an account? <a href="#" onclick="openHdpRegisterModal(); return false;">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="hdp-auth-modal" id="hdpRegisterModal">
+        <div class="hdp-auth-header">
+            <h3>Register</h3>
+            <button class="hdp-auth-close" onclick="closeHdpAuthModals()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="hdp-auth-body hdp-auth-body-scroll">
+            <div class="hdp-auth-error" id="hdpRegErrorMsg"></div>
+            <div class="hdp-auth-success" id="hdpRegSuccessMsg"></div>
+            <form id="hdpRegisterForm" onsubmit="submitHdpRegister(event)">
+                @Html.AntiForgeryToken()
+                <div class="hdp-form-group">
+                    <label>KPK / Employee ID <span class="hdp-required">*</span></label>
+                    <input type="text" name="us_KPK" required maxlength="6" />
+                    <span class="hdp-field-error" id="err_us_KPK"></span>
+                </div>
+                <div class="hdp-form-group">
+                    <label>Full Name <span class="hdp-required">*</span></label>
+                    <input type="text" name="us_NAME" required />
+                    <span class="hdp-field-error" id="err_us_NAME"></span>
+                </div>
+                <div class="hdp-form-group">
+                    <label>Username <span class="hdp-required">*</span></label>
+                    <input type="text" name="us_usrname" required maxlength="8" autocomplete="username" />
+                    <span class="hdp-field-error" id="err_us_usrname"></span>
+                </div>
+                <div class="hdp-form-group">
+                    <label>Email <span class="hdp-required">*</span></label>
+                    <input type="email" name="us_email" required maxlength="50" autocomplete="email" />
+                    <span class="hdp-field-error" id="err_us_email"></span>
+                </div>
+                <div class="hdp-form-group">
+                    <label>Password <span class="hdp-required">*</span></label>
+                    <input type="password" name="us_pwd" required autocomplete="new-password" />
+                    <span class="hdp-field-error" id="err_us_pwd"></span>
+                </div>
+                <div class="hdp-form-group">
+                    <label>Role <span class="hdp-required">*</span></label>
+                    <select name="grp_ID" id="hdpRegRoleSelect" required>
+                        <option value="" disabled selected>-- Select your role --</option>
+                    </select>
+                    <span class="hdp-field-error" id="err_grp_ID"></span>
+                </div>
+                <button type="submit" class="hdp-auth-btn" id="hdpRegSubBtn">Create Account</button>
+            </form>
+            <div class="hdp-auth-footer">
+                Already have an account? <a href="#" onclick="openHdpLoginModal(); return false;">Log In</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle App Launcher Modal
+        function toggleAppLauncher() {
+            var modal = document.getElementById('appLauncherModal');
+            var overlay = document.querySelector('.modal-overlay');
+            var launcher = document.querySelector('.app-launcher');
+
+            if (modal.classList.contains('show')) {
+                closeAppLauncher();
+            } else {
+                modal.classList.add('show');
+                overlay.classList.add('show');
+                launcher.classList.add('active');
+            }
+        }
+
+        function closeAppLauncher() {
+            var modal = document.getElementById('appLauncherModal');
+            var overlay = document.querySelector('.modal-overlay');
+            var launcher = document.querySelector('.app-launcher');
+
+            modal.classList.remove('show');
+            overlay.classList.remove('show');
+            launcher.classList.remove('active');
+        }
+
+        // Right Sidebar
+        let _rsActivePanel = null;
+        const _rsPanelMeta = {
+            settings:  { icon: 'fa-gear',              title: 'Settings'  },
+            filter:    { icon: 'fa-sliders',            title: 'Filter'    },
+            changelog: { icon: 'fa-clock-rotate-left', title: 'Changelog' }
+        };
+
+        function toggleRightPanel(name) {
+            const panel = document.getElementById('rsSidebarPanel');
+            if (_rsActivePanel === name && panel.classList.contains('open')) {
+                closeRightPanel();
+                return;
+            }
+            document.querySelectorAll('.rs-section').forEach(s => s.classList.remove('rs-active'));
+            document.querySelectorAll('.rs-strip-btn').forEach(b => b.classList.remove('active'));
+
+            const section = document.getElementById('rs-' + name);
+            if (section) section.classList.add('rs-active');
+
+            const meta = _rsPanelMeta[name];
+            if (meta) {
+                document.getElementById('rsPanelIcon').className = 'fas ' + meta.icon;
+                document.getElementById('rsPanelTitleText').textContent = meta.title;
+            }
+
+            const btn = document.getElementById('rsBtn-' + name);
+            if (btn) btn.classList.add('active');
+
+            panel.classList.add('open');
+            _rsActivePanel = name;
+        }
+
+        function closeRightPanel() {
+            document.getElementById('rsSidebarPanel').classList.remove('open');
+            document.querySelectorAll('.rs-strip-btn').forEach(b => b.classList.remove('active'));
+            _rsActivePanel = null;
+        }
+
+        // Close app launcher on ESC key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeAppLauncher();
+                closeRightPanel();
+            }
+        });
+
+        // Close app launcher when an app item is clicked
+        document.querySelectorAll('.app-launcher-modal .app-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                closeAppLauncher();
+            });
+        });
+
+        // Tab dropdown click toggle
+        document.querySelectorAll('.tab-dropdown .tab-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var dropdown = this.closest('.tab-dropdown');
+                var isOpen = dropdown.classList.contains('open');
+
+                // Close all other dropdowns
+                document.querySelectorAll('.tab-dropdown.open').forEach(function (d) {
+                    d.classList.remove('open');
+                });
+
+                // Toggle current dropdown
+                if (!isOpen) {
+                    dropdown.classList.add('open');
+                }
+            });
+        });
+
+        // Close mobile menu helper
+        function closeMobileMenu() {
+            const mobileOverlay = document.querySelector('.mobile-menu-overlay');
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+
+            if (mobileOverlay && mobileOverlay.classList.contains('active')) {
+                mobileOverlay.classList.remove('active');
+
+                if (mobileToggle) {
+                    const icon = mobileToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+
+                // Reset all submenus when closing overlay
+                document.querySelectorAll('.mobile-nav-submenu.open').forEach(submenu => {
+                    submenu.classList.remove('open');
+                });
+
+                document.querySelectorAll('.mobile-nav-link .tab-plus').forEach(plusIcon => {
+                    plusIcon.classList.remove('fa-minus');
+                    plusIcon.classList.add('fa-plus');
+                });
+            }
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function (e) {
+            const mobileOverlay = document.querySelector('.mobile-menu-overlay');
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+
+            if (mobileOverlay && mobileOverlay.classList.contains('active')) {
+                if (mobileOverlay && !mobileOverlay.contains(e.target) && mobileToggle && !mobileToggle.contains(e.target)) {
+                    closeMobileMenu();
+                }
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.tab-dropdown')) {
+                document.querySelectorAll('.tab-dropdown.open').forEach(function (d) {
+                    d.classList.remove('open');
+                });
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const mobileOverlay = document.querySelector('.mobile-menu-overlay');
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function () {
+                if (mobileOverlay.classList.contains('active')) {
+                    closeMobileMenu();
+                } else {
+                    mobileOverlay.classList.add('active');
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    }
+                }
+            });
+        }
+
+        // Mobile Submenu Toggle
+        document.querySelectorAll('.mobile-nav-link[data-toggle="submenu"]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const submenu = this.nextElementSibling;
+                if (submenu) {
+                    submenu.classList.toggle('open');
+
+                    const plusIcon = this.querySelector('.tab-plus');
+                    if (plusIcon) {
+                        if (submenu.classList.contains('open')) {
+                            plusIcon.classList.remove('fa-plus');
+                            plusIcon.classList.add('fa-minus');
+                        } else {
+                            plusIcon.classList.remove('fa-minus');
+                            plusIcon.classList.add('fa-plus');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Mobile Nested Submenu Toggle
+        document.querySelectorAll('[data-toggle="nested-submenu"]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const submenu = this.nextElementSibling;
+                if (submenu) {
+                    submenu.classList.toggle('open');
+
+                    const plusIcon = this.querySelector('.tab-plus');
+                    if (plusIcon) {
+                        if (submenu.classList.contains('open')) {
+                            plusIcon.classList.remove('fa-plus');
+                            plusIcon.classList.add('fa-minus');
+                        } else {
+                            plusIcon.classList.remove('fa-minus');
+                            plusIcon.classList.add('fa-plus');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Desktop Nested Submenu Repositioning (Responsive)
+        document.querySelectorAll('.tab-dropdown-item.has-nested').forEach(item => {
+            let leaveTimeout;
+
+            item.addEventListener('mouseenter', function () {
+                clearTimeout(leaveTimeout);
+
+                const submenu = this.querySelector('.nested-dropdown-menu');
+                if (submenu) {
+                    submenu.classList.remove('open-left');
+                    this.classList.remove('open-left-icon');
+
+                    const parentSubmenu = this.closest('.nested-dropdown-menu');
+                    let forceLeft = false;
+                    if (parentSubmenu && parentSubmenu.classList.contains('open-left')) {
+                        forceLeft = true;
+                    }
+
+                    const rect = submenu.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+
+                    if (forceLeft || rect.right > viewportWidth) {
+                        submenu.classList.add('open-left');
+                        this.classList.add('open-left-icon');
+                    }
+                }
+            });
+
+            item.addEventListener('mouseleave', function () {
+                const submenu = this.querySelector('.nested-dropdown-menu');
+                if (submenu) {
+                    leaveTimeout = setTimeout(() => {
+                        submenu.classList.remove('open-left');
+                        this.classList.remove('open-left-icon');
+                    }, 800);
+                }
+            });
+        });
+
+        // Close mobile menu on resize based on active module
+        window.addEventListener('resize', function () {
+            const breakpoint = @mobileBreakpoint;
+            if (window.innerWidth > breakpoint) {
+                closeMobileMenu();
+            }
+        });
+    </script>
+
+    @if (isNeoSpraySidebar)
+    {
+    <script>
+        // ── NeoSpray Filter ──
+        var _neoSprayActiveFilter = {};
+        var _rsMonthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        // ── Multi-Select Component ──
+        function toggleMultiSelect(id) {
+            var container = document.getElementById(id);
+            if (!container) return;
+            var isOpen = container.classList.contains('open');
+            document.querySelectorAll('.rs-multiselect.open').forEach(function (el) {
+                if (el !== container) el.classList.remove('open');
+            });
+            container.classList.toggle('open', !isOpen);
+        }
+
+        function getMultiSelectValues(id) {
+            var container = document.getElementById(id);
+            if (!container) return [];
+            return Array.from(container.querySelectorAll('.rs-multiselect-dropdown .rs-multiselect-option:not(.rs-multiselect-all) input[type="checkbox"]:checked'))
+                .map(function (cb) { return cb.value; });
+        }
+
+        function updateMultiSelectLabel(id) {
+            var container = document.getElementById(id);
+            if (!container) return;
+            var checked = getMultiSelectValues(id);
+            var labelEl = container.querySelector('.rs-multiselect-label');
+            if (!labelEl) return;
+            if (checked.length === 0) {
+                labelEl.textContent = 'All';
+            } else if (checked.length === 1) {
+                var cb = container.querySelector('.rs-multiselect-dropdown .rs-multiselect-option:not(.rs-multiselect-all) input[type="checkbox"]:checked');
+                labelEl.textContent = cb ? cb.parentElement.querySelector('span').textContent : '1 selected';
+            } else {
+                labelEl.textContent = checked.length + ' selected';
+            }
+            var allChecks = container.querySelectorAll('.rs-multiselect-dropdown .rs-multiselect-option:not(.rs-multiselect-all) input[type="checkbox"]');
+            var allCheck = container.querySelector('.rs-ms-all-check');
+            if (allCheck) {
+                allCheck.checked = allChecks.length > 0 && checked.length === allChecks.length;
+                allCheck.indeterminate = checked.length > 0 && checked.length < allChecks.length;
+            }
+        }
+
+        function toggleSelectAll(allCheckbox, id) {
+            var container = document.getElementById(id);
+            if (!container) return;
+            container.querySelectorAll('.rs-multiselect-dropdown .rs-multiselect-option:not(.rs-multiselect-all) input[type="checkbox"]').forEach(function (cb) {
+                cb.checked = allCheckbox.checked;
+            });
+            updateMultiSelectLabel(id);
+        }
+
+        function clearMultiSelect(id) {
+            var container = document.getElementById(id);
+            if (!container) return;
+            container.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+            var labelEl = container.querySelector('.rs-multiselect-label');
+            if (labelEl) labelEl.textContent = 'All';
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.rs-multiselect')) {
+                document.querySelectorAll('.rs-multiselect.open').forEach(function (el) {
+                    el.classList.remove('open');
+                });
+            }
+        });
+
+        (function initNeoSprayFilter() {
+            fetch('@Url.Action("GetNeoSprayFilterOptions", "OEE")')
+                .then(function (r) { return r.json(); })
+                .then(function (res) {
+                    if (!res.success) return;
+                    function fillMultiSelect(id, items, labelFn) {
+                        var container = document.getElementById(id);
+                        if (!container) return;
+                        var dropdown = container.querySelector('.rs-multiselect-dropdown');
+                        items.forEach(function (v) {
+                            var lbl = document.createElement('label');
+                            lbl.className = 'rs-multiselect-option';
+                            var inp = document.createElement('input');
+                            inp.type = 'checkbox';
+                            inp.value = v;
+                            inp.onchange = function () { updateMultiSelectLabel(id); };
+                            var span = document.createElement('span');
+                            span.textContent = labelFn ? labelFn(v) : String(v);
+                            lbl.appendChild(inp);
+                            lbl.appendChild(span);
+                            dropdown.appendChild(lbl);
+                        });
+                    }
+                    fillMultiSelect('rsFilterYear', res.years);
+                    fillMultiSelect('rsFilterMonth', res.months, function (m) { return _rsMonthNames[m] || m; });
+                    fillMultiSelect('rsFilterWE', res.weekEndings, function (w) {
+                        var d = new Date(w + 'T00:00:00');
+                        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                    });
+                    fillMultiSelect('rsFilterShift', res.shifts, function (s) { return 'Shift ' + s; });
+                    fillMultiSelect('rsFilterMachine', res.machines, function (m) { return 'Machine ' + m; });
+                })
+                .catch(function () { /* silent */ });
+        })();
+
+        function applyNeoSprayFilter() {
+            var f = {
+                year:    getMultiSelectValues('rsFilterYear'),
+                month:   getMultiSelectValues('rsFilterMonth'),
+                we:      getMultiSelectValues('rsFilterWE'),
+                date:    document.getElementById('rsFilterDate').value || null,
+                shift:   getMultiSelectValues('rsFilterShift'),
+                machine: getMultiSelectValues('rsFilterMachine')
+            };
+            _neoSprayActiveFilter = f;
+
+            var activeCount = [f.year, f.month, f.we, f.shift, f.machine].filter(function (arr) { return arr.length > 0; }).length
+                            + (f.date ? 1 : 0);
+            var badge = document.getElementById('rsFilterActiveBadge');
+            var dot = document.getElementById('rsFilterDot');
+            if (activeCount > 0) {
+                badge.textContent = activeCount + ' filter' + (activeCount > 1 ? 's' : '') + ' active';
+                badge.classList.add('visible');
+                document.getElementById('rsBtn-filter').classList.add('active');
+                if (dot) dot.classList.add('visible');
+            } else {
+                badge.classList.remove('visible');
+                document.getElementById('rsBtn-filter').classList.remove('active');
+                if (dot) dot.classList.remove('visible');
+            }
+
+            document.dispatchEvent(new CustomEvent('neoSprayFilterApplied', { detail: f }));
+        }
+
+        function clearNeoSprayFilter() {
+            ['rsFilterYear', 'rsFilterMonth', 'rsFilterWE', 'rsFilterShift', 'rsFilterMachine'].forEach(function (id) {
+                clearMultiSelect(id);
+            });
+            document.getElementById('rsFilterDate').value = '';
+            _neoSprayActiveFilter = {};
+
+            var dot = document.getElementById('rsFilterDot');
+            if (dot) dot.classList.remove('visible');
+            document.getElementById('rsFilterActiveBadge').classList.remove('visible');
+            document.getElementById('rsBtn-filter').classList.remove('active');
+
+            document.dispatchEvent(new CustomEvent('neoSprayFilterCleared'));
+        }
+    </script>
+    }
+
+    <script>
+        function closeHdpAuthModals() {
+            document.querySelectorAll('.hdp-auth-modal').forEach(m => m.classList.remove('show'));
+            const overlay = document.querySelector('.hdp-auth-overlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function openHdpLoginModal() {
+            closeHdpAuthModals();
+            document.getElementById('hdpLoginModal').classList.add('show');
+            document.querySelector('.hdp-auth-overlay').classList.add('show');
+        }
+
+        function openHdpRegisterModal() {
+            closeHdpAuthModals();
+            document.getElementById('hdpRegisterModal').classList.add('show');
+            document.querySelector('.hdp-auth-overlay').classList.add('show');
+            fetchRolesForRegistration();
+        }
+
+        let rolesFetched = false;
+        function fetchRolesForRegistration() {
+            if (rolesFetched) return;
+            fetch('@Url.Action("Index", "Welcome")')
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const select = doc.querySelector('select[name="grp_ID"]');
+                    if (select) {
+                        const targetSelect = document.getElementById('hdpRegRoleSelect');
+                        targetSelect.innerHTML = select.innerHTML;
+                        rolesFetched = true;
+                    }
+                })
+                .catch(err => console.error("Could not fetch roles:", err));
+        }
+
+        function submitHdpLogin(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = document.getElementById('hdpLoginSubBtn');
+            const errorDiv = document.getElementById('hdpLoginErrorMsg');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in...';
+            errorDiv.style.display = 'none';
+
+            const formData = new URLSearchParams(new FormData(form));
+
+            fetch('@Url.Action("Login", "Home")', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    if(response.redirectUrl && response.redirectUrl !== '@Url.Action("Index", "Home")') {
+                         window.location.href = response.redirectUrl;
+                    } else {
+                         window.location.reload();
+                    }
+                } else {
+                    let errorMessage = "Invalid credentials. Please try again.";
+                    if (response.errors && response.errors.us_pwd) {
+                        errorMessage = response.errors.us_pwd;
+                    } else if (response.errors && response.errors.us_usrname) {
+                        errorMessage = response.errors.us_usrname;
+                    } else if (response.message) {
+                        errorMessage = response.message;
+                    }
+                    errorDiv.innerHTML = errorMessage;
+                    errorDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = 'Log In';
+                }
+            })
+            .catch(err => {
+                errorDiv.innerHTML = 'An error occurred while logging in.';
+                errorDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = 'Log In';
+            });
+        }
+
+        function submitHdpRegister(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = document.getElementById('hdpRegSubBtn');
+            const errorDiv = document.getElementById('hdpRegErrorMsg');
+            const successDiv = document.getElementById('hdpRegSuccessMsg');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Registering...';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            document.querySelectorAll('.hdp-field-error').forEach(el => el.innerHTML = '');
+
+            const formData = new URLSearchParams(new FormData(form));
+
+            fetch('@Url.Action("Register", "Home")', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    successDiv.innerHTML = "Registration successful! You may now log in.";
+                    successDiv.style.display = 'block';
+                    form.reset();
+                    btn.disabled = false;
+                    btn.innerHTML = 'Create Account';
+                    setTimeout(() => {
+                        openHdpLoginModal();
+                    }, 2000);
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Create Account';
+                    if (response.errors) {
+                        let generalError = false;
+                        for(const key in response.errors) {
+                            const errSpan = document.getElementById('err_' + key);
+                            if (errSpan) {
+                                errSpan.innerHTML = response.errors[key];
+                            } else {
+                                generalError = true;
+                            }
+                        }
+                        if (generalError) {
+                            errorDiv.innerHTML = "Please check the form for errors.";
+                            errorDiv.style.display = 'block';
+                        }
+                    } else {
+                        errorDiv.innerHTML = "Registration failed. Please try again.";
+                        errorDiv.style.display = 'block';
+                    }
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerHTML = 'Create Account';
+                errorDiv.innerHTML = 'Something went wrong. Please try again later.';
+                errorDiv.style.display = 'block';
+            });
+        }
+
+        function handleHdpLogout() {
+            const btn = event.target.closest('a');
+            if(btn) {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>Logging out...</span>';
+                btn.style.opacity = '0.7';
+                btn.style.pointerEvents = 'none';
+            }
+
+            fetch('@Url.Action("SignOut", "Home")', { 
+                method: 'GET'
+            })
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(err => {
+                console.error("Logout error", err);
+                window.location.reload();
+            });
+        }
+    </script>
+</body>
+</html>

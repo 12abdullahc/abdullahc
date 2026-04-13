@@ -1,0 +1,9 @@
+- (PLAN - CLAUDE OPUS 4.6) Create my portofolio (using HTML, CSS, JS only) with layout refer from #file:reference-layout.txt
+- (AGENT - CLAUDE SONNET 4.6) Start implementation
+- (AGENT - CLAUDE SONNET 4.6):
+  . add image @file:abdullahc.jpg in left name
+  . in right contact, add more menu with subs: cv, blog
+  . <1000px width become mobile nav
+- (AGENT - CLAUDE SONNET 4.6):
+  . also add image in .hero-avatar.
+  . when click about tab, why not active the tab and scroll in project, should be in about
