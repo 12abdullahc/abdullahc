@@ -883,6 +883,13 @@
             display: flex;
             align-items: flex-start;
             gap: 14px;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .contact-info-item:hover {
+            opacity: 0.75;
+            text-decoration: none;
         }
 
         .contact-info-icon {
@@ -1117,16 +1124,16 @@
                     <img src="img/abdullahc.jpg" alt="Abdullah C">
                 </div>
                 <ul class="hero-stat-list">
-                    <li class="hero-stat"><i class="fas fa-map-pin"></i><span><strong>Location:</strong> Your City, Country</span></li>
-                    <li class="hero-stat"><i class="fas fa-calendar"></i><span><strong>Experience:</strong> X+ Years</span></li>
+                    <li class="hero-stat"><i class="fas fa-map-pin"></i><span><strong>Location:</strong> Bekasi, West Java, Indonesia</span></li>
+                    <li class="hero-stat"><i class="fas fa-calendar"></i><span><strong>Experience:</strong> 4+ Years</span></li>
                     <li class="hero-stat"><i class="fas fa-briefcase"></i><span><strong>Status:</strong> Open to Work</span></li>
-                    <li class="hero-stat"><i class="fas fa-language"></i><span><strong>Languages:</strong> English, ...</span></li>
+                    <li class="hero-stat"><i class="fas fa-language"></i><span><strong>Languages:</strong> English, Indonesian, Javanese</span></li>
                 </ul>
                 <hr class="hero-divider">
                 <div class="hero-social">
-                    <a href="#" class="social-btn" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-btn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="social-btn" title="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="https://github.com/12abdullahc" target="_blank" rel="noopener noreferrer" class="social-btn" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://linkedin.com/in/12abdullahc" target="_blank" rel="noopener noreferrer" class="social-btn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="mailto:12abdullahc@gmail.com" class="social-btn" title="Email"><i class="fas fa-envelope"></i></a>
                     <a href="#" class="social-btn" title="Resume / CV"><i class="fas fa-file-pdf"></i></a>
                 </div>
             </div>
@@ -1359,34 +1366,34 @@
 
             <!-- Left: info -->
             <div class="contact-info reveal">
-                <div class="contact-info-item">
+                <a class="contact-info-item" href="mailto:12abdullahc@gmail.com">
                     <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
                     <div class="contact-info-text">
                         <h4>Email</h4>
-                        <p>abdullahc@example.com</p>
+                        <p>12abdullahc@gmail.com</p>
                     </div>
-                </div>
-                <div class="contact-info-item">
+                </a>
+                <a class="contact-info-item" href="https://maps.google.com/?q=Bekasi,+West+Java,+Indonesia" target="_blank" rel="noopener noreferrer">
                     <div class="contact-info-icon"><i class="fas fa-map-pin"></i></div>
                     <div class="contact-info-text">
                         <h4>Location</h4>
-                        <p>Your City, Country</p>
+                        <p>Bekasi, West Java, Indonesia</p>
                     </div>
-                </div>
-                <div class="contact-info-item">
+                </a>
+                <a class="contact-info-item" href="https://linkedin.com/in/12abdullahc" target="_blank" rel="noopener noreferrer">
                     <div class="contact-info-icon"><i class="fab fa-linkedin-in"></i></div>
                     <div class="contact-info-text">
                         <h4>LinkedIn</h4>
-                        <p>linkedin.com/in/abdullahc</p>
+                        <p>linkedin.com/in/12abdullahc</p>
                     </div>
-                </div>
-                <div class="contact-info-item">
+                </a>
+                <a class="contact-info-item" href="https://github.com/12abdullahc" target="_blank" rel="noopener noreferrer">
                     <div class="contact-info-icon"><i class="fab fa-github"></i></div>
                     <div class="contact-info-text">
                         <h4>GitHub</h4>
-                        <p>github.com/abdullahc</p>
+                        <p>github.com/12abdullahc</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Right: form -->
@@ -1534,8 +1541,12 @@
 
         document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-        // ── Contact form (frontend-only) ──
-        function handleContactSubmit(e) {
+        // ── Contact form — sends to 12abdullahc@gmail.com via Web3Forms ──
+        // Get your free access key at https://web3forms.com (enter your email → copy key)
+        // Then replace "YOUR_WEB3FORMS_ACCESS_KEY" below with your key.
+        const WEB3FORMS_KEY = 'e76dcf09-dbe6-473d-a98a-7d935b52320c';
+
+        async function handleContactSubmit(e) {
             e.preventDefault();
             const form    = e.target;
             const btn     = document.getElementById('contactSubmitBtn');
@@ -1550,14 +1561,30 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending...';
 
-            // Swap with a real fetch('/your-endpoint', { method:'POST', body: ... }) call
-            setTimeout(() => {
+            try {
+                const data = new FormData(form);
+                data.append('access_key', WEB3FORMS_KEY);
+                data.append('subject', form.subject.value.trim() || 'New message from portfolio');
+
+                const res  = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: data
+                });
+                const json = await res.json();
+
+                if (json.success) {
+                    success.style.display = 'block';
+                    form.reset();
+                    setTimeout(() => { success.style.display = 'none'; }, 5000);
+                } else {
+                    alert('Failed to send. Please try again.');
+                }
+            } catch (err) {
+                alert('Network error. Please check your connection and try again.');
+            } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-                success.style.display = 'block';
-                form.reset();
-                setTimeout(() => { success.style.display = 'none'; }, 5000);
-            }, 1200);
+            }
         }
     </script>
 
