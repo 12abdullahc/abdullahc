@@ -1125,7 +1125,7 @@
                 </div>
                 <ul class="hero-stat-list">
                     <li class="hero-stat"><i class="fas fa-map-pin"></i><span><strong>Location:</strong> Bekasi, West Java, Indonesia</span></li>
-                    <li class="hero-stat"><i class="fas fa-calendar"></i><span><strong>Experience:</strong> 4+ Years</span></li>
+                    <li class="hero-stat"><i class="fas fa-calendar"></i><span><strong>Experience:</strong> <span id="expYears"></span></span></li>
                     <li class="hero-stat"><i class="fas fa-briefcase"></i><span><strong>Status:</strong> Open to Work</span></li>
                     <li class="hero-stat"><i class="fas fa-language"></i><span><strong>Languages:</strong> English, Indonesian, Javanese</span></li>
                 </ul>
@@ -1438,6 +1438,13 @@
          SCRIPTS
     ══════════════════════════════════════ -->
     <script>
+        // ── Experience years (dynamic) ──
+        (function() {
+            const start = new Date(2022, 0, 1); // Jan 2022
+            const years = Math.floor((new Date() - start) / (1000 * 60 * 60 * 24 * 365.25));
+            document.getElementById('expYears').textContent = years + '+ Years';
+        })();
+
         // ── Smooth scroll with fixed-header offset ──
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
