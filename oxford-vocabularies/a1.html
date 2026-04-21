@@ -1,0 +1,5187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A1 Vocabulary — Oxford 3000</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      /* ── Design Tokens ── */
+      :root {
+        color-scheme: dark;
+        --bg-1: #000000;
+        --text-1: #ffffff;
+        --text-2: #c4c4c4;
+        --border-1: rgba(255, 255, 255, 0.15);
+        --border-2: rgba(255, 255, 255, 0.25);
+        --accent: rgba(214, 188, 162, 0.9);
+        --accent-bg: rgba(214, 188, 162, 0.08);
+        --accent-border: rgba(214, 188, 162, 0.2);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding-top: 60px;
+        background-color: var(--bg-1);
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        color: var(--text-1);
+        min-height: 100vh;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      /* ── Header ── */
+      .header {
+        height: 60px;
+        padding: 0 20px;
+        border-bottom: 1px solid var(--border-1);
+        background-color: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 14px;
+        height: 32px;
+        flex-shrink: 0;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--text-1);
+        color: var(--text-1);
+      }
+
+      .back-btn i {
+        font-size: 11px;
+      }
+
+      .header-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .header-title span {
+        color: var(--text-2);
+        font-weight: 400;
+      }
+
+      .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-border);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* ── Search bar ── */
+      .search-wrap {
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .search-wrap > i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: var(--text-2);
+        pointer-events: none;
+      }
+
+      .search-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        background: rgba(255, 255, 255, 0.12);
+        border: none;
+        border-radius: 50%;
+        color: var(--text-2);
+        font-size: 9px;
+        cursor: pointer;
+        padding: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        line-height: 18px;
+        text-align: center;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+        flex-shrink: 0;
+      }
+
+      .search-clear i {
+        display: block;
+        line-height: 1;
+        position: static;
+        transform: none;
+      }
+
+      .search-clear:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: var(--text-1);
+      }
+
+      .search-clear.visible {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #searchInput {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border-1);
+        border-radius: 20px;
+        padding: 6px 30px 6px 32px;
+        font-size: 13px;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        color: var(--text-1);
+        outline: none;
+        width: 200px;
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          width 0.3s;
+      }
+
+      #searchInput::placeholder {
+        color: rgba(196, 196, 196, 0.5);
+      }
+
+      #searchInput:focus {
+        border-color: rgba(214, 188, 162, 0.4);
+        background: rgba(255, 255, 255, 0.09);
+        width: 240px;
+      }
+
+      /* ── Page ── */
+      .page {
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      /* ── Stats bar ── */
+      .stats-bar {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-2);
+      }
+
+      .stat-item i {
+        color: var(--accent);
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .stat-item strong {
+        color: var(--text-1);
+      }
+
+      .stat-divider {
+        width: 1px;
+        height: 16px;
+        background: var(--border-1);
+      }
+
+      /* ── Word Grid ── */
+      .word-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+      }
+
+      .word-card {
+        background: rgba(20, 20, 23, 0.7);
+        border: 1px solid var(--border-1);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        transition:
+          box-shadow 0.18s ease,
+          border-color 0.18s ease,
+          background 0.18s ease;
+        user-select: none;
+      }
+
+      .word-card:hover {
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.55);
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(30, 30, 34, 0.85);
+      }
+
+      .word-card:active {
+        opacity: 0.85;
+      }
+
+      .word-card-word {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-1);
+        margin-bottom: 3px;
+      }
+
+      .word-card-pos {
+        font-size: 11px;
+        color: var(--accent);
+        font-weight: 600;
+        opacity: 0.85;
+        margin-bottom: 8px;
+      }
+
+      .word-card-translation {
+        font-size: 12px;
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .word-card-translation .flag {
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .word-card.hidden {
+        display: none;
+      }
+
+      /* ── Empty state ── */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-2);
+        display: none;
+        grid-column: 1 / -1;
+      }
+
+      .empty-state i {
+        font-size: 32px;
+        opacity: 0.3;
+        margin-bottom: 12px;
+        display: block;
+      }
+
+      .empty-state p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      /* ── Modal Backdrop ── */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(6px);
+        z-index: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease;
+      }
+
+      .modal-backdrop.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* ── Modal ── */
+      .modal {
+        background: #111113;
+        border: 1px solid var(--border-2);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.85);
+        transform: translateY(16px) scale(0.97);
+        transition:
+          transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1),
+          opacity 0.22s ease;
+        opacity: 0;
+        overflow: hidden;
+      }
+
+      .modal-backdrop.open .modal {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      .modal-header {
+        padding: 24px 24px 0 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .modal-word {
+        font-size: clamp(26px, 5vw, 34px);
+        font-weight: 700;
+        color: var(--text-1);
+        line-height: 1.1;
+        margin: 0 0 6px 0;
+      }
+
+      .modal-pos {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 10px;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-border);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.4px;
+      }
+
+      .modal-close {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text-1);
+        border-color: var(--border-2);
+      }
+
+      .modal-body {
+        padding: 20px 24px 24px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* Translation row */
+      .modal-translation {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border-1);
+        border-radius: 12px;
+      }
+
+      .modal-translation .flag-icon {
+        font-size: 22px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      .modal-translation-content {
+      }
+
+      .modal-translation-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(196, 196, 196, 0.45);
+        margin-bottom: 4px;
+      }
+
+      .modal-translation-text {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-1);
+      }
+
+      /* Example area */
+      .modal-example {
+        background: rgba(214, 188, 162, 0.05);
+        border: 1px solid rgba(214, 188, 162, 0.15);
+        border-radius: 12px;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .modal-example::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at top right,
+          rgba(214, 188, 162, 0.06) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+
+      .modal-example-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(196, 196, 196, 0.45);
+        margin-bottom: 8px;
+      }
+
+      .modal-example-text {
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin: 0;
+        font-style: normal;
+      }
+
+      .modal-example-text strong {
+        color: var(--text-1);
+        font-weight: 700;
+      }
+
+      .modal-example-id {
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin: 10px 0 0 0;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      /* Listen button */
+      .modal-listen-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-1);
+        border-radius: 20px;
+        color: var(--text-2);
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        text-decoration: none;
+        align-self: flex-start;
+      }
+
+      .modal-listen-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--border-2);
+        color: var(--text-1);
+        text-decoration: none;
+      }
+
+      .modal-listen-btn i {
+        font-size: 12px;
+        color: var(--accent);
+      }
+
+      /* Nav buttons inside modal */
+      .modal-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-top: 4px;
+      }
+
+      .modal-nav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 16px;
+        height: 34px;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+      }
+
+      .modal-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--border-2);
+        color: var(--text-1);
+      }
+
+      .modal-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .modal-counter {
+        font-size: 12px;
+        color: rgba(196, 196, 196, 0.5);
+        font-weight: 600;
+      }
+
+      /* ── Footer ── */
+      .footer {
+        text-align: center;
+        padding: 20px 16px;
+        border-top: 1px solid var(--border-1);
+      }
+
+      .footer-text {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.35);
+        font-weight: 500;
+        margin: 0;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        #searchInput {
+          width: 140px;
+        }
+        #searchInput:focus {
+          width: 160px;
+        }
+        .header-title {
+          display: none;
+        }
+        .word-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── Header ── -->
+    <header class="header">
+      <div class="header-left">
+        <a href="index.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <span class="header-title">Oxford 3000 <span>/ A1 Beginner</span></span>
+        <span class="header-badge">A1</span>
+      </div>
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search words…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="search-clear" id="searchClear" aria-label="Clear search">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Page ── -->
+    <main class="page">
+      <div class="stats-bar">
+        <div class="stat-item">
+          <i class="fas fa-list"></i>
+          <span><strong id="visibleCount">520</strong> words</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Level <strong>A1</strong> — Beginner</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <i class="fas fa-book-open"></i>
+          <span>Oxford <strong>3000</strong></span>
+        </div>
+      </div>
+
+      <div class="word-grid" id="wordGrid">
+        <!-- populated by JS -->
+        <div class="empty-state" id="emptyState">
+          <i class="fas fa-search"></i>
+          <p>No words match your search.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+      <p class="footer-text">
+        &copy; 2026 ABDULLAH C &middot; OXFORD VOCABULARIES A1
+      </p>
+    </footer>
+
+    <!-- ── Modal ── -->
+    <div
+      class="modal-backdrop"
+      id="modalBackdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Word detail"
+    >
+      <div class="modal" id="modal">
+        <div class="modal-header">
+          <div>
+            <p class="modal-word" id="modalWord"></p>
+            <span class="modal-pos" id="modalPos"></span>
+          </div>
+          <button class="modal-close" id="modalClose" aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <a class="modal-listen-btn" id="modalListenBtn" href="#">
+            <i class="fas fa-volume-up"></i> Listen on Cambridge Dictionary
+          </a>
+
+          <div class="modal-translation">
+            <span class="flag-icon">🇮🇩</span>
+            <div class="modal-translation-content">
+              <div class="modal-translation-label">Indonesian</div>
+              <div class="modal-translation-text" id="modalTranslation"></div>
+            </div>
+          </div>
+
+          <div class="modal-example">
+            <div class="modal-example-label">Example</div>
+            <p class="modal-example-text" id="modalExample"></p>
+            <p class="modal-example-id" id="modalExampleId"></p>
+          </div>
+
+          <div class="modal-nav">
+            <button class="modal-nav-btn" id="prevBtn">
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="modal-counter" id="modalCounter"></span>
+            <button class="modal-nav-btn" id="nextBtn">
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const WORDS = [
+        {
+          word: "a, an",
+          pos: "indefinite article",
+          id: "sebuah / seorang",
+          example:
+            "I have <strong>a</strong> cat and <strong>an</strong> apple on the table.",
+        },
+        {
+          word: "about",
+          pos: "prep., adv.",
+          id: "tentang / sekitar",
+          example:
+            "This book is <strong>about</strong> animals and their habitats.",
+        },
+        {
+          word: "above",
+          pos: "prep., adv.",
+          id: "di atas",
+          example: "The picture is hanging <strong>above</strong> the sofa.",
+        },
+        {
+          word: "across",
+          pos: "prep., adv.",
+          id: "melintasi / di seberang",
+          example:
+            "She carefully walked <strong>across</strong> the busy street.",
+        },
+        {
+          word: "action",
+          pos: "n.",
+          id: "tindakan / aksi",
+          example:
+            "We need to take <strong>action</strong> now before it is too late.",
+        },
+        {
+          word: "activity",
+          pos: "n.",
+          id: "aktivitas / kegiatan",
+          example:
+            "Swimming is my favourite <strong>activity</strong> in summer.",
+        },
+        {
+          word: "actor",
+          pos: "n.",
+          id: "aktor",
+          example:
+            "He wants to become an <strong>actor</strong> when he grows up.",
+        },
+        {
+          word: "actress",
+          pos: "n.",
+          id: "aktris",
+          example:
+            "She is a famous <strong>actress</strong> known for her dramatic roles.",
+        },
+        {
+          word: "add",
+          pos: "v.",
+          id: "menambahkan",
+          example:
+            "Please <strong>add</strong> some salt to the soup before serving.",
+        },
+        {
+          word: "address",
+          pos: "n.",
+          id: "alamat",
+          example:
+            "Could you write down your home <strong>address</strong> for me?",
+        },
+        {
+          word: "adult",
+          pos: "n.",
+          id: "orang dewasa",
+          example:
+            "Only an <strong>adult</strong> is allowed to sign this form.",
+        },
+        {
+          word: "advice",
+          pos: "n.",
+          id: "saran / nasihat",
+          example:
+            "She gave me very helpful <strong>advice</strong> about my new job.",
+        },
+        {
+          word: "afraid",
+          pos: "adj.",
+          id: "takut",
+          example:
+            "He was <strong>afraid</strong> of the dark when he was a child.",
+        },
+        {
+          word: "after",
+          pos: "prep.",
+          id: "setelah / sesudah",
+          example: "I always brush my teeth <strong>after</strong> breakfast.",
+        },
+        {
+          word: "afternoon",
+          pos: "n.",
+          id: "sore hari",
+          example:
+            "We went to the park in the <strong>afternoon</strong> to play.",
+        },
+        {
+          word: "again",
+          pos: "adv.",
+          id: "lagi / sekali lagi",
+          example:
+            "Can you say that <strong>again</strong>, please? I did not hear you.",
+        },
+        {
+          word: "age",
+          pos: "n.",
+          id: "usia / umur",
+          example: "What is your <strong>age</strong>? You look so young!",
+        },
+        {
+          word: "ago",
+          pos: "adv.",
+          id: "yang lalu",
+          example:
+            "I visited Paris two years <strong>ago</strong> with my family.",
+        },
+        {
+          word: "agree",
+          pos: "v.",
+          id: "setuju",
+          example:
+            "I completely <strong>agree</strong> with your suggestion about the project.",
+        },
+        {
+          word: "air",
+          pos: "n.",
+          id: "udara",
+          example:
+            "The <strong>air</strong> in the mountains is very fresh and clean.",
+        },
+        {
+          word: "airport",
+          pos: "n.",
+          id: "bandara",
+          example:
+            "We arrived at the <strong>airport</strong> two hours before the flight.",
+        },
+        {
+          word: "all",
+          pos: "det., pron.",
+          id: "semua / seluruh",
+          example:
+            "<strong>All</strong> the students in the class passed the final exam.",
+        },
+        {
+          word: "also",
+          pos: "adv.",
+          id: "juga",
+          example:
+            "I like tea. I <strong>also</strong> enjoy a good cup of coffee.",
+        },
+        {
+          word: "always",
+          pos: "adv.",
+          id: "selalu",
+          example: "She <strong>always</strong> arrives on time — never late.",
+        },
+        {
+          word: "amazing",
+          pos: "adj.",
+          id: "menakjubkan / luar biasa",
+          example:
+            "The view from the top of the mountain was absolutely <strong>amazing</strong>.",
+        },
+        {
+          word: "and",
+          pos: "conj.",
+          id: "dan",
+          example: "I have a dog <strong>and</strong> a cat at home.",
+        },
+        {
+          word: "angry",
+          pos: "adj.",
+          id: "marah",
+          example:
+            "He was very <strong>angry</strong> when he heard the unexpected news.",
+        },
+        {
+          word: "animal",
+          pos: "n.",
+          id: "hewan / binatang",
+          example:
+            "A lion is a wild <strong>animal</strong> that lives in Africa.",
+        },
+        {
+          word: "another",
+          pos: "det./pron.",
+          id: "lain / yang lain",
+          example:
+            "Can I have <strong>another</strong> piece of that delicious cake?",
+        },
+        {
+          word: "answer",
+          pos: "n., v.",
+          id: "jawaban / menjawab",
+          example:
+            "Please <strong>answer</strong> the question in a complete sentence.",
+        },
+        {
+          word: "any",
+          pos: "det., pron.",
+          id: "apapun / setiap",
+          example:
+            "Do you have <strong>any</strong> questions before we start the lesson?",
+        },
+        {
+          word: "anyone",
+          pos: "pron.",
+          id: "siapa saja / siapapun",
+          example:
+            "Does <strong>anyone</strong> know the answer to this difficult question?",
+        },
+        {
+          word: "anything",
+          pos: "pron.",
+          id: "apa saja / apapun",
+          example:
+            "Is there <strong>anything</strong> I can do to help you today?",
+        },
+        {
+          word: "apartment",
+          pos: "n.",
+          id: "apartemen",
+          example:
+            "She lives in a small <strong>apartment</strong> in the centre of the city.",
+        },
+        {
+          word: "apple",
+          pos: "n.",
+          id: "apel",
+          example:
+            "I eat an <strong>apple</strong> every morning to stay healthy.",
+        },
+        {
+          word: "April",
+          pos: "n.",
+          id: "April",
+          example:
+            "My birthday is in <strong>April</strong>, just after the spring holidays.",
+        },
+        {
+          word: "area",
+          pos: "n.",
+          id: "area / daerah",
+          example:
+            "There is a lovely park in this <strong>area</strong> of the city.",
+        },
+        {
+          word: "arm",
+          pos: "n.",
+          id: "lengan",
+          example:
+            "She broke her <strong>arm</strong> while playing football in the park.",
+        },
+        {
+          word: "around",
+          pos: "prep., adv.",
+          id: "sekitar / di sekitar",
+          example:
+            "We took a long walk <strong>around</strong> the beautiful lake.",
+        },
+        {
+          word: "arrive",
+          pos: "v.",
+          id: "tiba / sampai",
+          example:
+            "What time did you <strong>arrive</strong> at the hotel last night?",
+        },
+        {
+          word: "art",
+          pos: "n.",
+          id: "seni",
+          example:
+            "I really love modern <strong>art</strong>, especially abstract paintings.",
+        },
+        {
+          word: "article",
+          pos: "n.",
+          id: "artikel",
+          example:
+            "I read a very interesting <strong>article</strong> about space exploration this morning.",
+        },
+        {
+          word: "artist",
+          pos: "n.",
+          id: "seniman / artis",
+          example:
+            "She is a very talented <strong>artist</strong> who paints beautiful landscapes.",
+        },
+        {
+          word: "as",
+          pos: "prep.",
+          id: "sebagai / seperti",
+          example:
+            "She works <strong>as</strong> a teacher at the local primary school.",
+        },
+        {
+          word: "ask",
+          pos: "v.",
+          id: "bertanya / meminta",
+          example:
+            "Don't be afraid to <strong>ask</strong> for help when you need it.",
+        },
+        {
+          word: "at",
+          pos: "prep.",
+          id: "di / pada",
+          example:
+            "I will meet you <strong>at</strong> the library <strong>at</strong> 3 pm.",
+        },
+        {
+          word: "August",
+          pos: "n.",
+          id: "Agustus",
+          example:
+            "The summer holiday usually starts in <strong>August</strong> here.",
+        },
+        {
+          word: "aunt",
+          pos: "n.",
+          id: "bibi",
+          example:
+            "My <strong>aunt</strong> makes the best cookies I have ever tasted.",
+        },
+        {
+          word: "autumn",
+          pos: "n.",
+          id: "musim gugur",
+          example: "The leaves turn orange and red in <strong>autumn</strong>.",
+        },
+        {
+          word: "away",
+          pos: "adv.",
+          id: "jauh / pergi",
+          example:
+            "She moved <strong>away</strong> to a new city to start a fresh chapter.",
+        },
+        {
+          word: "baby",
+          pos: "n.",
+          id: "bayi",
+          example:
+            "The <strong>baby</strong> smiled when she heard her mother's voice.",
+        },
+        {
+          word: "back",
+          pos: "n., adv.",
+          id: "punggung / kembali",
+          example:
+            "Please put the book <strong>back</strong> on the shelf when you finish.",
+        },
+        {
+          word: "bad",
+          pos: "adj.",
+          id: "buruk / jelek",
+          example:
+            "The weather was so <strong>bad</strong> that we stayed inside all day.",
+        },
+        {
+          word: "bag",
+          pos: "n.",
+          id: "tas",
+          example:
+            "She put her books and laptop into her <strong>bag</strong>.",
+        },
+        {
+          word: "ball",
+          pos: "n.",
+          id: "bola",
+          example:
+            "The children kicked the <strong>ball</strong> around the park.",
+        },
+        {
+          word: "banana",
+          pos: "n.",
+          id: "pisang",
+          example:
+            "I eat a <strong>banana</strong> every morning for breakfast.",
+        },
+        {
+          word: "band",
+          pos: "n.",
+          id: "band / kelompok",
+          example:
+            "The <strong>band</strong> played live music at the festival last night.",
+        },
+        {
+          word: "bank",
+          pos: "n.",
+          id: "bank",
+          example:
+            "I need to go to the <strong>bank</strong> to withdraw some money.",
+        },
+        {
+          word: "bath",
+          pos: "n.",
+          id: "mandi / bak mandi",
+          example:
+            "She relaxed in a warm <strong>bath</strong> after a long day at work.",
+        },
+        {
+          word: "bathroom",
+          pos: "n.",
+          id: "kamar mandi",
+          example:
+            "The <strong>bathroom</strong> on the first floor has a shower and a bathtub.",
+        },
+        {
+          word: "be",
+          pos: "v., auxiliary v.",
+          id: "adalah / menjadi",
+          example: "I want to <strong>be</strong> a doctor when I grow up.",
+        },
+        {
+          word: "beach",
+          pos: "n.",
+          id: "pantai",
+          example:
+            "We spent the whole afternoon relaxing on the <strong>beach</strong>.",
+        },
+        {
+          word: "beautiful",
+          pos: "adj.",
+          id: "indah / cantik",
+          example:
+            "The sunset over the ocean was absolutely <strong>beautiful</strong>.",
+        },
+        {
+          word: "because",
+          pos: "conj.",
+          id: "karena",
+          example:
+            "She stayed home <strong>because</strong> she was feeling unwell.",
+        },
+        {
+          word: "become",
+          pos: "v.",
+          id: "menjadi",
+          example:
+            "He worked hard to <strong>become</strong> a successful engineer.",
+        },
+        {
+          word: "bed",
+          pos: "n.",
+          id: "tempat tidur",
+          example:
+            "I was so tired that I went straight to <strong>bed</strong>.",
+        },
+        {
+          word: "bedroom",
+          pos: "n.",
+          id: "kamar tidur",
+          example:
+            "Her <strong>bedroom</strong> has a large window with a great view.",
+        },
+        {
+          word: "beer",
+          pos: "n.",
+          id: "bir",
+          example: "He ordered a cold <strong>beer</strong> at the restaurant.",
+        },
+        {
+          word: "before",
+          pos: "prep.",
+          id: "sebelum",
+          example:
+            "Always wash your hands <strong>before</strong> eating a meal.",
+        },
+        {
+          word: "begin",
+          pos: "v.",
+          id: "mulai / memulai",
+          example:
+            "The concert will <strong>begin</strong> at seven o'clock tonight.",
+        },
+        {
+          word: "beginning",
+          pos: "n.",
+          id: "awal / permulaan",
+          example:
+            "The <strong>beginning</strong> of the film was very exciting.",
+        },
+        {
+          word: "behind",
+          pos: "prep., adv.",
+          id: "di belakang",
+          example: "The cat is hiding <strong>behind</strong> the sofa.",
+        },
+        {
+          word: "believe",
+          pos: "v.",
+          id: "percaya / yakin",
+          example:
+            "I <strong>believe</strong> that hard work always leads to success.",
+        },
+        {
+          word: "below",
+          pos: "adv., prep.",
+          id: "di bawah",
+          example:
+            "The temperature dropped <strong>below</strong> zero last night.",
+        },
+        {
+          word: "best",
+          pos: "adj.",
+          id: "terbaik",
+          example:
+            "She is the <strong>best</strong> student in the entire class.",
+        },
+        {
+          word: "better",
+          pos: "adj.",
+          id: "lebih baik",
+          example:
+            "I feel much <strong>better</strong> today than I did yesterday.",
+        },
+        {
+          word: "between",
+          pos: "prep.",
+          id: "antara / di antara",
+          example:
+            "The park is <strong>between</strong> the school and the supermarket.",
+        },
+        {
+          word: "bicycle",
+          pos: "n.",
+          id: "sepeda",
+          example:
+            "She rides her <strong>bicycle</strong> to school every morning.",
+        },
+        {
+          word: "big",
+          pos: "adj.",
+          id: "besar",
+          example:
+            "They live in a <strong>big</strong> house with a large garden.",
+        },
+        {
+          word: "bike",
+          pos: "n.",
+          id: "sepeda / motor",
+          example:
+            "He goes for a <strong>bike</strong> ride in the park every weekend.",
+        },
+        {
+          word: "bill",
+          pos: "n.",
+          id: "tagihan / nota",
+          example:
+            "Can we have the <strong>bill</strong>, please? We are ready to leave.",
+        },
+        {
+          word: "bird",
+          pos: "n.",
+          id: "burung",
+          example:
+            "A small <strong>bird</strong> was singing in the tree outside my window.",
+        },
+        {
+          word: "birthday",
+          pos: "n.",
+          id: "ulang tahun",
+          example:
+            "Happy <strong>birthday</strong>! I hope you have a wonderful day.",
+        },
+        {
+          word: "black",
+          pos: "adj., n.",
+          id: "hitam",
+          example: "She always wears a <strong>black</strong> coat in winter.",
+        },
+        {
+          word: "blog",
+          pos: "n.",
+          id: "blog",
+          example:
+            "She writes a popular <strong>blog</strong> about travel and food.",
+        },
+        {
+          word: "blonde",
+          pos: "adj.",
+          id: "pirang",
+          example:
+            "The girl with the <strong>blonde</strong> hair is my cousin.",
+        },
+        {
+          word: "blue",
+          pos: "adj., n.",
+          id: "biru",
+          example:
+            "The sky was a bright <strong>blue</strong> on that summer morning.",
+        },
+        {
+          word: "boat",
+          pos: "n.",
+          id: "perahu / kapal",
+          example:
+            "We took a small <strong>boat</strong> across the lake to the island.",
+        },
+        {
+          word: "body",
+          pos: "n.",
+          id: "tubuh / badan",
+          example:
+            "Exercise is good for your <strong>body</strong> and your mind.",
+        },
+        {
+          word: "book",
+          pos: "n.",
+          id: "buku",
+          example:
+            "She read the entire <strong>book</strong> in just one afternoon.",
+        },
+        {
+          word: "boot",
+          pos: "n.",
+          id: "sepatu bot",
+          example:
+            "She put on her warm <strong>boot</strong>s before going out in the snow.",
+        },
+        {
+          word: "bored",
+          pos: "adj.",
+          id: "bosan",
+          example:
+            "He was so <strong>bored</strong> that he fell asleep during the lecture.",
+        },
+        {
+          word: "boring",
+          pos: "adj.",
+          id: "membosankan",
+          example:
+            "The film was really <strong>boring</strong> — we left before it ended.",
+        },
+        {
+          word: "born",
+          pos: "v.",
+          id: "lahir / dilahirkan",
+          example:
+            "She was <strong>born</strong> in a small village in the mountains.",
+        },
+        {
+          word: "both",
+          pos: "det./pron.",
+          id: "keduanya / kedua-duanya",
+          example:
+            "<strong>Both</strong> of my parents are teachers at the local school.",
+        },
+        {
+          word: "bottle",
+          pos: "n.",
+          id: "botol",
+          example:
+            "Please bring a <strong>bottle</strong> of water on the hiking trip.",
+        },
+        {
+          word: "box",
+          pos: "n.",
+          id: "kotak / dus",
+          example:
+            "He packed all his things into a large cardboard <strong>box</strong>.",
+        },
+        {
+          word: "boy",
+          pos: "n.",
+          id: "anak laki-laki",
+          example:
+            "The little <strong>boy</strong> ran across the playground laughing.",
+        },
+        {
+          word: "boyfriend",
+          pos: "n.",
+          id: "pacar (laki-laki)",
+          example:
+            "She introduced her <strong>boyfriend</strong> to her parents last weekend.",
+        },
+        {
+          word: "bread",
+          pos: "n.",
+          id: "roti",
+          example:
+            "I bought a fresh loaf of <strong>bread</strong> from the bakery this morning.",
+        },
+        {
+          word: "break",
+          pos: "v., n.",
+          id: "istirahat / memecahkan",
+          example:
+            "Let's take a short <strong>break</strong> before we continue the meeting.",
+        },
+        {
+          word: "breakfast",
+          pos: "n.",
+          id: "sarapan",
+          example:
+            "I always have <strong>breakfast</strong> before leaving for work.",
+        },
+        {
+          word: "bring",
+          pos: "v.",
+          id: "membawa",
+          example:
+            "Don't forget to <strong>bring</strong> your umbrella — it might rain.",
+        },
+        {
+          word: "brother",
+          pos: "n.",
+          id: "saudara laki-laki / kakak / adik",
+          example:
+            "My <strong>brother</strong> and I used to play football in the garden.",
+        },
+        {
+          word: "brown",
+          pos: "adj., n.",
+          id: "cokelat (warna)",
+          example: "He has <strong>brown</strong> eyes and curly hair.",
+        },
+        {
+          word: "build",
+          pos: "v.",
+          id: "membangun",
+          example:
+            "They plan to <strong>build</strong> a new library in the centre of town.",
+        },
+        {
+          word: "building",
+          pos: "n.",
+          id: "gedung / bangunan",
+          example:
+            "That tall <strong>building</strong> in the city centre was built in 1920.",
+        },
+        {
+          word: "bus",
+          pos: "n.",
+          id: "bus",
+          example:
+            "I take the <strong>bus</strong> to work every morning to avoid traffic.",
+        },
+        {
+          word: "business",
+          pos: "n.",
+          id: "bisnis / usaha",
+          example:
+            "She started her own <strong>business</strong> selling handmade jewellery.",
+        },
+        {
+          word: "busy",
+          pos: "adj.",
+          id: "sibuk",
+          example:
+            "I am too <strong>busy</strong> to talk right now — can we speak later?",
+        },
+        {
+          word: "but",
+          pos: "conj.",
+          id: "tetapi / tapi",
+          example:
+            "I wanted to go, <strong>but</strong> I was too tired to leave the house.",
+        },
+        {
+          word: "butter",
+          pos: "n.",
+          id: "mentega",
+          example: "She spread some <strong>butter</strong> on the warm toast.",
+        },
+        {
+          word: "buy",
+          pos: "v.",
+          id: "membeli",
+          example:
+            "I want to <strong>buy</strong> a new pair of shoes for the party.",
+        },
+        {
+          word: "by",
+          pos: "prep.",
+          id: "oleh / dengan / dekat",
+          example:
+            "The painting was made <strong>by</strong> a famous local artist.",
+        },
+        {
+          word: "bye",
+          pos: "exclam.",
+          id: "sampai jumpa / dadah",
+          example:
+            '"<strong>Bye</strong>! See you tomorrow!" she called as she walked away.',
+        },
+        {
+          word: "cafe",
+          pos: "n.",
+          id: "kafe",
+          example:
+            "We sat at a small <strong>cafe</strong> and ordered two cups of coffee.",
+        },
+        {
+          word: "cake",
+          pos: "n.",
+          id: "kue",
+          example:
+            "She baked a chocolate <strong>cake</strong> for her son's birthday party.",
+        },
+        {
+          word: "call",
+          pos: "v., n.",
+          id: "menelepon / panggilan",
+          example:
+            "I will <strong>call</strong> you as soon as I arrive at the airport.",
+        },
+        {
+          word: "camera",
+          pos: "n.",
+          id: "kamera",
+          example:
+            "He took his <strong>camera</strong> to photograph the beautiful mountain scenery.",
+        },
+        {
+          word: "can1",
+          pos: "modal v.",
+          id: "bisa / dapat",
+          example: "She <strong>can</strong> speak three languages fluently.",
+        },
+        {
+          word: "cannot",
+          pos: "modal v.",
+          id: "tidak bisa / tidak dapat",
+          example:
+            "I <strong>cannot</strong> come to the party because I have to work late.",
+        },
+        {
+          word: "capital",
+          pos: "n., adj.",
+          id: "ibu kota / modal",
+          example: "Paris is the <strong>capital</strong> city of France.",
+        },
+        {
+          word: "car",
+          pos: "n.",
+          id: "mobil",
+          example:
+            "She drove her <strong>car</strong> to the supermarket to do the weekly shopping.",
+        },
+        {
+          word: "card",
+          pos: "n.",
+          id: "kartu",
+          example:
+            "He sent a birthday <strong>card</strong> to his grandmother in the post.",
+        },
+        {
+          word: "career",
+          pos: "n.",
+          id: "karier / karir",
+          example:
+            "She built a very successful <strong>career</strong> as a journalist.",
+        },
+        {
+          word: "carrot",
+          pos: "n.",
+          id: "wortel",
+          example:
+            "She added a <strong>carrot</strong> and some onion to the vegetable soup.",
+        },
+        {
+          word: "carry",
+          pos: "v.",
+          id: "membawa / membawakan",
+          example:
+            "Can you <strong>carry</strong> this heavy box upstairs for me?",
+        },
+        {
+          word: "cat",
+          pos: "n.",
+          id: "kucing",
+          example:
+            "The <strong>cat</strong> sat on the warm windowsill and looked outside.",
+        },
+        {
+          word: "CD",
+          pos: "n.",
+          id: "CD",
+          example:
+            "She still has a large collection of music <strong>CD</strong>s from the 1990s.",
+        },
+        {
+          word: "cent",
+          pos: "n.",
+          id: "sen",
+          example:
+            "That old coin is worth less than one <strong>cent</strong>.",
+        },
+        {
+          word: "centre",
+          pos: "n.",
+          id: "pusat / tengah",
+          example:
+            "The new library is right in the <strong>centre</strong> of the town.",
+        },
+        {
+          word: "century",
+          pos: "n.",
+          id: "abad",
+          example:
+            "This old church was built in the eighteenth <strong>century</strong>.",
+        },
+        {
+          word: "chair",
+          pos: "n.",
+          id: "kursi",
+          example:
+            "Please sit on the <strong>chair</strong> next to the window.",
+        },
+        {
+          word: "change",
+          pos: "v., n.",
+          id: "mengubah / perubahan",
+          example:
+            "The weather can <strong>change</strong> very quickly in this part of the country.",
+        },
+        {
+          word: "chart",
+          pos: "n.",
+          id: "grafik / bagan",
+          example:
+            "The teacher showed us a <strong>chart</strong> with the test results.",
+        },
+        {
+          word: "cheap",
+          pos: "adj.",
+          id: "murah",
+          example:
+            "This restaurant is very <strong>cheap</strong> and the food is excellent.",
+        },
+        {
+          word: "check",
+          pos: "v.",
+          id: "memeriksa / mengecek",
+          example:
+            "Please <strong>check</strong> your answers before handing in the exam paper.",
+        },
+        {
+          word: "cheese",
+          pos: "n.",
+          id: "keju",
+          example:
+            "I love <strong>cheese</strong> on toast for breakfast in the morning.",
+        },
+        {
+          word: "chicken",
+          pos: "n.",
+          id: "ayam",
+          example:
+            "She cooked roast <strong>chicken</strong> with vegetables for Sunday dinner.",
+        },
+        {
+          word: "child",
+          pos: "n.",
+          id: "anak",
+          example:
+            "Every <strong>child</strong> in the school received a free book.",
+        },
+        {
+          word: "chocolate",
+          pos: "n.",
+          id: "cokelat",
+          example:
+            "She gave him a box of <strong>chocolate</strong>s as a birthday gift.",
+        },
+        {
+          word: "choose",
+          pos: "v.",
+          id: "memilih",
+          example:
+            "It was hard to <strong>choose</strong> between the two delicious desserts.",
+        },
+        {
+          word: "cinema",
+          pos: "n.",
+          id: "bioskop",
+          example:
+            "We went to the <strong>cinema</strong> to watch the latest blockbuster film.",
+        },
+        {
+          word: "city",
+          pos: "n.",
+          id: "kota",
+          example:
+            "New York is one of the most exciting <strong>cities</strong> in the world.",
+        },
+        {
+          word: "class",
+          pos: "n.",
+          id: "kelas",
+          example:
+            "The whole <strong>class</strong> listened carefully to the teacher's explanation.",
+        },
+        {
+          word: "classroom",
+          pos: "n.",
+          id: "ruang kelas",
+          example:
+            "There are thirty desks in our school <strong>classroom</strong>.",
+        },
+        {
+          word: "clean",
+          pos: "adj., v.",
+          id: "bersih / membersihkan",
+          example:
+            "Please <strong>clean</strong> your room before our guests arrive this evening.",
+        },
+        {
+          word: "climb",
+          pos: "v.",
+          id: "mendaki / memanjat",
+          example:
+            "It took three hours to <strong>climb</strong> to the top of the mountain.",
+        },
+        {
+          word: "clock",
+          pos: "n.",
+          id: "jam dinding",
+          example:
+            "The <strong>clock</strong> on the wall shows that it is half past eight.",
+        },
+        {
+          word: "close1",
+          pos: "v.",
+          id: "menutup",
+          example:
+            "Could you <strong>close</strong> the window? It is getting cold in here.",
+        },
+        {
+          word: "clothes",
+          pos: "n.",
+          id: "pakaian / baju",
+          example:
+            "She packed all her <strong>clothes</strong> into a suitcase for the trip.",
+        },
+        {
+          word: "club",
+          pos: "n.",
+          id: "klub",
+          example:
+            "He joined the football <strong>club</strong> at school last term.",
+        },
+        {
+          word: "coat",
+          pos: "n.",
+          id: "mantel / jaket",
+          example:
+            "Don't forget to take your <strong>coat</strong> — it is cold outside today.",
+        },
+        {
+          word: "coffee",
+          pos: "n.",
+          id: "kopi",
+          example:
+            "I drink two cups of <strong>coffee</strong> every morning to wake up.",
+        },
+        {
+          word: "cold",
+          pos: "adj., n.",
+          id: "dingin / flu",
+          example:
+            "The water in the lake was so <strong>cold</strong> that we did not swim.",
+        },
+        {
+          word: "college",
+          pos: "n.",
+          id: "perguruan tinggi",
+          example:
+            "She is studying art at a <strong>college</strong> in the city centre.",
+        },
+        {
+          word: "colour",
+          pos: "n.",
+          id: "warna",
+          example:
+            "What is your favourite <strong>colour</strong>? Mine is deep blue.",
+        },
+        {
+          word: "come",
+          pos: "v.",
+          id: "datang",
+          example:
+            "Can you <strong>come</strong> to my party on Saturday evening?",
+        },
+        {
+          word: "common",
+          pos: "adj.",
+          id: "umum / biasa",
+          example:
+            "It is very <strong>common</strong> to see tourists in the city centre in summer.",
+        },
+        {
+          word: "company",
+          pos: "n.",
+          id: "perusahaan / teman",
+          example:
+            "She works for a large international <strong>company</strong> in the finance sector.",
+        },
+        {
+          word: "compare",
+          pos: "v.",
+          id: "membandingkan",
+          example:
+            "Let's <strong>compare</strong> the prices before we decide which one to buy.",
+        },
+        {
+          word: "complete",
+          pos: "adj., v.",
+          id: "lengkap / menyelesaikan",
+          example:
+            "He worked all night to <strong>complete</strong> the report on time.",
+        },
+        {
+          word: "computer",
+          pos: "n.",
+          id: "komputer",
+          example:
+            "She uses her <strong>computer</strong> to work from home every day.",
+        },
+        {
+          word: "concert",
+          pos: "n.",
+          id: "konser",
+          example:
+            "We went to an amazing live <strong>concert</strong> in the park last Saturday.",
+        },
+        {
+          word: "conversation",
+          pos: "n.",
+          id: "percakapan",
+          example:
+            "We had a long and interesting <strong>conversation</strong> over dinner.",
+        },
+        {
+          word: "cook",
+          pos: "v.",
+          id: "memasak",
+          example:
+            "He loves to <strong>cook</strong> Italian food for his friends at the weekend.",
+        },
+        {
+          word: "cooking",
+          pos: "n.",
+          id: "memasak / masakan",
+          example:
+            "<strong>Cooking</strong> at home is healthier than eating at a restaurant every day.",
+        },
+        {
+          word: "cool",
+          pos: "adj.",
+          id: "keren / sejuk",
+          example:
+            "The evening breeze was pleasantly <strong>cool</strong> after a hot summer day.",
+        },
+        {
+          word: "correct",
+          pos: "adj., v.",
+          id: "benar / memperbaiki",
+          example:
+            "All of her answers were <strong>correct</strong> — she got full marks.",
+        },
+        {
+          word: "cost",
+          pos: "n., v.",
+          id: "biaya / menghabiskan",
+          example:
+            "How much does it <strong>cost</strong> to fly from London to New York?",
+        },
+        {
+          word: "could",
+          pos: "modal v.",
+          id: "bisa (lampau) / mungkin",
+          example: "When I was young, I <strong>could</strong> run very fast.",
+        },
+        {
+          word: "country",
+          pos: "n.",
+          id: "negara / pedesaan",
+          example:
+            "France is a beautiful <strong>country</strong> with amazing food and culture.",
+        },
+        {
+          word: "course",
+          pos: "n.",
+          id: "kursus / tentu saja",
+          example:
+            "She signed up for an online English <strong>course</strong> last month.",
+        },
+        {
+          word: "cousin",
+          pos: "n.",
+          id: "sepupu",
+          example:
+            "My <strong>cousin</strong> lives in another city but we meet every holiday.",
+        },
+        {
+          word: "cow",
+          pos: "n.",
+          id: "sapi",
+          example:
+            "There were several <strong>cow</strong>s grazing in the field near the farm.",
+        },
+        {
+          word: "cream",
+          pos: "n.",
+          id: "krim",
+          example:
+            "She put fresh <strong>cream</strong> and strawberries on top of the cake.",
+        },
+        {
+          word: "create",
+          pos: "v.",
+          id: "menciptakan / membuat",
+          example:
+            "He used a computer program to <strong>create</strong> a beautiful digital painting.",
+        },
+        {
+          word: "culture",
+          pos: "n.",
+          id: "budaya",
+          example:
+            "Travelling is a great way to learn about different <strong>culture</strong>s.",
+        },
+        {
+          word: "cup",
+          pos: "n.",
+          id: "cangkir / gelas",
+          example:
+            "She made a hot <strong>cup</strong> of tea and sat by the window to read.",
+        },
+        {
+          word: "customer",
+          pos: "n.",
+          id: "pelanggan",
+          example:
+            "The shop assistant was very helpful and polite to every <strong>customer</strong>.",
+        },
+        {
+          word: "cut",
+          pos: "v.",
+          id: "memotong",
+          example:
+            "Please <strong>cut</strong> the bread into thin slices before serving.",
+        },
+        {
+          word: "dad",
+          pos: "n.",
+          id: "ayah",
+          example:
+            "My <strong>dad</strong> always tells funny stories at the dinner table.",
+        },
+        {
+          word: "dance",
+          pos: "n., v.",
+          id: "tari / menari",
+          example:
+            "She loves to <strong>dance</strong> to Latin music at the weekend.",
+        },
+        {
+          word: "dancer",
+          pos: "n.",
+          id: "penari",
+          example:
+            "She trained for years to become a professional <strong>dancer</strong>.",
+        },
+        {
+          word: "dancing",
+          pos: "n.",
+          id: "tarian / dansa",
+          example:
+            "<strong>Dancing</strong> is a great way to stay fit and have fun.",
+        },
+        {
+          word: "dangerous",
+          pos: "adj.",
+          id: "berbahaya",
+          example:
+            "It is <strong>dangerous</strong> to swim in the sea during a storm.",
+        },
+        {
+          word: "dark",
+          pos: "adj.",
+          id: "gelap",
+          example:
+            "The room was so <strong>dark</strong> that I could not see anything.",
+        },
+        {
+          word: "date",
+          pos: "n.",
+          id: "tanggal / kencan",
+          example:
+            "What is the <strong>date</strong> of your birthday this year?",
+        },
+        {
+          word: "daughter",
+          pos: "n.",
+          id: "anak perempuan / putri",
+          example:
+            "Their <strong>daughter</strong> is studying medicine at university.",
+        },
+        {
+          word: "day",
+          pos: "n.",
+          id: "hari",
+          example: "It was the best <strong>day</strong> of my entire life.",
+        },
+        {
+          word: "dear",
+          pos: "adj.",
+          id: "sayang / tercinta",
+          example:
+            "He is a very <strong>dear</strong> friend who has always been there for me.",
+        },
+        {
+          word: "December",
+          pos: "n.",
+          id: "Desember",
+          example:
+            "Christmas is celebrated on the 25th of <strong>December</strong> every year.",
+        },
+        {
+          word: "decide",
+          pos: "v.",
+          id: "memutuskan",
+          example:
+            "It was hard to <strong>decide</strong> which university to apply to.",
+        },
+        {
+          word: "delicious",
+          pos: "adj.",
+          id: "lezat / enak",
+          example:
+            "The pasta at that restaurant was absolutely <strong>delicious</strong>.",
+        },
+        {
+          word: "describe",
+          pos: "v.",
+          id: "mendeskripsikan / menggambarkan",
+          example:
+            "Can you <strong>describe</strong> what the man looked like?",
+        },
+        {
+          word: "description",
+          pos: "n.",
+          id: "deskripsi / gambaran",
+          example:
+            "The police asked for a <strong>description</strong> of the missing child.",
+        },
+        {
+          word: "design",
+          pos: "n., v.",
+          id: "desain / merancang",
+          example:
+            "She studied <strong>design</strong> at art school for three years.",
+        },
+        {
+          word: "desk",
+          pos: "n.",
+          id: "meja (kerja/belajar)",
+          example:
+            "He sat at his <strong>desk</strong> and started working on his homework.",
+        },
+        {
+          word: "detail",
+          pos: "n.",
+          id: "detail / rincian",
+          example:
+            "Please pay attention to every <strong>detail</strong> in the instructions.",
+        },
+        {
+          word: "dialogue",
+          pos: "n.",
+          id: "dialog / percakapan",
+          example:
+            "The <strong>dialogue</strong> between the two characters in the play was very natural.",
+        },
+        {
+          word: "dictionary",
+          pos: "n.",
+          id: "kamus",
+          example:
+            "I looked up the word in my English <strong>dictionary</strong>.",
+        },
+        {
+          word: "die",
+          pos: "v.",
+          id: "mati / meninggal",
+          example:
+            "The old oak tree in the garden <strong>died</strong> last winter.",
+        },
+        {
+          word: "diet",
+          pos: "n.",
+          id: "diet / pola makan",
+          example:
+            "A healthy <strong>diet</strong> includes plenty of fruit and vegetables.",
+        },
+        {
+          word: "difference",
+          pos: "n.",
+          id: "perbedaan",
+          example:
+            "Can you spot the <strong>difference</strong> between these two pictures?",
+        },
+        {
+          word: "different",
+          pos: "adj.",
+          id: "berbeda",
+          example:
+            "The twins look similar but have very <strong>different</strong> personalities.",
+        },
+        {
+          word: "difficult",
+          pos: "adj.",
+          id: "sulit / susah",
+          example:
+            "The exam was very <strong>difficult</strong> and many students did not pass.",
+        },
+        {
+          word: "dinner",
+          pos: "n.",
+          id: "makan malam",
+          example:
+            "We had a lovely <strong>dinner</strong> at an Italian restaurant last night.",
+        },
+        {
+          word: "dirty",
+          pos: "adj.",
+          id: "kotor",
+          example:
+            "His boots were <strong>dirty</strong> after walking through the muddy field.",
+        },
+        {
+          word: "discuss",
+          pos: "v.",
+          id: "mendiskusikan / membahas",
+          example:
+            "Let's <strong>discuss</strong> the plan before we make a final decision.",
+        },
+        {
+          word: "dish",
+          pos: "n.",
+          id: "hidangan / piring",
+          example:
+            "This traditional <strong>dish</strong> is made with rice, spices, and fresh vegetables.",
+        },
+        {
+          word: "do1",
+          pos: "v., auxiliary v.",
+          id: "melakukan / lakukan",
+          example:
+            "I have so much work to <strong>do</strong> before the deadline tomorrow.",
+        },
+        {
+          word: "doctor",
+          pos: "n.",
+          id: "dokter",
+          example:
+            "You should see a <strong>doctor</strong> if your symptoms do not improve soon.",
+        },
+        {
+          word: "dog",
+          pos: "n.",
+          id: "anjing",
+          example:
+            "She takes her <strong>dog</strong> for a walk in the park every morning.",
+        },
+        {
+          word: "dollar",
+          pos: "n.",
+          id: "dolar",
+          example:
+            "The book costs fifteen <strong>dollars</strong> in the university bookshop.",
+        },
+        {
+          word: "door",
+          pos: "n.",
+          id: "pintu",
+          example:
+            "Please close the <strong>door</strong> when you leave the room.",
+        },
+        {
+          word: "down",
+          pos: "adv., prep.",
+          id: "ke bawah / turun",
+          example:
+            "She walked <strong>down</strong> the stairs and into the kitchen.",
+        },
+        {
+          word: "downstairs",
+          pos: "adv.",
+          id: "di bawah / lantai bawah",
+          example:
+            "I heard a strange noise <strong>downstairs</strong> in the middle of the night.",
+        },
+        {
+          word: "draw",
+          pos: "v.",
+          id: "menggambar",
+          example:
+            "She can <strong>draw</strong> very realistic portraits of people from memory.",
+        },
+        {
+          word: "dress",
+          pos: "n., v.",
+          id: "gaun / berpakaian",
+          example:
+            "She wore a beautiful red <strong>dress</strong> to the wedding ceremony.",
+        },
+        {
+          word: "drink",
+          pos: "n., v.",
+          id: "minuman / minum",
+          example:
+            "Would you like something to <strong>drink</strong> — tea or coffee?",
+        },
+        {
+          word: "drive",
+          pos: "v.",
+          id: "mengemudi / berkendara",
+          example:
+            "It takes about two hours to <strong>drive</strong> from London to Birmingham.",
+        },
+        {
+          word: "driver",
+          pos: "n.",
+          id: "pengemudi / sopir",
+          example:
+            "The bus <strong>driver</strong> asked all passengers to show their tickets.",
+        },
+        {
+          word: "during",
+          pos: "prep.",
+          id: "selama / pada saat",
+          example:
+            "She fell asleep <strong>during</strong> the long train journey to Edinburgh.",
+        },
+        {
+          word: "DVD",
+          pos: "n.",
+          id: "DVD",
+          example:
+            "We watched an old <strong>DVD</strong> of our favourite film on Friday night.",
+        },
+        {
+          word: "each",
+          pos: "det./pron./adv.",
+          id: "masing-masing / tiap",
+          example:
+            "<strong>Each</strong> student received a certificate at the end of the course.",
+        },
+        {
+          word: "ear",
+          pos: "n.",
+          id: "telinga",
+          example:
+            "She wore a beautiful pearl earring in each <strong>ear</strong>.",
+        },
+        {
+          word: "early",
+          pos: "adj., adv.",
+          id: "awal / dini / lebih awal",
+          example:
+            "We had to wake up very <strong>early</strong> to catch the first train.",
+        },
+        {
+          word: "east",
+          pos: "n., adj., adv.",
+          id: "timur",
+          example:
+            "The sun rises in the <strong>east</strong> and sets in the west every day.",
+        },
+        {
+          word: "easy",
+          pos: "adj.",
+          id: "mudah / gampang",
+          example:
+            "The test was quite <strong>easy</strong> — most students finished in twenty minutes.",
+        },
+        {
+          word: "eat",
+          pos: "v.",
+          id: "makan",
+          example:
+            "We usually <strong>eat</strong> dinner together as a family at seven o'clock.",
+        },
+        {
+          word: "egg",
+          pos: "n.",
+          id: "telur",
+          example:
+            "I had scrambled <strong>egg</strong>s on toast for breakfast this morning.",
+        },
+        {
+          word: "eight",
+          pos: "number",
+          id: "delapan",
+          example:
+            "There are <strong>eight</strong> students in the advanced English class.",
+        },
+        {
+          word: "eighteen",
+          pos: "number",
+          id: "delapan belas",
+          example:
+            "In the UK, you must be <strong>eighteen</strong> to vote in an election.",
+        },
+        {
+          word: "eighty",
+          pos: "number",
+          id: "delapan puluh",
+          example:
+            "My grandmother turned <strong>eighty</strong> last year and is still very active.",
+        },
+        {
+          word: "elephant",
+          pos: "n.",
+          id: "gajah",
+          example:
+            "The <strong>elephant</strong> at the zoo is the largest animal I have ever seen.",
+        },
+        {
+          word: "eleven",
+          pos: "number",
+          id: "sebelas",
+          example:
+            "The football team needs <strong>eleven</strong> players on the pitch.",
+        },
+        {
+          word: "else",
+          pos: "adv.",
+          id: "lain / lainnya",
+          example:
+            "Would you like anything <strong>else</strong> with your coffee — a biscuit perhaps?",
+        },
+        {
+          word: "email",
+          pos: "n., v.",
+          id: "email / surel",
+          example:
+            "I sent her an <strong>email</strong> asking about the job application.",
+        },
+        {
+          word: "end",
+          pos: "n., v.",
+          id: "akhir / mengakhiri",
+          example:
+            "The film had a surprising <strong>end</strong> that nobody expected.",
+        },
+        {
+          word: "enjoy",
+          pos: "v.",
+          id: "menikmati",
+          example:
+            "I really <strong>enjoy</strong> walking in the countryside on sunny days.",
+        },
+        {
+          word: "enough",
+          pos: "det., pron., adv.",
+          id: "cukup",
+          example:
+            "Have you had <strong>enough</strong> to eat, or would you like some more?",
+        },
+        {
+          word: "euro",
+          pos: "n.",
+          id: "euro",
+          example:
+            "The meal cost twenty <strong>euros</strong> per person at the restaurant.",
+        },
+        {
+          word: "even",
+          pos: "adv.",
+          id: "bahkan",
+          example:
+            "<strong>Even</strong> the youngest child in the class could answer the question.",
+        },
+        {
+          word: "evening",
+          pos: "n.",
+          id: "malam / petang",
+          example:
+            "Let's go for a walk this <strong>evening</strong> before it gets dark.",
+        },
+        {
+          word: "event",
+          pos: "n.",
+          id: "acara / peristiwa",
+          example:
+            "The school sports day is the most popular <strong>event</strong> of the year.",
+        },
+        {
+          word: "ever",
+          pos: "adv.",
+          id: "pernah / selamanya",
+          example:
+            "Have you <strong>ever</strong> visited Japan? It is a wonderful country.",
+        },
+        {
+          word: "every",
+          pos: "det.",
+          id: "setiap",
+          example:
+            "I go for a run <strong>every</strong> morning before breakfast.",
+        },
+        {
+          word: "everybody",
+          pos: "pron.",
+          id: "semua orang",
+          example:
+            "<strong>Everybody</strong> in the office was excited about the new project.",
+        },
+        {
+          word: "everyone",
+          pos: "pron.",
+          id: "semua orang / setiap orang",
+          example:
+            "<strong>Everyone</strong> enjoyed the concert — it was a wonderful performance.",
+        },
+        {
+          word: "everything",
+          pos: "pron.",
+          id: "segalanya / semua hal",
+          example:
+            "I checked <strong>everything</strong> twice before leaving the house.",
+        },
+        {
+          word: "exam",
+          pos: "n.",
+          id: "ujian / ulangan",
+          example:
+            "She studied all week to prepare for her final <strong>exam</strong>.",
+        },
+        {
+          word: "example",
+          pos: "n.",
+          id: "contoh",
+          example:
+            "Can you give me an <strong>example</strong> of how to use this word in a sentence?",
+        },
+        {
+          word: "excited",
+          pos: "adj.",
+          id: "bersemangat / antusias",
+          example:
+            "The children were very <strong>excited</strong> about their trip to the zoo.",
+        },
+        {
+          word: "exciting",
+          pos: "adj.",
+          id: "mengasyikkan / menarik",
+          example:
+            "The football match was so <strong>exciting</strong> that we forgot the time.",
+        },
+        {
+          word: "exercise",
+          pos: "n., v.",
+          id: "latihan / berolahraga",
+          example:
+            "Regular <strong>exercise</strong> is essential for maintaining good health.",
+        },
+        {
+          word: "expensive",
+          pos: "adj.",
+          id: "mahal",
+          example:
+            "The restaurant was very <strong>expensive</strong> but the food was excellent.",
+        },
+        {
+          word: "explain",
+          pos: "v.",
+          id: "menjelaskan",
+          example:
+            "Could you <strong>explain</strong> how this machine works, please?",
+        },
+        {
+          word: "extra",
+          pos: "adj.",
+          id: "ekstra / tambahan",
+          example:
+            "Would you like <strong>extra</strong> cheese on your pizza?",
+        },
+        {
+          word: "eye",
+          pos: "n.",
+          id: "mata",
+          example:
+            "She has beautiful green <strong>eyes</strong> that everyone notices.",
+        },
+        {
+          word: "face",
+          pos: "n.",
+          id: "wajah / muka",
+          example:
+            "She washed her <strong>face</strong> and applied some moisturiser before bed.",
+        },
+        {
+          word: "fact",
+          pos: "n.",
+          id: "fakta",
+          example:
+            "It is a <strong>fact</strong> that exercise improves both mental and physical health.",
+        },
+        {
+          word: "fall",
+          pos: "v.",
+          id: "jatuh / gugur",
+          example:
+            "Be careful not to <strong>fall</strong> — the path is very slippery after the rain.",
+        },
+        {
+          word: "false",
+          pos: "adj.",
+          id: "salah / palsu",
+          example:
+            "The rumour about the school closing was completely <strong>false</strong>.",
+        },
+        {
+          word: "family",
+          pos: "n., adj.",
+          id: "keluarga",
+          example:
+            "My <strong>family</strong> and I go on holiday together every summer.",
+        },
+        {
+          word: "famous",
+          pos: "adj.",
+          id: "terkenal",
+          example:
+            "Paris is <strong>famous</strong> for its beautiful art and delicious cuisine.",
+        },
+        {
+          word: "fantastic",
+          pos: "adj.",
+          id: "fantastis / luar biasa",
+          example:
+            "The concert last night was absolutely <strong>fantastic</strong> — I loved every moment.",
+        },
+        {
+          word: "far",
+          pos: "adv.",
+          id: "jauh",
+          example:
+            "How <strong>far</strong> is it from here to the city centre?",
+        },
+        {
+          word: "farm",
+          pos: "n.",
+          id: "pertanian / ladang",
+          example:
+            "We visited a <strong>farm</strong> and saw cows, sheep, and chickens.",
+        },
+        {
+          word: "farmer",
+          pos: "n.",
+          id: "petani",
+          example:
+            "The <strong>farmer</strong> woke up at five in the morning to feed the animals.",
+        },
+        {
+          word: "fast",
+          pos: "adj., adv.",
+          id: "cepat",
+          example:
+            "She drives too <strong>fast</strong> — it makes her passengers nervous.",
+        },
+        {
+          word: "fat",
+          pos: "adj.",
+          id: "gemuk",
+          example:
+            "The cat was very <strong>fat</strong> because it ate too much and rarely exercised.",
+        },
+        {
+          word: "father",
+          pos: "n.",
+          id: "ayah / bapak",
+          example:
+            "Her <strong>father</strong> taught her how to ride a bicycle when she was five.",
+        },
+        {
+          word: "favourite",
+          pos: "adj., n.",
+          id: "favorit / kesayangan",
+          example: "What is your <strong>favourite</strong> film of all time?",
+        },
+        {
+          word: "February",
+          pos: "n.",
+          id: "Februari",
+          example:
+            "Valentine's Day is celebrated on the 14th of <strong>February</strong>.",
+        },
+        {
+          word: "feel",
+          pos: "v.",
+          id: "merasa / merasakan",
+          example:
+            "I <strong>feel</strong> much better today after a good night's sleep.",
+        },
+        {
+          word: "feeling",
+          pos: "n.",
+          id: "perasaan",
+          example:
+            "I had a strange <strong>feeling</strong> that something was wrong.",
+        },
+        {
+          word: "festival",
+          pos: "n.",
+          id: "festival / perayaan",
+          example:
+            "We went to a music <strong>festival</strong> in the countryside last summer.",
+        },
+        {
+          word: "few",
+          pos: "det./adj., pron.",
+          id: "sedikit / beberapa",
+          example:
+            "Only a <strong>few</strong> students passed the very difficult entrance exam.",
+        },
+        {
+          word: "fifteen",
+          pos: "number",
+          id: "lima belas",
+          example:
+            "The journey takes <strong>fifteen</strong> minutes by bus from the city centre.",
+        },
+        {
+          word: "fifth",
+          pos: "number",
+          id: "kelima",
+          example:
+            "She finished in <strong>fifth</strong> place in the swimming competition.",
+        },
+        {
+          word: "fifty",
+          pos: "number",
+          id: "lima puluh",
+          example:
+            "There were over <strong>fifty</strong> people at the birthday celebration.",
+        },
+        {
+          word: "fill",
+          pos: "v.",
+          id: "mengisi / memenuhi",
+          example:
+            "Please <strong>fill</strong> in the form with your name and date of birth.",
+        },
+        {
+          word: "film",
+          pos: "n.",
+          id: "film",
+          example:
+            "The new action <strong>film</strong> has been getting excellent reviews this week.",
+        },
+        {
+          word: "final",
+          pos: "adj.",
+          id: "akhir / final",
+          example:
+            "This is the <strong>final</strong> chance to buy tickets for the concert.",
+        },
+        {
+          word: "find",
+          pos: "v.",
+          id: "menemukan",
+          example:
+            "I could not <strong>find</strong> my keys anywhere — I was so worried.",
+        },
+        {
+          word: "fine",
+          pos: "adj.",
+          id: "baik-baik saja / bagus",
+          example:
+            "The weather looks <strong>fine</strong> today — perfect for a picnic in the park.",
+        },
+        {
+          word: "finish",
+          pos: "v.",
+          id: "selesai / menyelesaikan",
+          example:
+            "I need to <strong>finish</strong> this report before the end of the day.",
+        },
+        {
+          word: "fire",
+          pos: "n.",
+          id: "api / kebakaran",
+          example:
+            "They sat around the <strong>fire</strong> and told stories late into the night.",
+        },
+        {
+          word: "first",
+          pos: "det./number, adv.",
+          id: "pertama",
+          example:
+            "She was the <strong>first</strong> person to arrive at the meeting this morning.",
+        },
+        {
+          word: "fish",
+          pos: "n.",
+          id: "ikan",
+          example:
+            "We had grilled <strong>fish</strong> with salad for dinner last night.",
+        },
+        {
+          word: "five",
+          pos: "number",
+          id: "lima",
+          example:
+            "I need to be at the station in <strong>five</strong> minutes — I must hurry.",
+        },
+        {
+          word: "flat",
+          pos: "n.",
+          id: "apartemen / flat",
+          example:
+            "She rents a small <strong>flat</strong> on the third floor of the building.",
+        },
+        {
+          word: "flight",
+          pos: "n.",
+          id: "penerbangan",
+          example:
+            "Our <strong>flight</strong> to Rome departs at six o'clock in the morning.",
+        },
+        {
+          word: "floor",
+          pos: "n.",
+          id: "lantai",
+          example:
+            "The book fell off the shelf and landed on the <strong>floor</strong>.",
+        },
+        {
+          word: "flower",
+          pos: "n.",
+          id: "bunga",
+          example:
+            "He bought a bunch of <strong>flowers</strong> for his mother on her birthday.",
+        },
+        {
+          word: "fly",
+          pos: "v.",
+          id: "terbang / naik pesawat",
+          example:
+            "It takes about eleven hours to <strong>fly</strong> from London to Tokyo.",
+        },
+        {
+          word: "follow",
+          pos: "v.",
+          id: "mengikuti",
+          example:
+            "Please <strong>follow</strong> the instructions on the screen step by step.",
+        },
+        {
+          word: "food",
+          pos: "n.",
+          id: "makanan",
+          example:
+            "Italian <strong>food</strong> is popular all over the world for its rich flavours.",
+        },
+        {
+          word: "foot",
+          pos: "n.",
+          id: "kaki (bagian bawah)",
+          example:
+            "She hurt her <strong>foot</strong> while playing tennis last Saturday.",
+        },
+        {
+          word: "football",
+          pos: "n.",
+          id: "sepak bola",
+          example:
+            "He plays <strong>football</strong> for his school team every Wednesday after school.",
+        },
+        {
+          word: "for",
+          pos: "prep.",
+          id: "untuk / selama",
+          example: "This gift is <strong>for</strong> you — happy birthday!",
+        },
+        {
+          word: "forget",
+          pos: "v.",
+          id: "melupakan / lupa",
+          example:
+            "Don't <strong>forget</strong> to turn off the lights when you leave the house.",
+        },
+        {
+          word: "form",
+          pos: "n., v.",
+          id: "bentuk / formulir / membentuk",
+          example:
+            "Please complete the online <strong>form</strong> to register for the course.",
+        },
+        {
+          word: "forty",
+          pos: "number",
+          id: "empat puluh",
+          example:
+            "There were <strong>forty</strong> guests invited to the wedding reception.",
+        },
+        {
+          word: "four",
+          pos: "number",
+          id: "empat",
+          example:
+            "There are <strong>four</strong> seasons in a year: spring, summer, autumn, and winter.",
+        },
+        {
+          word: "fourteen",
+          pos: "number",
+          id: "empat belas",
+          example:
+            "My sister is <strong>fourteen</strong> years old and loves playing volleyball.",
+        },
+        {
+          word: "fourth",
+          pos: "number",
+          id: "keempat",
+          example:
+            "She was the <strong>fourth</strong> person in the queue when the shop opened.",
+        },
+        {
+          word: "free",
+          pos: "adj.",
+          id: "gratis / bebas",
+          example:
+            "Admission to the museum is <strong>free</strong> on the first Sunday of every month.",
+        },
+        {
+          word: "Friday",
+          pos: "n.",
+          id: "Jumat",
+          example:
+            "We usually go out for dinner together every <strong>Friday</strong> evening.",
+        },
+        {
+          word: "friend",
+          pos: "n.",
+          id: "teman / sahabat",
+          example:
+            "She has been my best <strong>friend</strong> since we were in primary school.",
+        },
+        {
+          word: "friendly",
+          pos: "adj.",
+          id: "ramah / bersahabat",
+          example:
+            "The people in this town are very <strong>friendly</strong> and always ready to help.",
+        },
+        {
+          word: "from",
+          pos: "prep.",
+          id: "dari",
+          example:
+            "She moved to London <strong>from</strong> a small village in the countryside.",
+        },
+        {
+          word: "front",
+          pos: "n., adj.",
+          id: "depan / bagian depan",
+          example:
+            "The car was parked right in <strong>front</strong> of the main entrance.",
+        },
+        {
+          word: "fruit",
+          pos: "n.",
+          id: "buah / buah-buahan",
+          example:
+            "I try to eat at least two portions of <strong>fruit</strong> every day.",
+        },
+        {
+          word: "full",
+          pos: "adj.",
+          id: "penuh / kenyang",
+          example:
+            "Thank you, I am really <strong>full</strong> — the meal was absolutely delicious.",
+        },
+        {
+          word: "fun",
+          pos: "n.",
+          id: "kesenangan / menyenangkan",
+          example:
+            "Learning to cook can be a lot of <strong>fun</strong> if you enjoy being creative.",
+        },
+        {
+          word: "funny",
+          pos: "adj.",
+          id: "lucu / menggelikan",
+          example:
+            "He told a very <strong>funny</strong> joke that made everyone in the room laugh.",
+        },
+        {
+          word: "future",
+          pos: "n.",
+          id: "masa depan",
+          example:
+            "Nobody knows what the <strong>future</strong> holds — we can only prepare for it.",
+        },
+        {
+          word: "game",
+          pos: "n.",
+          id: "permainan / game",
+          example:
+            "Let's play a board <strong>game</strong> this evening instead of watching television.",
+        },
+        {
+          word: "garden",
+          pos: "n.",
+          id: "taman / kebun",
+          example:
+            "She spends every weekend working in her <strong>garden</strong> growing vegetables.",
+        },
+        {
+          word: "geography",
+          pos: "n.",
+          id: "geografi",
+          example:
+            "We studied the <strong>geography</strong> of South America in our lesson today.",
+        },
+        {
+          word: "get",
+          pos: "v.",
+          id: "mendapat / mengambil / menjadi",
+          example:
+            "I need to <strong>get</strong> some milk from the shop on my way home.",
+        },
+        {
+          word: "girl",
+          pos: "n.",
+          id: "anak perempuan / gadis",
+          example:
+            "The little <strong>girl</strong> with the red hat is my neighbour's daughter.",
+        },
+        {
+          word: "girlfriend",
+          pos: "n.",
+          id: "pacar (perempuan)",
+          example:
+            "He introduced his <strong>girlfriend</strong> to all of his friends at the party.",
+        },
+        {
+          word: "give",
+          pos: "v.",
+          id: "memberi / memberikan",
+          example:
+            "Can you <strong>give</strong> me your phone number so I can call you later?",
+        },
+        {
+          word: "glass",
+          pos: "n.",
+          id: "gelas / kaca",
+          example:
+            "She poured herself a cold <strong>glass</strong> of water from the fridge.",
+        },
+        {
+          word: "go",
+          pos: "v.",
+          id: "pergi",
+          example:
+            "Let's <strong>go</strong> to the beach this weekend — the weather looks perfect.",
+        },
+        {
+          word: "good",
+          pos: "adj.",
+          id: "baik / bagus",
+          example:
+            "That was a <strong>good</strong> film — I really enjoyed the story.",
+        },
+        {
+          word: "goodbye",
+          pos: "exclam./n.",
+          id: "selamat tinggal / sampai jumpa",
+          example:
+            "She waved <strong>goodbye</strong> to her friends as the train pulled away.",
+        },
+        {
+          word: "grandfather",
+          pos: "n.",
+          id: "kakek",
+          example:
+            "My <strong>grandfather</strong> used to tell me wonderful stories before bedtime.",
+        },
+        {
+          word: "grandmother",
+          pos: "n.",
+          id: "nenek",
+          example:
+            "My <strong>grandmother</strong> makes the most delicious apple pie every Sunday.",
+        },
+        {
+          word: "grandparent",
+          pos: "n.",
+          id: "kakek/nenek",
+          example:
+            "My <strong>grandparent</strong>s live in the countryside and love gardening.",
+        },
+        {
+          word: "great",
+          pos: "adj.",
+          id: "hebat / luar biasa",
+          example:
+            "It was a <strong>great</strong> idea to have the meeting in the park — everyone loved it.",
+        },
+        {
+          word: "green",
+          pos: "adj., n.",
+          id: "hijau",
+          example:
+            "The hills were covered in <strong>green</strong> grass after all the spring rain.",
+        },
+        {
+          word: "grey",
+          pos: "adj., n.",
+          id: "abu-abu",
+          example:
+            "The sky turned dark <strong>grey</strong> before the thunderstorm began.",
+        },
+        {
+          word: "group",
+          pos: "n.",
+          id: "kelompok / grup",
+          example:
+            "We worked in a <strong>group</strong> of four to complete the science project.",
+        },
+        {
+          word: "grow",
+          pos: "v.",
+          id: "tumbuh / menanam",
+          example:
+            "She <strong>grows</strong> tomatoes and herbs in her garden every summer.",
+        },
+        {
+          word: "guess",
+          pos: "v., n.",
+          id: "menebak / tebakan",
+          example:
+            "Can you <strong>guess</strong> how many sweets are in the jar? I say thirty!",
+        },
+        {
+          word: "guitar",
+          pos: "n.",
+          id: "gitar",
+          example:
+            "He plays the <strong>guitar</strong> in a band that performs at local venues.",
+        },
+        {
+          word: "gym",
+          pos: "n.",
+          id: "gym / pusat kebugaran",
+          example:
+            "She goes to the <strong>gym</strong> three times a week to stay in shape.",
+        },
+        {
+          word: "hair",
+          pos: "n.",
+          id: "rambut",
+          example:
+            "She has long, curly <strong>hair</strong> that reaches down to her shoulders.",
+        },
+        {
+          word: "half",
+          pos: "n., det./pron.",
+          id: "setengah / separuh",
+          example:
+            "I have been waiting here for <strong>half</strong> an hour — where is she?",
+        },
+        {
+          word: "hand",
+          pos: "n.",
+          id: "tangan",
+          example:
+            "She raised her <strong>hand</strong> to ask the teacher a question.",
+        },
+        {
+          word: "happen",
+          pos: "v.",
+          id: "terjadi",
+          example:
+            "Nobody knew what would <strong>happen</strong> next during the exciting match.",
+        },
+        {
+          word: "happy",
+          pos: "adj.",
+          id: "bahagia / senang",
+          example:
+            "She was so <strong>happy</strong> when she heard that she had passed the exam.",
+        },
+        {
+          word: "hard",
+          pos: "adj., adv.",
+          id: "keras / sulit / dengan keras",
+          example:
+            "She worked very <strong>hard</strong> all year and finally got a promotion.",
+        },
+        {
+          word: "hat",
+          pos: "n.",
+          id: "topi",
+          example:
+            "She wore a wide-brimmed <strong>hat</strong> to protect herself from the sun.",
+        },
+        {
+          word: "hate",
+          pos: "v.",
+          id: "membenci / tidak suka",
+          example:
+            "I <strong>hate</strong> getting up early — I am not a morning person.",
+        },
+        {
+          word: "have",
+          pos: "v.",
+          id: "memiliki / mempunyai",
+          example:
+            "We <strong>have</strong> a meeting every Monday morning at nine o'clock.",
+        },
+        {
+          word: "have to",
+          pos: "modal v.",
+          id: "harus",
+          example:
+            "You <strong>have to</strong> finish your homework before you can watch television.",
+        },
+        {
+          word: "he",
+          pos: "pron.",
+          id: "dia (laki-laki)",
+          example:
+            "<strong>He</strong> is the best player on the team — everyone agrees.",
+        },
+        {
+          word: "head",
+          pos: "n.",
+          id: "kepala",
+          example:
+            "She shook her <strong>head</strong> to show that she disagreed with the idea.",
+        },
+        {
+          word: "health",
+          pos: "n.",
+          id: "kesehatan",
+          example:
+            "Good nutrition and regular exercise are essential for good <strong>health</strong>.",
+        },
+        {
+          word: "healthy",
+          pos: "adj.",
+          id: "sehat",
+          example:
+            "Eating fruit and vegetables every day helps you stay <strong>healthy</strong>.",
+        },
+        {
+          word: "hear",
+          pos: "v.",
+          id: "mendengar",
+          example:
+            "Did you <strong>hear</strong> that strange noise coming from upstairs last night?",
+        },
+        {
+          word: "hello",
+          pos: "exclam./n.",
+          id: "halo / hai",
+          example:
+            '"<strong>Hello</strong>! My name is Sarah — it is lovely to meet you."',
+        },
+        {
+          word: "help",
+          pos: "v., n.",
+          id: "membantu / bantuan",
+          example:
+            "Could you <strong>help</strong> me carry these heavy bags to the car, please?",
+        },
+        {
+          word: "her",
+          pos: "pron., det.",
+          id: "dia (perempuan) / miliknya",
+          example:
+            "I called <strong>her</strong> this morning but she did not answer the phone.",
+        },
+        {
+          word: "here",
+          pos: "adv.",
+          id: "di sini / ke sini",
+          example:
+            "Please sit <strong>here</strong> next to me — I saved you a seat.",
+        },
+        {
+          word: "hey",
+          pos: "exclam.",
+          id: "hei / hai",
+          example:
+            '"<strong>Hey</strong>! Long time no see — how have you been?"',
+        },
+        {
+          word: "hi",
+          pos: "exclam.",
+          id: "hai / halo",
+          example:
+            '"<strong>Hi</strong>! Come in and make yourself at home," he said with a smile.',
+        },
+        {
+          word: "high",
+          pos: "adj.",
+          id: "tinggi",
+          example:
+            "The mountain is so <strong>high</strong> that its peak is covered with snow all year.",
+        },
+        {
+          word: "him",
+          pos: "pron.",
+          id: "dia (laki-laki, objek)",
+          example:
+            "I called <strong>him</strong> but he was too busy to talk at that moment.",
+        },
+        {
+          word: "his",
+          pos: "det.",
+          id: "miliknya (laki-laki)",
+          example:
+            "He lost <strong>his</strong> wallet on the way to the train station.",
+        },
+        {
+          word: "history",
+          pos: "n.",
+          id: "sejarah",
+          example:
+            "She has always been passionate about <strong>history</strong>, especially ancient civilisations.",
+        },
+        {
+          word: "hobby",
+          pos: "n.",
+          id: "hobi",
+          example:
+            "My favourite <strong>hobby</strong> is photography — I love capturing special moments.",
+        },
+        {
+          word: "holiday",
+          pos: "n.",
+          id: "liburan / hari libur",
+          example:
+            "We went on <strong>holiday</strong> to Spain and had a wonderful time.",
+        },
+        {
+          word: "home",
+          pos: "n., adv.",
+          id: "rumah / pulang",
+          example:
+            "There is nothing better than coming <strong>home</strong> after a long day.",
+        },
+        {
+          word: "homework",
+          pos: "n.",
+          id: "pekerjaan rumah / PR",
+          example:
+            "She always does her <strong>homework</strong> as soon as she gets home from school.",
+        },
+        {
+          word: "hope",
+          pos: "v.",
+          id: "berharap",
+          example:
+            "I <strong>hope</strong> the weather will be nice for our picnic on Saturday.",
+        },
+        {
+          word: "horse",
+          pos: "n.",
+          id: "kuda",
+          example:
+            "She has been riding <strong>horse</strong>s since she was eight years old.",
+        },
+        {
+          word: "hospital",
+          pos: "n.",
+          id: "rumah sakit",
+          example:
+            "He was taken to the <strong>hospital</strong> after the accident on the motorway.",
+        },
+        {
+          word: "hot",
+          pos: "adj.",
+          id: "panas",
+          example:
+            "It was so <strong>hot</strong> that everyone stayed indoors with the air conditioning on.",
+        },
+        {
+          word: "hotel",
+          pos: "n.",
+          id: "hotel",
+          example:
+            "We stayed in a beautiful <strong>hotel</strong> right on the seafront during our holiday.",
+        },
+        {
+          word: "hour",
+          pos: "n.",
+          id: "jam (waktu)",
+          example:
+            "The meeting lasted for three <strong>hours</strong> — I was exhausted by the end.",
+        },
+        {
+          word: "house",
+          pos: "n.",
+          id: "rumah",
+          example:
+            "They bought a lovely <strong>house</strong> in the countryside with a big garden.",
+        },
+        {
+          word: "how",
+          pos: "adv.",
+          id: "bagaimana",
+          example: "<strong>How</strong> do you say 'thank you' in Japanese?",
+        },
+        {
+          word: "however",
+          pos: "adv.",
+          id: "namun / bagaimanapun",
+          example:
+            "The film was long. <strong>However</strong>, I really enjoyed every minute of it.",
+        },
+        {
+          word: "hundred",
+          pos: "number",
+          id: "seratus",
+          example:
+            "Over a <strong>hundred</strong> people attended the charity dinner last night.",
+        },
+        {
+          word: "hungry",
+          pos: "adj.",
+          id: "lapar",
+          example:
+            "I am so <strong>hungry</strong> — I have not eaten anything since breakfast.",
+        },
+        {
+          word: "husband",
+          pos: "n.",
+          id: "suami",
+          example:
+            "Her <strong>husband</strong> cooked a lovely dinner for their wedding anniversary.",
+        },
+        {
+          word: "I",
+          pos: "pron.",
+          id: "saya / aku",
+          example:
+            "<strong>I</strong> would love to travel around the world one day.",
+        },
+        {
+          word: "ice",
+          pos: "n.",
+          id: "es",
+          example:
+            "The lake was covered with a thick layer of <strong>ice</strong> in winter.",
+        },
+        {
+          word: "ice cream",
+          pos: "n.",
+          id: "es krim",
+          example:
+            "On hot days, there is nothing better than a scoop of <strong>ice cream</strong>.",
+        },
+        {
+          word: "idea",
+          pos: "n.",
+          id: "ide / gagasan",
+          example:
+            "She had an excellent <strong>idea</strong> for how to raise money for the charity.",
+        },
+        {
+          word: "if",
+          pos: "conj.",
+          id: "jika / kalau",
+          example:
+            "<strong>If</strong> you study hard, you will definitely pass the exam.",
+        },
+        {
+          word: "imagine",
+          pos: "v.",
+          id: "membayangkan",
+          example:
+            "Can you <strong>imagine</strong> living on a small island with no electricity?",
+        },
+        {
+          word: "important",
+          pos: "adj.",
+          id: "penting",
+          example:
+            "It is very <strong>important</strong> to arrive on time for a job interview.",
+        },
+        {
+          word: "improve",
+          pos: "v.",
+          id: "meningkatkan / memperbaiki",
+          example:
+            "She practised every day to <strong>improve</strong> her English speaking skills.",
+        },
+        {
+          word: "in",
+          pos: "prep., adv.",
+          id: "di / dalam / ke dalam",
+          example:
+            "The keys are <strong>in</strong> the top drawer of the desk — have a look.",
+        },
+        {
+          word: "include",
+          pos: "v.",
+          id: "termasuk / mencakup",
+          example:
+            "The price of the hotel <strong>includes</strong> breakfast and free Wi-Fi.",
+        },
+        {
+          word: "information",
+          pos: "n.",
+          id: "informasi",
+          example:
+            "For more <strong>information</strong>, please visit our website or call the office.",
+        },
+        {
+          word: "interest",
+          pos: "n., v.",
+          id: "minat / ketertarikan",
+          example:
+            "She developed an <strong>interest</strong> in photography when she was a teenager.",
+        },
+        {
+          word: "interested",
+          pos: "adj.",
+          id: "tertarik",
+          example:
+            "He was very <strong>interested</strong> in the history of the ancient castle.",
+        },
+        {
+          word: "interesting",
+          pos: "adj.",
+          id: "menarik",
+          example:
+            "The documentary about ocean life was extremely <strong>interesting</strong>.",
+        },
+        {
+          word: "internet",
+          pos: "n.",
+          id: "internet",
+          example:
+            "I use the <strong>internet</strong> every day for work and to stay in touch with friends.",
+        },
+        {
+          word: "interview",
+          pos: "n., v.",
+          id: "wawancara",
+          example:
+            "She was very nervous before her job <strong>interview</strong> at the bank.",
+        },
+        {
+          word: "into",
+          pos: "prep.",
+          id: "ke dalam",
+          example:
+            "She walked <strong>into</strong> the room and everyone turned to look at her.",
+        },
+        {
+          word: "introduce",
+          pos: "v.",
+          id: "memperkenalkan",
+          example:
+            "Let me <strong>introduce</strong> you to my colleague, James — he is very helpful.",
+        },
+        {
+          word: "island",
+          pos: "n.",
+          id: "pulau",
+          example:
+            "We spent a week on a small tropical <strong>island</strong> with white sandy beaches.",
+        },
+        {
+          word: "it",
+          pos: "pron.",
+          id: "itu / ini (benda/hewan)",
+          example:
+            "I found the book — <strong>it</strong> was under the sofa the whole time.",
+        },
+        {
+          word: "its",
+          pos: "det.",
+          id: "miliknya (benda/hewan)",
+          example:
+            "The cat finished <strong>its</strong> food and then curled up on the sofa to sleep.",
+        },
+        {
+          word: "jacket",
+          pos: "n.",
+          id: "jaket",
+          example:
+            "She put on her warm <strong>jacket</strong> before going out into the cold night.",
+        },
+        {
+          word: "January",
+          pos: "n.",
+          id: "Januari",
+          example:
+            "The new school term always begins in <strong>January</strong> after the winter break.",
+        },
+        {
+          word: "jeans",
+          pos: "n.",
+          id: "jeans / celana jeans",
+          example:
+            "She wore blue <strong>jeans</strong> and a white shirt to the casual dinner.",
+        },
+        {
+          word: "job",
+          pos: "n.",
+          id: "pekerjaan",
+          example:
+            "He is looking for a new <strong>job</strong> after leaving the company last month.",
+        },
+        {
+          word: "join",
+          pos: "v.",
+          id: "bergabung / ikut",
+          example:
+            "Would you like to <strong>join</strong> us for dinner this Friday evening?",
+        },
+        {
+          word: "journey",
+          pos: "n.",
+          id: "perjalanan",
+          example:
+            "The <strong>journey</strong> from London to Edinburgh by train takes about four hours.",
+        },
+        {
+          word: "juice",
+          pos: "n.",
+          id: "jus / sari buah",
+          example:
+            "She drinks a glass of fresh orange <strong>juice</strong> every morning for breakfast.",
+        },
+        {
+          word: "July",
+          pos: "n.",
+          id: "Juli",
+          example:
+            "We usually go on holiday in <strong>July</strong> when the schools break up for summer.",
+        },
+        {
+          word: "June",
+          pos: "n.",
+          id: "Juni",
+          example:
+            "The garden festival takes place every year at the end of <strong>June</strong>.",
+        },
+        {
+          word: "just",
+          pos: "adv.",
+          id: "baru saja / hanya",
+          example:
+            "I have <strong>just</strong> arrived — I got here five minutes ago.",
+        },
+        {
+          word: "keep",
+          pos: "v.",
+          id: "menyimpan / menjaga / terus",
+          example:
+            "Please <strong>keep</strong> all your receipts in case you need to return the item.",
+        },
+        {
+          word: "key",
+          pos: "n., adj.",
+          id: "kunci / utama",
+          example:
+            "I could not find the front door <strong>key</strong> — I had left it at the office.",
+        },
+        {
+          word: "kilometre",
+          pos: "n.",
+          id: "kilometer",
+          example:
+            "The nearest supermarket is about two <strong>kilometres</strong> away from our house.",
+        },
+        {
+          word: "kind",
+          pos: "n.",
+          id: "jenis / macam",
+          example:
+            "What <strong>kind</strong> of music do you enjoy listening to?",
+        },
+        {
+          word: "kitchen",
+          pos: "n.",
+          id: "dapur",
+          example:
+            "She spent all morning in the <strong>kitchen</strong> preparing food for the party.",
+        },
+        {
+          word: "know",
+          pos: "v.",
+          id: "tahu / mengetahui / mengenal",
+          example:
+            "Do you <strong>know</strong> how to get to the train station from here?",
+        },
+        {
+          word: "land",
+          pos: "n.",
+          id: "tanah / daratan",
+          example:
+            "The farmer owns a large piece of <strong>land</strong> just outside the village.",
+        },
+        {
+          word: "language",
+          pos: "n.",
+          id: "bahasa",
+          example:
+            "Learning a new <strong>language</strong> opens many doors and opportunities in life.",
+        },
+        {
+          word: "large",
+          pos: "adj.",
+          id: "besar / luas",
+          example:
+            "A <strong>large</strong> crowd gathered in the square to watch the fireworks display.",
+        },
+        {
+          word: "last1",
+          pos: "det.",
+          id: "terakhir / lalu",
+          example:
+            "I saw her for the <strong>last</strong> time at a school reunion two years ago.",
+        },
+        {
+          word: "late",
+          pos: "adj., adv.",
+          id: "terlambat / larut",
+          example:
+            "I was <strong>late</strong> for work this morning because the bus broke down.",
+        },
+        {
+          word: "later",
+          pos: "adv.",
+          id: "nanti / kemudian",
+          example:
+            "I am busy right now — can I call you back <strong>later</strong> this afternoon?",
+        },
+        {
+          word: "laugh",
+          pos: "v., n.",
+          id: "tertawa / tawa",
+          example:
+            "She began to <strong>laugh</strong> when she heard the joke — she could not stop.",
+        },
+        {
+          word: "learn",
+          pos: "v.",
+          id: "belajar / mempelajari",
+          example:
+            "She decided to <strong>learn</strong> how to play the piano when she retired.",
+        },
+        {
+          word: "leave",
+          pos: "v.",
+          id: "pergi / meninggalkan / berangkat",
+          example:
+            "What time do you usually <strong>leave</strong> for work in the morning?",
+        },
+        {
+          word: "left",
+          pos: "adj., adv., n.",
+          id: "kiri",
+          example:
+            "Turn <strong>left</strong> at the traffic lights and then go straight ahead.",
+        },
+        {
+          word: "leg",
+          pos: "n.",
+          id: "kaki (tungkai)",
+          example:
+            "He hurt his <strong>leg</strong> during the football match and had to leave the field.",
+        },
+        {
+          word: "lesson",
+          pos: "n.",
+          id: "pelajaran / les",
+          example:
+            "She takes a piano <strong>lesson</strong> every Tuesday afternoon after school.",
+        },
+        {
+          word: "let",
+          pos: "v.",
+          id: "membiarkan / mengizinkan",
+          example:
+            "Her parents <strong>let</strong> her stay up late because it was the weekend.",
+        },
+        {
+          word: "letter",
+          pos: "n.",
+          id: "surat / huruf",
+          example:
+            "She received a <strong>letter</strong> from her old friend who lives in Australia.",
+        },
+        {
+          word: "library",
+          pos: "n.",
+          id: "perpustakaan",
+          example:
+            "I borrowed three books from the school <strong>library</strong> this week.",
+        },
+        {
+          word: "lie1",
+          pos: "v.",
+          id: "berbaring",
+          example:
+            "She decided to <strong>lie</strong> down for a while as she had a bad headache.",
+        },
+        {
+          word: "life",
+          pos: "n.",
+          id: "kehidupan / hidup",
+          example:
+            "Moving abroad was the best decision of her <strong>life</strong>.",
+        },
+        {
+          word: "light",
+          pos: "n., adj.",
+          id: "cahaya / lampu / terang",
+          example:
+            "Could you turn on the <strong>light</strong>? I can hardly see anything in here.",
+        },
+        {
+          word: "like",
+          pos: "prep.",
+          id: "seperti",
+          example:
+            "She sings <strong>like</strong> a professional — everybody was amazed.",
+        },
+        {
+          word: "like",
+          pos: "v.",
+          id: "menyukai / suka",
+          example:
+            "Do you <strong>like</strong> spicy food, or do you prefer something milder?",
+        },
+        {
+          word: "line",
+          pos: "n.",
+          id: "garis / baris / antrian",
+          example:
+            "Please write your name on the dotted <strong>line</strong> at the bottom of the form.",
+        },
+        {
+          word: "lion",
+          pos: "n.",
+          id: "singa",
+          example:
+            "A <strong>lion</strong> is often called the king of the jungle for its power and strength.",
+        },
+        {
+          word: "list",
+          pos: "n., v.",
+          id: "daftar",
+          example:
+            "She wrote a shopping <strong>list</strong> before going to the supermarket.",
+        },
+        {
+          word: "listen",
+          pos: "v.",
+          id: "mendengarkan",
+          example:
+            "Please <strong>listen</strong> carefully — I am only going to say this once.",
+        },
+        {
+          word: "little",
+          pos: "adj., det./pron.",
+          id: "kecil / sedikit",
+          example:
+            "There is only a <strong>little</strong> milk left — we need to buy some more.",
+        },
+        {
+          word: "live1",
+          pos: "v.",
+          id: "tinggal / hidup",
+          example:
+            "She has <strong>lived</strong> in Paris for five years and loves every moment of it.",
+        },
+        {
+          word: "local",
+          pos: "adj.",
+          id: "lokal / setempat",
+          example:
+            "We prefer to shop at the <strong>local</strong> market rather than the supermarket.",
+        },
+        {
+          word: "long1",
+          pos: "adj., adv.",
+          id: "panjang / lama",
+          example:
+            "She has <strong>long</strong> blonde hair that she always ties back into a ponytail.",
+        },
+        {
+          word: "look",
+          pos: "v.",
+          id: "melihat / tampak",
+          example:
+            "<strong>Look</strong> at those beautiful clouds — it looks like it might snow today.",
+        },
+        {
+          word: "lose",
+          pos: "v.",
+          id: "kalah / kehilangan",
+          example:
+            "I always <strong>lose</strong> my keys — I really need to be more organised.",
+        },
+        {
+          word: "lot",
+          pos: "pron., det., adv.",
+          id: "banyak",
+          example:
+            "There was a <strong>lot</strong> of traffic on the motorway this morning.",
+        },
+        {
+          word: "love",
+          pos: "n., v.",
+          id: "cinta / mencintai / menyukai",
+          example:
+            "She <strong>loves</strong> travelling and has visited over thirty countries.",
+        },
+        {
+          word: "lunch",
+          pos: "n.",
+          id: "makan siang",
+          example:
+            "We met for <strong>lunch</strong> at our favourite Italian restaurant in town.",
+        },
+        {
+          word: "machine",
+          pos: "n.",
+          id: "mesin",
+          example:
+            "The washing <strong>machine</strong> broke down so we had to wash everything by hand.",
+        },
+        {
+          word: "magazine",
+          pos: "n.",
+          id: "majalah",
+          example:
+            "She reads a fashion <strong>magazine</strong> every month to keep up with the latest trends.",
+        },
+        {
+          word: "main",
+          pos: "adj.",
+          id: "utama",
+          example:
+            "The <strong>main</strong> entrance to the museum is on the north side of the building.",
+        },
+        {
+          word: "make",
+          pos: "v.",
+          id: "membuat / menyebabkan",
+          example:
+            "She <strong>makes</strong> her own bread from scratch every Sunday morning.",
+        },
+        {
+          word: "man",
+          pos: "n.",
+          id: "pria / laki-laki",
+          example:
+            "A tall <strong>man</strong> in a blue jacket was standing at the door.",
+        },
+        {
+          word: "many",
+          pos: "det./pron.",
+          id: "banyak",
+          example:
+            "There are so <strong>many</strong> things I want to do before I turn thirty.",
+        },
+        {
+          word: "map",
+          pos: "n.",
+          id: "peta",
+          example:
+            "She looked at the <strong>map</strong> to find the best route to the museum.",
+        },
+        {
+          word: "March",
+          pos: "n.",
+          id: "Maret",
+          example:
+            "The first day of spring in the northern hemisphere falls in <strong>March</strong>.",
+        },
+        {
+          word: "market",
+          pos: "n.",
+          id: "pasar",
+          example:
+            "We love going to the farmers' <strong>market</strong> on Saturday mornings.",
+        },
+        {
+          word: "married",
+          pos: "adj.",
+          id: "menikah / sudah menikah",
+          example:
+            "They have been <strong>married</strong> for twenty years and are still very happy together.",
+        },
+        {
+          word: "match",
+          pos: "n., v.",
+          id: "pertandingan / cocok",
+          example:
+            "We watched the football <strong>match</strong> at the stadium on Saturday afternoon.",
+        },
+        {
+          word: "May",
+          pos: "n.",
+          id: "Mei",
+          example:
+            "The annual flower show takes place in <strong>May</strong> when everything is in bloom.",
+        },
+        {
+          word: "maybe",
+          pos: "adv.",
+          id: "mungkin / barangkali",
+          example:
+            "<strong>Maybe</strong> we should take a taxi — the buses seem to be on strike today.",
+        },
+        {
+          word: "me",
+          pos: "pron.",
+          id: "saya / aku (objek)",
+          example:
+            "Could you pass <strong>me</strong> the salt and pepper, please?",
+        },
+        {
+          word: "meal",
+          pos: "n.",
+          id: "makanan / hidangan / makan",
+          example:
+            "Sunday lunch is always the most special <strong>meal</strong> of our whole week.",
+        },
+        {
+          word: "mean",
+          pos: "v.",
+          id: "berarti / maksud",
+          example:
+            "What does this word <strong>mean</strong>? I have never seen it before.",
+        },
+        {
+          word: "meaning",
+          pos: "n.",
+          id: "arti / makna",
+          example:
+            "I looked up the <strong>meaning</strong> of the word in my dictionary.",
+        },
+        {
+          word: "meat",
+          pos: "n.",
+          id: "daging",
+          example:
+            "She does not eat <strong>meat</strong> — she has been a vegetarian for ten years.",
+        },
+        {
+          word: "meet",
+          pos: "v.",
+          id: "bertemu / berkenalan",
+          example:
+            "I am looking forward to <strong>meeting</strong> your family at the wedding next week.",
+        },
+        {
+          word: "meeting",
+          pos: "n.",
+          id: "rapat / pertemuan",
+          example:
+            "She has an important <strong>meeting</strong> with the board of directors this afternoon.",
+        },
+        {
+          word: "member",
+          pos: "n.",
+          id: "anggota",
+          example:
+            "She became a <strong>member</strong> of the local running club last spring.",
+        },
+        {
+          word: "menu",
+          pos: "n.",
+          id: "menu",
+          example:
+            "Could we see the <strong>menu</strong>, please? We are ready to order.",
+        },
+        {
+          word: "message",
+          pos: "n.",
+          id: "pesan",
+          example:
+            "I left a <strong>message</strong> on her phone but she still has not called back.",
+        },
+        {
+          word: "metre",
+          pos: "n.",
+          id: "meter",
+          example:
+            "The pool is fifty <strong>metres</strong> long — perfect for competitive swimming.",
+        },
+        {
+          word: "midnight",
+          pos: "n.",
+          id: "tengah malam",
+          example:
+            "The party went on until <strong>midnight</strong> and everyone had a wonderful time.",
+        },
+        {
+          word: "mile",
+          pos: "n.",
+          id: "mil",
+          example:
+            "She runs five <strong>miles</strong> every morning before going to work.",
+        },
+        {
+          word: "milk",
+          pos: "n.",
+          id: "susu",
+          example:
+            "She adds a little <strong>milk</strong> and one spoonful of sugar to her tea.",
+        },
+        {
+          word: "million",
+          pos: "number",
+          id: "juta",
+          example:
+            "The charity has raised over a <strong>million</strong> pounds for medical research.",
+        },
+        {
+          word: "minute1",
+          pos: "n.",
+          id: "menit",
+          example:
+            "The train will arrive in ten <strong>minutes</strong> — we had better hurry up.",
+        },
+        {
+          word: "miss",
+          pos: "v.",
+          id: "merindukan / melewatkan",
+          example:
+            "She <strong>misses</strong> her family a lot now that she lives abroad.",
+        },
+        {
+          word: "mistake",
+          pos: "n.",
+          id: "kesalahan",
+          example:
+            "Everyone makes <strong>mistakes</strong> — what matters is that you learn from them.",
+        },
+        {
+          word: "model",
+          pos: "n.",
+          id: "model / contoh",
+          example:
+            "She works as a <strong>model</strong> for a well-known fashion brand in Milan.",
+        },
+        {
+          word: "modern",
+          pos: "adj.",
+          id: "modern",
+          example:
+            "The office building has a very <strong>modern</strong> design with lots of glass and steel.",
+        },
+        {
+          word: "moment",
+          pos: "n.",
+          id: "momen / saat",
+          example:
+            "Wait just a <strong>moment</strong> — I will be with you in one minute.",
+        },
+        {
+          word: "Monday",
+          pos: "n.",
+          id: "Senin",
+          example:
+            "The new term starts on <strong>Monday</strong> morning — make sure you are ready.",
+        },
+        {
+          word: "money",
+          pos: "n.",
+          id: "uang",
+          example:
+            "She saved up <strong>money</strong> for a year to pay for her trip to Japan.",
+        },
+        {
+          word: "month",
+          pos: "n.",
+          id: "bulan (waktu)",
+          example:
+            "She spent a whole <strong>month</strong> travelling around South-East Asia.",
+        },
+        {
+          word: "more",
+          pos: "det./pron., adv.",
+          id: "lebih / lebih banyak",
+          example:
+            "Would you like <strong>more</strong> coffee? I have just made a fresh pot.",
+        },
+        {
+          word: "morning",
+          pos: "n.",
+          id: "pagi / pagi hari",
+          example:
+            "She always feels most productive in the <strong>morning</strong> before nine o'clock.",
+        },
+        {
+          word: "most",
+          pos: "det./pron., adv.",
+          id: "paling / terbanyak",
+          example:
+            "She scored the <strong>most</strong> goals in the tournament — a brilliant performance.",
+        },
+        {
+          word: "mother",
+          pos: "n.",
+          id: "ibu",
+          example:
+            "Her <strong>mother</strong> always made her feel better with a warm hug and good advice.",
+        },
+        {
+          word: "mountain",
+          pos: "n.",
+          id: "gunung",
+          example:
+            "They spent the weekend hiking in the <strong>mountain</strong>s and camping under the stars.",
+        },
+        {
+          word: "mouse",
+          pos: "n.",
+          id: "tikus / mouse (komputer)",
+          example:
+            "The cat chased a <strong>mouse</strong> around the kitchen all evening.",
+        },
+        {
+          word: "mouth",
+          pos: "n.",
+          id: "mulut",
+          example:
+            "Do not speak with food in your <strong>mouth</strong> — it is very rude.",
+        },
+        {
+          word: "move",
+          pos: "v.",
+          id: "bergerak / pindah",
+          example:
+            "They plan to <strong>move</strong> to a bigger house when their third child is born.",
+        },
+        {
+          word: "movie",
+          pos: "n.",
+          id: "film",
+          example:
+            "We watched a great action <strong>movie</strong> at the cinema last Saturday night.",
+        },
+        {
+          word: "much",
+          pos: "det./pron., adv.",
+          id: "banyak / sangat",
+          example:
+            "Thank you so <strong>much</strong> for your help — I really appreciated it.",
+        },
+        {
+          word: "mum",
+          pos: "n.",
+          id: "ibu / mama",
+          example:
+            "My <strong>mum</strong> always cooks a big Sunday roast for the whole family.",
+        },
+        {
+          word: "museum",
+          pos: "n.",
+          id: "museum",
+          example:
+            "We spent the whole afternoon at the natural history <strong>museum</strong> in the city.",
+        },
+        {
+          word: "music",
+          pos: "n.",
+          id: "musik",
+          example:
+            "She has loved classical <strong>music</strong> since she was a young child.",
+        },
+        {
+          word: "must",
+          pos: "modal v.",
+          id: "harus / wajib",
+          example:
+            "You <strong>must</strong> wear a seatbelt at all times when you are in a car.",
+        },
+        {
+          word: "my",
+          pos: "det.",
+          id: "milikku / saya punya",
+          example:
+            "<strong>My</strong> favourite season is autumn because of the beautiful colours.",
+        },
+        {
+          word: "name",
+          pos: "n., v.",
+          id: "nama",
+          example:
+            "What is your <strong>name</strong>? I did not catch it when we were introduced.",
+        },
+        {
+          word: "natural",
+          pos: "adj.",
+          id: "alami / natural",
+          example:
+            "The park is full of <strong>natural</strong> beauty — trees, flowers, and wildlife.",
+        },
+        {
+          word: "near",
+          pos: "prep., adj., adv.",
+          id: "dekat / di dekat",
+          example:
+            "Is there a post office <strong>near</strong> here? I need to send a parcel.",
+        },
+        {
+          word: "need",
+          pos: "v.",
+          id: "membutuhkan / perlu",
+          example:
+            "I <strong>need</strong> to buy a new laptop — my old one is very slow.",
+        },
+        {
+          word: "negative",
+          pos: "adj.",
+          id: "negatif",
+          example:
+            "Try not to have such a <strong>negative</strong> attitude — think about the positives.",
+        },
+        {
+          word: "neighbour",
+          pos: "n.",
+          id: "tetangga",
+          example:
+            "Our <strong>neighbour</strong> kindly offered to water our plants while we were away.",
+        },
+        {
+          word: "never",
+          pos: "adv.",
+          id: "tidak pernah",
+          example:
+            "She has <strong>never</strong> been abroad, but she hopes to travel one day.",
+        },
+        {
+          word: "new",
+          pos: "adj.",
+          id: "baru",
+          example:
+            "Have you heard the <strong>new</strong> song by her favourite band? It is brilliant.",
+        },
+        {
+          word: "news",
+          pos: "n.",
+          id: "berita",
+          example:
+            "I always watch the evening <strong>news</strong> to stay informed about current events.",
+        },
+        {
+          word: "newspaper",
+          pos: "n.",
+          id: "koran / surat kabar",
+          example:
+            "He reads a <strong>newspaper</strong> every morning with his coffee and toast.",
+        },
+        {
+          word: "next",
+          pos: "adj., adv.",
+          id: "berikutnya / selanjutnya",
+          example:
+            "I am taking my driving test for the third time <strong>next</strong> Monday — wish me luck.",
+        },
+        {
+          word: "next to",
+          pos: "prep.",
+          id: "di sebelah / bersebelahan dengan",
+          example:
+            "The pharmacy is <strong>next to</strong> the supermarket on the high street.",
+        },
+        {
+          word: "nice",
+          pos: "adj.",
+          id: "menyenangkan / baik / bagus",
+          example:
+            "It was so <strong>nice</strong> to see all my old friends at the school reunion.",
+        },
+        {
+          word: "night",
+          pos: "n.",
+          id: "malam",
+          example:
+            "She stayed up all <strong>night</strong> studying for her important exam the next morning.",
+        },
+        {
+          word: "nine",
+          pos: "number",
+          id: "sembilan",
+          example:
+            "She has <strong>nine</strong> nieces and nephews — she loves being an aunt.",
+        },
+        {
+          word: "nineteen",
+          pos: "number",
+          id: "sembilan belas",
+          example:
+            "He left home at the age of <strong>nineteen</strong> to go to university.",
+        },
+        {
+          word: "ninety",
+          pos: "number",
+          id: "sembilan puluh",
+          example:
+            "She is <strong>ninety</strong> years old but still reads the newspaper every morning.",
+        },
+        {
+          word: "no",
+          pos: "exclam., det.",
+          id: "tidak / tidak ada",
+          example:
+            "There is <strong>no</strong> milk left in the fridge — I need to go shopping today.",
+        },
+      ];
+
+      // ── Indonesian example translations ──
+      const WORD_ID_EXAMPLES = {
+        "a, an": "Saya punya seekor kucing dan sebuah apel di atas meja.",
+        about: "Buku ini tentang hewan dan habitatnya.",
+        above: "Gambar itu tergantung di atas sofa.",
+        across: "Dia berjalan hati-hati melintasi jalan yang ramai.",
+        action: "Kita perlu mengambil tindakan sekarang sebelum terlambat.",
+        activity: "Berenang adalah aktivitas favorit saya di musim panas.",
+        actor: "Dia ingin menjadi aktor ketika dewasa.",
+        actress:
+          "Dia adalah aktris terkenal yang dikenal karena peran dramatisnya.",
+        add: "Tolong tambahkan sedikit garam ke dalam sup sebelum disajikan.",
+        address: "Bisakah kamu menuliskan alamat rumahmu untukku?",
+        adult:
+          "Hanya orang dewasa yang diperbolehkan menandatangani formulir ini.",
+        advice:
+          "Dia memberiku saran yang sangat membantu tentang pekerjaan baruku.",
+        afraid: "Dia takut gelap ketika masih kecil.",
+        after: "Saya selalu menyikat gigi setelah sarapan.",
+        afternoon: "Kami pergi ke taman di sore hari untuk bermain.",
+        again: "Bisakah kamu mengatakannya lagi? Saya tidak mendengarmu.",
+        age: "Berapa usiamu? Kamu terlihat sangat muda!",
+        ago: "Saya mengunjungi Paris dua tahun yang lalu bersama keluarga.",
+        agree: "Saya sepenuhnya setuju dengan saranmu tentang proyek itu.",
+        air: "Udara di pegunungan sangat segar dan bersih.",
+        airport: "Kami tiba di bandara dua jam sebelum penerbangan.",
+        all: "Semua siswa di kelas lulus ujian akhir.",
+        also: "Saya suka teh. Saya juga menikmati secangkir kopi yang enak.",
+        always: "Dia selalu datang tepat waktu — tidak pernah terlambat.",
+        amazing: "Pemandangan dari puncak gunung itu sungguh menakjubkan.",
+        and: "Saya punya seekor anjing dan seekor kucing di rumah.",
+        angry:
+          "Dia sangat marah ketika mendengar berita yang tidak terduga itu.",
+        animal: "Singa adalah hewan liar yang hidup di Afrika.",
+        another: "Bolehkah saya mengambil sepotong lagi kue yang lezat itu?",
+        answer: "Tolong jawab pertanyaan itu dalam kalimat yang lengkap.",
+        any: "Apakah kamu punya pertanyaan sebelum kita mulai pelajaran?",
+        anyone: "Apakah ada yang tahu jawaban dari pertanyaan sulit ini?",
+        anything:
+          "Apakah ada sesuatu yang bisa saya lakukan untuk membantumu hari ini?",
+        apartment: "Dia tinggal di apartemen kecil di pusat kota.",
+        apple: "Saya makan sebuah apel setiap pagi untuk tetap sehat.",
+        April:
+          "Ulang tahun saya di bulan April, tepat setelah liburan musim semi.",
+        area: "Ada taman yang indah di area kota ini.",
+        arm: "Dia mematahkan lengannya saat bermain sepak bola di taman.",
+        around: "Kami berjalan-jalan jauh mengelilingi danau yang indah.",
+        arrive: "Jam berapa kamu tiba di hotel tadi malam?",
+        art: "Saya sangat menyukai seni modern, terutama lukisan abstrak.",
+        article:
+          "Saya membaca artikel yang sangat menarik tentang eksplorasi luar angkasa pagi ini.",
+        artist:
+          "Dia adalah seniman yang sangat berbakat yang melukis pemandangan indah.",
+        as: "Dia bekerja sebagai guru di sekolah dasar setempat.",
+        ask: "Jangan takut untuk meminta bantuan ketika kamu membutuhkannya.",
+        at: "Saya akan menemuimu di perpustakaan pada pukul 3 sore.",
+        August:
+          "Liburan musim panas biasanya dimulai pada bulan Agustus di sini.",
+        aunt: "Bibiku membuat kue terbaik yang pernah saya cicipi.",
+        autumn: "Dedaunan berubah menjadi oranye dan merah di musim gugur.",
+        away: "Dia pindah jauh ke kota baru untuk memulai babak baru.",
+        baby: "Bayi itu tersenyum saat mendengar suara ibunya.",
+        back: "Tolong kembalikan buku itu ke rak setelah selesai.",
+        bad: "Cuacanya sangat buruk sehingga kami tetap di dalam sepanjang hari.",
+        bag: "Dia memasukkan buku dan laptopnya ke dalam tasnya.",
+        ball: "Anak-anak menendang bola di sekitar taman.",
+        banana: "Saya makan pisang setiap pagi untuk sarapan.",
+        band: "Band itu memainkan musik live di festival tadi malam.",
+        bank: "Saya perlu pergi ke bank untuk menarik uang.",
+        bath: "Dia bersantai di bak mandi hangat setelah hari yang panjang.",
+        bathroom: "Kamar mandi di lantai pertama memiliki shower dan bathtub.",
+        be: "Saya ingin menjadi dokter ketika dewasa.",
+        beach: "Kami menghabiskan seluruh sore bersantai di pantai.",
+        beautiful: "Matahari terbenam di atas lautan sungguh indah.",
+        because: "Dia tinggal di rumah karena merasa tidak enak badan.",
+        become: "Dia bekerja keras untuk menjadi insinyur yang sukses.",
+        bed: "Saya sangat lelah sehingga langsung pergi ke tempat tidur.",
+        bedroom:
+          "Kamar tidurnya memiliki jendela besar dengan pemandangan yang indah.",
+        beer: "Dia memesan bir dingin di restoran.",
+        before: "Selalu cuci tangan sebelum makan.",
+        begin: "Konser akan dimulai pukul tujuh malam ini.",
+        beginning: "Awal film itu sangat mendebarkan.",
+        behind: "Kucing itu bersembunyi di belakang sofa.",
+        believe:
+          "Saya percaya bahwa kerja keras selalu menghasilkan kesuksesan.",
+        below: "Suhu turun di bawah nol tadi malam.",
+        best: "Dia adalah siswa terbaik di seluruh kelas.",
+        better: "Saya merasa jauh lebih baik hari ini daripada kemarin.",
+        between: "Taman itu berada di antara sekolah dan supermarket.",
+        bicycle: "Dia naik sepeda ke sekolah setiap pagi.",
+        big: "Mereka tinggal di rumah besar dengan taman yang luas.",
+        bike: "Dia bersepeda di taman setiap akhir pekan.",
+        bill: "Boleh kami minta tagihannya? Kami sudah siap pergi.",
+        bird: "Seekor burung kecil bernyanyi di pohon di luar jendelaku.",
+        birthday: "Selamat ulang tahun! Semoga harimu menyenangkan.",
+        black: "Dia selalu memakai mantel hitam di musim dingin.",
+        blog: "Dia menulis blog populer tentang perjalanan dan makanan.",
+        blonde: "Gadis berambut pirang itu adalah sepupuku.",
+        blue: "Langit berwarna biru cerah pada pagi musim panas itu.",
+        boat: "Kami naik perahu kecil melintasi danau menuju pulau.",
+        body: "Olahraga baik untuk tubuh dan pikiranmu.",
+        book: "Dia membaca seluruh buku hanya dalam satu sore.",
+        boot: "Dia memakai sepatunya yang hangat sebelum keluar ke salju.",
+        bored: "Dia sangat bosan sehingga tertidur saat kuliah.",
+        boring: "Filmnya sangat membosankan — kami pergi sebelum selesai.",
+        born: "Dia lahir di sebuah desa kecil di pegunungan.",
+        both: "Kedua orang tuaku adalah guru di sekolah setempat.",
+        bottle: "Tolong bawa sebotol air saat mendaki.",
+        box: "Dia mengemas semua barangnya ke dalam kotak karton besar.",
+        boy: "Anak laki-laki kecil itu berlari melintasi taman sambil tertawa.",
+        boyfriend:
+          "Dia memperkenalkan pacarnya kepada orang tuanya akhir pekan lalu.",
+        bread: "Saya membeli sepotong roti segar dari toko roti tadi pagi.",
+        break: "Mari kita beristirahat sebentar sebelum melanjutkan rapat.",
+        breakfast: "Saya selalu sarapan sebelum berangkat kerja.",
+        bring: "Jangan lupa membawa payung — mungkin akan hujan.",
+        brother: "Kakak laki-laki dan saya dulu bermain sepak bola di kebun.",
+        brown: "Dia memiliki mata cokelat dan rambut keriting.",
+        build: "Mereka berencana membangun perpustakaan baru di pusat kota.",
+        building: "Gedung tinggi di pusat kota itu dibangun pada tahun 1920.",
+        bus: "Saya naik bus ke kantor setiap pagi untuk menghindari kemacetan.",
+        business:
+          "Dia memulai bisnisnya sendiri menjual perhiasan buatan tangan.",
+        busy: "Saya terlalu sibuk untuk berbicara sekarang — bisakah kita bicara nanti?",
+        but: "Saya ingin pergi, tapi saya terlalu lelah untuk keluar rumah.",
+        butter: "Dia mengoleskan mentega pada roti panggang yang hangat.",
+        buy: "Saya ingin membeli sepasang sepatu baru untuk pesta.",
+        by: "Lukisan itu dibuat oleh seniman lokal yang terkenal.",
+        bye: '"Sampai jumpa! Sampai besok!" katanya sambil pergi.',
+        cafe: "Kami duduk di kafe kecil dan memesan dua cangkir kopi.",
+        cake: "Dia membuat kue cokelat untuk pesta ulang tahun putranya.",
+        call: "Saya akan meneleponmu segera setelah tiba di bandara.",
+        camera:
+          "Dia membawa kameranya untuk memotret pemandangan gunung yang indah.",
+        can1: "Dia bisa berbicara tiga bahasa dengan fasih.",
+        cannot:
+          "Saya tidak bisa datang ke pesta karena harus bekerja sampai malam.",
+        capital: "Paris adalah ibu kota Prancis.",
+        car: "Dia mengendarai mobilnya ke supermarket untuk berbelanja mingguan.",
+        card: "Dia mengirim kartu ulang tahun kepada neneknya melalui pos.",
+        career: "Dia membangun karier yang sangat sukses sebagai jurnalis.",
+        carrot:
+          "Dia menambahkan wortel dan sedikit bawang ke dalam sup sayuran.",
+        carry: "Bisakah kamu membawa kotak berat ini ke lantai atas untukku?",
+        cat: "Kucing itu duduk di ambang jendela yang hangat dan memandang ke luar.",
+        CD: "Dia masih memiliki koleksi CD musik yang besar dari tahun 1990-an.",
+        cent: "Koin lama itu bernilai kurang dari satu sen.",
+        centre: "Perpustakaan baru itu tepat di pusat kota.",
+        century: "Gereja tua ini dibangun pada abad kedelapan belas.",
+        chair: "Silakan duduk di kursi di sebelah jendela.",
+        change: "Cuaca bisa berubah sangat cepat di bagian negara ini.",
+        chart: "Guru itu menunjukkan kepada kami grafik dengan hasil ujian.",
+        cheap: "Restoran ini sangat murah dan makanannya sangat enak.",
+        check: "Tolong periksa jawabanmu sebelum menyerahkan lembar ujian.",
+        cheese: "Saya suka keju di atas roti panggang untuk sarapan pagi.",
+        chicken:
+          "Dia memasak ayam panggang dengan sayuran untuk makan malam hari Minggu.",
+        child: "Setiap anak di sekolah mendapat buku gratis.",
+        chocolate: "Dia memberinya sekotak cokelat sebagai hadiah ulang tahun.",
+        choose:
+          "Sulit untuk memilih di antara dua makanan penutup yang lezat itu.",
+        cinema: "Kami pergi ke bioskop untuk menonton film terbaru.",
+        city: "New York adalah salah satu kota paling menarik di dunia.",
+        class: "Seluruh kelas mendengarkan penjelasan guru dengan seksama.",
+        classroom: "Ada tiga puluh meja di ruang kelas sekolah kami.",
+        clean: "Tolong bersihkan kamarmu sebelum tamu kami tiba malam ini.",
+        climb: "Butuh tiga jam untuk mendaki ke puncak gunung.",
+        clock: "Jam dinding itu menunjukkan pukul setengah sembilan.",
+        close1: "Bisakah kamu menutup jendela? Sudah mulai dingin di sini.",
+        clothes:
+          "Dia mengemas semua pakaiannya ke dalam koper untuk perjalanan.",
+        club: "Dia bergabung dengan klub sepak bola di sekolah semester lalu.",
+        coat: "Jangan lupa membawa mantelmu — hari ini dingin di luar.",
+        coffee: "Saya minum dua cangkir kopi setiap pagi untuk bangun tidur.",
+        cold: "Air di danau sangat dingin sehingga kami tidak berenang.",
+        college: "Dia belajar seni di perguruan tinggi di pusat kota.",
+        colour: "Apa warna favoritmu? Milikku adalah biru tua.",
+        come: "Bisakah kamu datang ke pestaku pada Sabtu malam?",
+        common: "Sangat umum melihat wisatawan di pusat kota pada musim panas.",
+        company:
+          "Dia bekerja untuk perusahaan internasional besar di sektor keuangan.",
+        compare:
+          "Mari kita bandingkan harganya sebelum memutuskan mana yang akan dibeli.",
+        complete:
+          "Dia bekerja semalaman untuk menyelesaikan laporan tepat waktu.",
+        computer:
+          "Dia menggunakan komputernya untuk bekerja dari rumah setiap hari.",
+        concert:
+          "Kami menghadiri konser live yang menakjubkan di taman Sabtu lalu.",
+        conversation: "Kami mengobrol panjang dan menarik saat makan malam.",
+        cook: "Dia suka memasak makanan Italia untuk teman-temannya di akhir pekan.",
+        cooking:
+          "Memasak di rumah lebih sehat daripada makan di restoran setiap hari.",
+        cool: "Angin sore terasa menyejukkan setelah hari musim panas yang panas.",
+        correct: "Semua jawabannya benar — dia mendapat nilai penuh.",
+        cost: "Berapa biaya penerbangan dari London ke New York?",
+        could: "Ketika saya masih muda, saya bisa berlari sangat cepat.",
+        country:
+          "Prancis adalah negara yang indah dengan makanan dan budaya yang luar biasa.",
+        course: "Dia mendaftar kursus bahasa Inggris online bulan lalu.",
+        cousin:
+          "Sepupuku tinggal di kota lain tetapi kami bertemu setiap liburan.",
+        cow: "Ada beberapa sapi yang merumput di ladang dekat peternakan.",
+        cream: "Dia meletakkan krim segar dan stroberi di atas kue.",
+        create:
+          "Dia menggunakan program komputer untuk membuat lukisan digital yang indah.",
+        culture:
+          "Bepergian adalah cara yang bagus untuk belajar tentang berbagai budaya.",
+        cup: "Dia membuat secangkir teh panas dan duduk di dekat jendela untuk membaca.",
+        customer:
+          "Pelayan toko itu sangat membantu dan sopan kepada setiap pelanggan.",
+        cut: "Tolong potong rotinya menjadi irisan tipis sebelum disajikan.",
+        dad: "Ayahku selalu bercerita lucu di meja makan.",
+        dance: "Dia suka menari mengikuti musik Latin di akhir pekan.",
+        dancer: "Dia berlatih bertahun-tahun untuk menjadi penari profesional.",
+        dancing:
+          "Menari adalah cara yang bagus untuk tetap bugar dan bersenang-senang.",
+        dangerous: "Sangat berbahaya berenang di laut saat badai.",
+        dark: "Ruangan itu sangat gelap sehingga saya tidak bisa melihat apapun.",
+        date: "Tanggal berapa hari ulang tahunmu tahun ini?",
+        daughter: "Putri mereka sedang belajar kedokteran di universitas.",
+        day: "Itu adalah hari terbaik dalam hidupku.",
+        dear: "Dia adalah teman yang sangat berharga yang selalu ada untukku.",
+        December: "Natal dirayakan setiap tanggal 25 Desember.",
+        decide: "Sulit untuk memutuskan universitas mana yang akan didaftar.",
+        delicious: "Pasta di restoran itu sungguh lezat.",
+        describe: "Bisakah kamu menggambarkan seperti apa tampilan pria itu?",
+        description: "Polisi meminta deskripsi anak yang hilang itu.",
+        design: "Dia belajar desain di sekolah seni selama tiga tahun.",
+        desk: "Dia duduk di mejanya dan mulai mengerjakan pekerjaan rumahnya.",
+        detail: "Tolong perhatikan setiap detail dalam instruksinya.",
+        dialogue: "Dialog antara dua tokoh dalam drama itu sangat natural.",
+        dictionary: "Saya mencari kata itu di kamus bahasa Inggris saya.",
+        die: "Pohon oak tua di taman itu mati musim dingin lalu.",
+        diet: "Pola makan sehat mencakup banyak buah dan sayuran.",
+        difference: "Bisakah kamu menemukan perbedaan antara dua gambar ini?",
+        different:
+          "Si kembar tampak serupa tetapi memiliki kepribadian yang sangat berbeda.",
+        difficult: "Ujiannya sangat sulit dan banyak siswa yang tidak lulus.",
+        dinner:
+          "Kami makan malam yang menyenangkan di restoran Italia tadi malam.",
+        dirty:
+          "Sepatunya kotor setelah berjalan melewati ladang yang berlumpur.",
+        discuss:
+          "Mari kita diskusikan rencananya sebelum membuat keputusan akhir.",
+        dish: "Hidangan tradisional ini dibuat dengan nasi, rempah-rempah, dan sayuran segar.",
+        do1: "Saya punya begitu banyak pekerjaan yang harus diselesaikan sebelum tenggat besok.",
+        doctor: "Kamu harus ke dokter jika gejalamu tidak membaik segera.",
+        dog: "Dia membawa anjingnya jalan-jalan di taman setiap pagi.",
+        dollar: "Buku itu harganya lima belas dolar di toko buku universitas.",
+        door: "Tolong tutup pintunya saat kamu meninggalkan ruangan.",
+        down: "Dia berjalan turun tangga dan masuk ke dapur.",
+        downstairs:
+          "Saya mendengar suara aneh di lantai bawah di tengah malam.",
+        draw: "Dia bisa menggambar potret orang yang sangat realistis dari ingatan.",
+        dress: "Dia memakai gaun merah yang indah ke upacara pernikahan.",
+        drink: "Maukah kamu minum sesuatu — teh atau kopi?",
+        drive: "Butuh sekitar dua jam berkendara dari London ke Birmingham.",
+        driver:
+          "Sopir bus meminta semua penumpang untuk menunjukkan tiket mereka.",
+        during:
+          "Dia tertidur selama perjalanan kereta yang panjang ke Edinburgh.",
+        DVD: "Kami menonton DVD lama dari film favorit kami pada Jumat malam.",
+        each: "Setiap siswa menerima sertifikat di akhir kursus.",
+        ear: "Dia memakai anting mutiara yang cantik di setiap telinganya.",
+        early: "Kami harus bangun sangat pagi untuk mengejar kereta pertama.",
+        east: "Matahari terbit di timur dan terbenam di barat setiap hari.",
+        easy: "Tesnya cukup mudah — sebagian besar siswa selesai dalam dua puluh menit.",
+        eat: "Kami biasanya makan malam bersama sebagai keluarga pada pukul tujuh.",
+        egg: "Saya makan telur orak-arik di atas roti panggang untuk sarapan tadi pagi.",
+        eight: "Ada delapan siswa di kelas bahasa Inggris tingkat lanjut.",
+        eighteen:
+          "Di Inggris, kamu harus berusia delapan belas tahun untuk memilih dalam pemilu.",
+        eighty:
+          "Nenekku berusia delapan puluh tahun tahun lalu dan masih sangat aktif.",
+        elephant:
+          "Gajah di kebun binatang itu adalah hewan terbesar yang pernah saya lihat.",
+        eleven: "Tim sepak bola membutuhkan sebelas pemain di lapangan.",
+        else: "Apakah kamu ingin sesuatu yang lain dengan kopimu — mungkin biskuit?",
+        email: "Saya mengiriminya email menanyakan tentang lamaran kerja.",
+        end: "Film itu memiliki akhir yang mengejutkan yang tidak ada yang duga.",
+        enjoy:
+          "Saya sangat menikmati berjalan di pedesaan pada hari yang cerah.",
+        enough: "Apakah kamu sudah makan cukup, atau mau tambah lagi?",
+        euro: "Makanan itu berharga dua puluh euro per orang di restoran.",
+        even: "Bahkan anak termuda di kelas bisa menjawab pertanyaan itu.",
+        evening: "Mari kita jalan-jalan malam ini sebelum gelap.",
+        event:
+          "Hari olahraga sekolah adalah acara paling populer sepanjang tahun.",
+        ever: "Pernahkah kamu mengunjungi Jepang? Itu adalah negara yang luar biasa.",
+        every: "Saya pergi berlari setiap pagi sebelum sarapan.",
+        everybody: "Semua orang di kantor bersemangat tentang proyek baru itu.",
+        everyone:
+          "Semua orang menikmati konser itu — pertunjukannya sangat indah.",
+        everything:
+          "Saya memeriksa segalanya dua kali sebelum meninggalkan rumah.",
+        exam: "Dia belajar sepanjang minggu untuk mempersiapkan ujian akhirnya.",
+        example:
+          "Bisakah kamu memberi saya contoh cara menggunakan kata ini dalam kalimat?",
+        excited:
+          "Anak-anak sangat bersemangat tentang perjalanan mereka ke kebun binatang.",
+        exciting:
+          "Pertandingan sepak bola itu sangat mengasyikkan sehingga kami lupa waktu.",
+        exercise:
+          "Olahraga teratur sangat penting untuk menjaga kesehatan yang baik.",
+        expensive: "Restorannya sangat mahal tetapi makanannya sangat enak.",
+        explain: "Bisakah kamu menjelaskan cara kerja mesin ini?",
+        extra: "Apakah kamu ingin keju ekstra di pizzamu?",
+        eye: "Dia memiliki mata hijau yang indah yang semua orang perhatikan.",
+        face: "Dia mencuci wajahnya dan mengoleskan pelembab sebelum tidur.",
+        fact: "Merupakan fakta bahwa olahraga meningkatkan kesehatan mental dan fisik.",
+        fall: "Hati-hati agar tidak jatuh — jalannya sangat licin setelah hujan.",
+        false: "Rumor tentang sekolah yang ditutup itu sepenuhnya salah.",
+        family:
+          "Keluarga saya dan saya pergi berlibur bersama setiap musim panas.",
+        famous:
+          "Paris terkenal karena seninya yang indah dan masakan yang lezat.",
+        fantastic:
+          "Konser semalam sungguh fantastis — saya menikmati setiap momennya.",
+        far: "Seberapa jauh dari sini ke pusat kota?",
+        farm: "Kami mengunjungi pertanian dan melihat sapi, domba, dan ayam.",
+        farmer:
+          "Petani itu bangun pukul lima pagi untuk memberi makan hewan-hewan.",
+        fast: "Dia mengemudi terlalu cepat — itu membuat penumpangnya gugup.",
+        fat: "Kucing itu sangat gemuk karena terlalu banyak makan dan jarang berolahraga.",
+        father:
+          "Ayahnya mengajarinya cara mengendarai sepeda ketika dia berumur lima tahun.",
+        favourite: "Apa film favoritmu sepanjang masa?",
+        February: "Hari Valentine dirayakan pada tanggal 14 Februari.",
+        feel: "Saya merasa jauh lebih baik hari ini setelah tidur malam yang nyenyak.",
+        feeling: "Saya punya perasaan aneh bahwa ada sesuatu yang salah.",
+        festival: "Kami pergi ke festival musik di pedesaan musim panas lalu.",
+        few: "Hanya beberapa siswa yang lulus ujian masuk yang sangat sulit itu.",
+        fifteen:
+          "Perjalanannya memakan waktu lima belas menit dengan bus dari pusat kota.",
+        fifth: "Dia selesai di posisi kelima dalam kompetisi renang.",
+        fifty: "Ada lebih dari lima puluh orang di perayaan ulang tahun itu.",
+        fill: "Tolong isi formulirnya dengan nama dan tanggal lahirmu.",
+        film: "Film aksi baru itu mendapat ulasan yang sangat baik minggu ini.",
+        final: "Ini adalah kesempatan terakhir untuk membeli tiket konser.",
+        find: "Saya tidak bisa menemukan kunci saya di mana pun — saya sangat khawatir.",
+        fine: "Cuacanya terlihat bagus hari ini — sempurna untuk piknik di taman.",
+        finish: "Saya perlu menyelesaikan laporan ini sebelum akhir hari.",
+        fire: "Mereka duduk mengelilingi api dan bercerita hingga larut malam.",
+        first: "Dia adalah orang pertama yang tiba di rapat pagi ini.",
+        fish: "Kami makan ikan bakar dengan salad untuk makan malam tadi malam.",
+        five: "Saya harus berada di stasiun dalam lima menit — saya harus segera.",
+        flat: "Dia menyewa flat kecil di lantai tiga gedung itu.",
+        flight: "Penerbangan kami ke Roma berangkat pukul enam pagi.",
+        floor: "Buku itu jatuh dari rak dan mendarat di lantai.",
+        flower: "Dia membeli seikat bunga untuk ibunya di hari ulang tahunnya.",
+        fly: "Butuh sekitar sebelas jam untuk terbang dari London ke Tokyo.",
+        follow: "Tolong ikuti instruksi di layar langkah demi langkah.",
+        food: "Makanan Italia populer di seluruh dunia karena cita rasanya yang kaya.",
+        foot: "Dia melukai kakinya saat bermain tenis Sabtu lalu.",
+        football:
+          "Dia bermain sepak bola untuk tim sekolahnya setiap Rabu sepulang sekolah.",
+        for: "Hadiah ini untukmu — selamat ulang tahun!",
+        forget: "Jangan lupa mematikan lampu saat kamu meninggalkan rumah.",
+        form: "Tolong lengkapi formulir online untuk mendaftar kursus.",
+        forty: "Ada empat puluh tamu yang diundang ke resepsi pernikahan.",
+        four: "Ada empat musim dalam setahun: musim semi, panas, gugur, dan dingin.",
+        fourteen:
+          "Adik perempuanku berusia empat belas tahun dan suka bermain voli.",
+        fourth: "Dia adalah orang keempat dalam antrean ketika toko dibuka.",
+        free: "Masuk ke museum gratis pada hari Minggu pertama setiap bulan.",
+        Friday: "Kami biasanya pergi makan malam bersama setiap Jumat malam.",
+        friend:
+          "Dia telah menjadi sahabat terbaik saya sejak kami di sekolah dasar.",
+        friendly:
+          "Orang-orang di kota ini sangat ramah dan selalu siap membantu.",
+        from: "Dia pindah ke London dari sebuah desa kecil di pedesaan.",
+        front: "Mobil itu diparkir tepat di depan pintu masuk utama.",
+        fruit: "Saya berusaha makan setidaknya dua porsi buah setiap hari.",
+        full: "Terima kasih, saya benar-benar kenyang — makanannya sungguh lezat.",
+        fun: "Belajar memasak bisa sangat menyenangkan jika kamu suka berkreasi.",
+        funny:
+          "Dia menceritakan lelucon yang sangat lucu yang membuat semua orang di ruangan tertawa.",
+        future:
+          "Tidak ada yang tahu apa yang akan terjadi di masa depan — kita hanya bisa mempersiapkannya.",
+        game: "Mari kita main permainan papan malam ini daripada menonton televisi.",
+        garden:
+          "Dia menghabiskan setiap akhir pekan bekerja di kebunnya menanam sayuran.",
+        geography:
+          "Kami mempelajari geografi Amerika Selatan dalam pelajaran hari ini.",
+        get: "Saya perlu membeli susu dari toko dalam perjalanan pulang.",
+        girl: "Gadis kecil dengan topi merah itu adalah putri tetanggaku.",
+        girlfriend:
+          "Dia memperkenalkan pacarnya kepada semua temannya di pesta.",
+        give: "Bisakah kamu memberiku nomor teleponmu agar saya bisa menghubungimu nanti?",
+        glass:
+          "Dia menuang segelas air dingin untuk dirinya sendiri dari kulkas.",
+        go: "Mari kita pergi ke pantai akhir pekan ini — cuacanya terlihat sempurna.",
+        good: "Film itu bagus — saya benar-benar menikmati ceritanya.",
+        goodbye:
+          "Dia melambaikan tangan perpisahan kepada teman-temannya saat kereta bergerak pergi.",
+        grandfather:
+          "Kakekku dulu sering bercerita cerita-cerita indah sebelum tidur.",
+        grandmother:
+          "Nenekku membuat pie apel paling lezat setiap hari Minggu.",
+        grandparent: "Kakek-nenekku tinggal di pedesaan dan suka berkebun.",
+        great:
+          "Itu adalah ide yang hebat untuk mengadakan rapat di taman — semua orang menyukainya.",
+        green:
+          "Bukit-bukit itu tertutup rumput hijau setelah semua hujan musim semi.",
+        grey: "Langit berubah menjadi abu-abu gelap sebelum badai petir dimulai.",
+        group:
+          "Kami bekerja dalam kelompok beranggotakan empat orang untuk menyelesaikan proyek sains.",
+        grow: "Dia menanam tomat dan tanaman herbal di kebunnya setiap musim panas.",
+        guess:
+          "Bisakah kamu menebak berapa banyak permen di dalam toples itu? Saya tebak tiga puluh!",
+        guitar:
+          "Dia memainkan gitar di sebuah band yang tampil di tempat-tempat lokal.",
+        gym: "Dia pergi ke gym tiga kali seminggu untuk menjaga kebugaran.",
+        hair: "Dia memiliki rambut panjang dan keriting yang menjuntai ke bahunya.",
+        half: "Saya sudah menunggu di sini selama setengah jam — di mana dia?",
+        hand: "Dia mengangkat tangannya untuk mengajukan pertanyaan kepada guru.",
+        happen:
+          "Tidak ada yang tahu apa yang akan terjadi selanjutnya selama pertandingan yang mengasyikkan itu.",
+        happy:
+          "Dia sangat bahagia ketika mendengar bahwa dia telah lulus ujian.",
+        hard: "Dia bekerja sangat keras sepanjang tahun dan akhirnya mendapat promosi.",
+        hat: "Dia memakai topi bertepi lebar untuk melindungi diri dari matahari.",
+        hate: "Saya tidak suka bangun pagi hari — saya bukan orang pagi.",
+        have: "Kami mengadakan rapat setiap Senin pagi pukul sembilan.",
+        "have to":
+          "Kamu harus menyelesaikan pekerjaan rumahmu sebelum bisa menonton televisi.",
+        he: "Dia adalah pemain terbaik di tim — semua orang setuju.",
+        head: "Dia menggelengkan kepalanya untuk menunjukkan bahwa dia tidak setuju dengan ide itu.",
+        health:
+          "Nutrisi yang baik dan olahraga teratur sangat penting untuk kesehatan yang baik.",
+        healthy: "Makan buah dan sayuran setiap hari membantumu tetap sehat.",
+        hear: "Apakah kamu mendengar suara aneh yang datang dari atas tadi malam?",
+        hello: '"Halo! Nama saya Sarah — senang bertemu dengan kamu."',
+        help: "Bisakah kamu membantuku membawa tas-tas berat ini ke mobil?",
+        her: "Saya meneleponnya pagi ini tetapi dia tidak menjawab telepon.",
+        here: "Silakan duduk di sini di sebelah saya — saya menyimpan tempat duduk untukmu.",
+        hey: '"Hei! Sudah lama tidak bertemu — bagaimana kabarmu?"',
+        hi: '"Hai! Masuk dan anggap saja rumahmu sendiri," katanya dengan senyum.',
+        high: "Gunung itu sangat tinggi sehingga puncaknya tertutup salju sepanjang tahun.",
+        him: "Saya meneleponnya tetapi dia terlalu sibuk untuk berbicara saat itu.",
+        his: "Dia kehilangan dompetnya dalam perjalanan ke stasiun kereta.",
+        history:
+          "Dia selalu bersemangat tentang sejarah, terutama peradaban kuno.",
+        hobby:
+          "Hobi favorit saya adalah fotografi — saya suka mengabadikan momen-momen spesial.",
+        holiday:
+          "Kami pergi berlibur ke Spanyol dan menghabiskan waktu yang menyenangkan.",
+        home: "Tidak ada yang lebih baik daripada pulang ke rumah setelah hari yang panjang.",
+        homework:
+          "Dia selalu mengerjakan PR-nya segera setelah pulang dari sekolah.",
+        hope: "Saya berharap cuacanya akan bagus untuk piknik kami pada hari Sabtu.",
+        horse: "Dia sudah menunggang kuda sejak berumur delapan tahun.",
+        hospital: "Dia dibawa ke rumah sakit setelah kecelakaan di jalan tol.",
+        hot: "Sangat panas sehingga semua orang tinggal di dalam ruangan dengan AC menyala.",
+        hotel:
+          "Kami menginap di hotel yang indah tepat di tepi laut selama liburan kami.",
+        hour: "Rapat itu berlangsung selama tiga jam — saya kelelahan di akhirnya.",
+        house:
+          "Mereka membeli rumah yang menyenangkan di pedesaan dengan taman yang besar.",
+        how: "Bagaimana cara mengucapkan 'terima kasih' dalam bahasa Jepang?",
+        however:
+          "Filmnya panjang. Namun, saya benar-benar menikmati setiap menitnya.",
+        hundred:
+          "Lebih dari seratus orang menghadiri makan malam amal tadi malam.",
+        hungry:
+          "Saya sangat lapar — saya belum makan apapun sejak sarapan tadi pagi.",
+        husband:
+          "Suaminya memasak makan malam yang indah untuk peringatan pernikahan mereka.",
+        I: "Saya ingin berkeliling dunia suatu hari nanti.",
+        ice: "Danau itu tertutup lapisan es yang tebal di musim dingin.",
+        "ice cream":
+          "Pada hari-hari panas, tidak ada yang lebih baik dari seporsi es krim.",
+        idea: "Dia punya ide yang sangat baik tentang cara mengumpulkan uang untuk badan amal.",
+        if: "Jika kamu belajar dengan sungguh-sungguh, kamu pasti akan lulus ujian.",
+        imagine:
+          "Bisakah kamu membayangkan hidup di sebuah pulau kecil tanpa listrik?",
+        important:
+          "Sangat penting untuk tiba tepat waktu dalam wawancara kerja.",
+        improve:
+          "Dia berlatih setiap hari untuk meningkatkan kemampuan berbicara bahasa Inggrisnya.",
+        in: "Kuncinya ada di laci atas meja — coba lihat.",
+        include: "Harga hotel sudah termasuk sarapan dan Wi-Fi gratis.",
+        information:
+          "Untuk informasi lebih lanjut, silakan kunjungi situs web kami atau hubungi kantor.",
+        interest:
+          "Dia mengembangkan minat terhadap fotografi ketika masih remaja.",
+        interested: "Dia sangat tertarik dengan sejarah kastil kuno itu.",
+        interesting: "Dokumenter tentang kehidupan laut itu sangat menarik.",
+        internet:
+          "Saya menggunakan internet setiap hari untuk bekerja dan tetap berhubungan dengan teman-teman.",
+        interview: "Dia sangat gugup sebelum wawancara kerjanya di bank.",
+        into: "Dia berjalan ke dalam ruangan dan semua orang berbalik untuk melihatnya.",
+        introduce:
+          "Izinkan saya memperkenalkan kamu kepada rekan saya, James — dia sangat membantu.",
+        island:
+          "Kami menghabiskan seminggu di sebuah pulau tropis kecil dengan pantai berpasir putih.",
+        it: "Saya menemukan bukunya — itu ada di bawah sofa sepanjang waktu.",
+        its: "Kucing itu menghabiskan makanannya lalu meringkuk di sofa untuk tidur.",
+        jacket:
+          "Dia memakai jaketnya yang hangat sebelum keluar ke malam yang dingin.",
+        January:
+          "Semester sekolah baru selalu dimulai pada bulan Januari setelah liburan musim dingin.",
+        jeans:
+          "Dia memakai jeans biru dan kemeja putih ke makan malam yang santai.",
+        job: "Dia sedang mencari pekerjaan baru setelah meninggalkan perusahaan bulan lalu.",
+        join: "Apakah kamu ingin bergabung dengan kami untuk makan malam Jumat malam ini?",
+        journey:
+          "Perjalanan dari London ke Edinburgh dengan kereta memakan waktu sekitar empat jam.",
+        juice: "Dia minum segelas jus jeruk segar setiap pagi untuk sarapan.",
+        July: "Kami biasanya pergi berlibur pada bulan Juli ketika sekolah libur musim panas.",
+        June: "Festival taman berlangsung setiap tahun di akhir bulan Juni.",
+        just: "Saya baru saja tiba — saya sampai di sini lima menit yang lalu.",
+        keep: "Tolong simpan semua struk kamu kalau-kalau perlu mengembalikan barangnya.",
+        key: "Saya tidak bisa menemukan kunci pintu depan — saya meninggalkannya di kantor.",
+        kilometre:
+          "Supermarket terdekat berjarak sekitar dua kilometer dari rumah kami.",
+        kind: "Jenis musik apa yang kamu suka dengarkan?",
+        kitchen:
+          "Dia menghabiskan sepanjang pagi di dapur mempersiapkan makanan untuk pesta.",
+        know: "Apakah kamu tahu cara menuju stasiun kereta dari sini?",
+        land: "Petani itu memiliki sebidang tanah yang luas tepat di luar desa.",
+        language:
+          "Belajar bahasa baru membuka banyak pintu dan peluang dalam kehidupan.",
+        large:
+          "Kerumunan besar berkumpul di alun-alun untuk menyaksikan pertunjukan kembang api.",
+        last1:
+          "Saya melihatnya untuk terakhir kali di reuni sekolah dua tahun lalu.",
+        late: "Saya terlambat untuk bekerja pagi ini karena busnya mogok.",
+        later:
+          "Saya sibuk sekarang — bolehkah saya menelepon kamu kembali nanti sore ini?",
+        laugh:
+          "Dia mulai tertawa ketika mendengar lelucon itu — dia tidak bisa berhenti.",
+        learn: "Dia memutuskan untuk belajar bermain piano saat pensiun.",
+        leave: "Jam berapa kamu biasanya berangkat kerja di pagi hari?",
+        left: "Belok kiri di lampu lalu lintas dan kemudian lurus terus.",
+        leg: "Dia melukai kakinya saat pertandingan sepak bola dan harus meninggalkan lapangan.",
+        lesson: "Dia mengikuti les piano setiap Selasa sore sepulang sekolah.",
+        let: "Orang tuanya membiarkannya begadang karena itu akhir pekan.",
+        letter:
+          "Dia menerima surat dari teman lamanya yang tinggal di Australia.",
+        library:
+          "Saya meminjam tiga buku dari perpustakaan sekolah minggu ini.",
+        lie1: "Dia memutuskan untuk berbaring sebentar karena kepalanya sangat sakit.",
+        life: "Pindah ke luar negeri adalah keputusan terbaik dalam hidupnya.",
+        light:
+          "Bisakah kamu menyalakan lampunya? Saya hampir tidak bisa melihat apapun di sini.",
+        like: "Apakah kamu menyukai makanan pedas, atau lebih suka sesuatu yang lebih ringan?",
+        line: "Tolong tuliskan namamu pada garis putus-putus di bagian bawah formulir.",
+        lion: "Singa sering disebut raja hutan karena kekuatan dan keperkasaannya.",
+        list: "Dia menulis daftar belanja sebelum pergi ke supermarket.",
+        listen:
+          "Tolong dengarkan baik-baik — saya hanya akan mengatakannya sekali.",
+        little: "Hanya tinggal sedikit susu — kita perlu membeli lebih banyak.",
+        live1:
+          "Dia telah tinggal di Paris selama lima tahun dan menikmati setiap momennya.",
+        local:
+          "Kami lebih suka berbelanja di pasar lokal daripada di supermarket.",
+        long1:
+          "Dia memiliki rambut pirang panjang yang selalu diikat ke belakang menjadi ponytail.",
+        look: "Lihat awan-awan indah itu — sepertinya hari ini mungkin akan turun salju.",
+        lose: "Saya selalu kehilangan kunci saya — saya benar-benar perlu lebih terorganisir.",
+        lot: "Ada banyak lalu lintas di jalan tol pagi ini.",
+        love: "Dia sangat menyukai perjalanan dan telah mengunjungi lebih dari tiga puluh negara.",
+        lunch:
+          "Kami bertemu untuk makan siang di restoran Italia favorit kami di kota.",
+        machine:
+          "Mesin cucinya rusak sehingga kami harus mencuci segalanya dengan tangan.",
+        magazine:
+          "Dia membaca majalah fashion setiap bulan untuk mengikuti tren terbaru.",
+        main: "Pintu masuk utama museum ada di sisi utara gedung.",
+        make: "Dia membuat rotinya sendiri dari awal setiap Minggu pagi.",
+        man: "Seorang pria tinggi berjaket biru berdiri di pintu.",
+        many: "Ada begitu banyak hal yang ingin saya lakukan sebelum berumur tiga puluh.",
+        map: "Dia melihat peta untuk menemukan rute terbaik menuju museum.",
+        March:
+          "Hari pertama musim semi di belahan bumi utara jatuh pada bulan Maret.",
+        market: "Kami suka pergi ke pasar petani pada Sabtu pagi.",
+        married:
+          "Mereka sudah menikah selama dua puluh tahun dan masih sangat bahagia bersama.",
+        match:
+          "Kami menonton pertandingan sepak bola di stadion pada Sabtu sore.",
+        May: "Pameran bunga tahunan berlangsung pada bulan Mei ketika semua tumbuhan bermekaran.",
+        maybe:
+          "Mungkin kita harus naik taksi — bus tampaknya sedang mogok hari ini.",
+        me: "Bisakah kamu mengoper saya garam dan merica?",
+        meal: "Makan siang hari Minggu selalu menjadi hidangan paling istimewa sepanjang minggu kami.",
+        mean: "Apa arti kata ini? Saya belum pernah melihatnya sebelumnya.",
+        meaning: "Saya mencari arti kata itu di kamus saya.",
+        meat: "Dia tidak makan daging — dia sudah menjadi vegetarian selama sepuluh tahun.",
+        meet: "Saya tidak sabar untuk bertemu keluargamu di pernikahan minggu depan.",
+        meeting: "Dia memiliki rapat penting dengan dewan direksi sore ini.",
+        member: "Dia menjadi anggota klub lari setempat musim semi lalu.",
+        menu: "Bolehkah kami melihat menunya? Kami siap memesan.",
+        message:
+          "Saya meninggalkan pesan di teleponnya tetapi dia belum menelepon kembali.",
+        metre:
+          "Kolam renangnya sepanjang lima puluh meter — sempurna untuk renang kompetitif.",
+        midnight:
+          "Pesta berlangsung hingga tengah malam dan semua orang menghabiskan waktu yang menyenangkan.",
+        mile: "Dia berlari lima mil setiap pagi sebelum pergi bekerja.",
+        milk: "Dia menambahkan sedikit susu dan sesendok gula ke dalam tehnya.",
+        million:
+          "Badan amal itu telah mengumpulkan lebih dari satu juta pound untuk penelitian medis.",
+        minute1:
+          "Kereta akan tiba dalam sepuluh menit — kita sebaiknya segera bergegas.",
+        miss: "Dia sangat merindukan keluarganya sekarang setelah tinggal di luar negeri.",
+        mistake:
+          "Semua orang membuat kesalahan — yang penting adalah kamu belajar dari kesalahan itu.",
+        model:
+          "Dia bekerja sebagai model untuk merek fashion terkenal di Milan.",
+        modern:
+          "Gedung kantor itu memiliki desain yang sangat modern dengan banyak kaca dan baja.",
+        moment: "Tunggu sebentar — saya akan menemanimu dalam satu menit.",
+        Monday:
+          "Semester baru dimulai pada Senin pagi — pastikan kamu sudah siap.",
+        money:
+          "Dia menabung uang selama setahun untuk membayar perjalanannya ke Jepang.",
+        month: "Dia menghabiskan sebulan penuh berkeliling Asia Tenggara.",
+        more: "Apakah kamu ingin lebih banyak kopi? Saya baru saja membuat yang baru.",
+        morning:
+          "Dia selalu merasa paling produktif di pagi hari sebelum pukul sembilan.",
+        most: "Dia mencetak gol terbanyak dalam turnamen itu — penampilan yang luar biasa.",
+        mother:
+          "Ibunya selalu membuatnya merasa lebih baik dengan pelukan hangat dan nasihat yang baik.",
+        mountain:
+          "Mereka menghabiskan akhir pekan mendaki di pegunungan dan berkemah di bawah bintang.",
+        mouse:
+          "Kucing itu mengejar seekor tikus di seluruh dapur sepanjang malam.",
+        mouth:
+          "Jangan berbicara saat ada makanan di mulutmu — itu sangat tidak sopan.",
+        move: "Mereka berencana pindah ke rumah yang lebih besar ketika anak ketiga mereka lahir.",
+        movie:
+          "Kami menonton film aksi yang bagus di bioskop Sabtu malam lalu.",
+        much: "Terima kasih banyak atas bantuanmu — saya benar-benar menghargainya.",
+        mum: "Ibuku selalu memasak makan siang panggang yang besar pada hari Minggu untuk seluruh keluarga.",
+        museum:
+          "Kami menghabiskan seluruh sore di museum sejarah alam di kota.",
+        music: "Dia sudah menyukai musik klasik sejak masih kecil.",
+        must: "Kamu harus memakai sabuk pengaman setiap saat saat berada di dalam mobil.",
+        my: "Musim favorit saya adalah musim gugur karena warna-warna yang indah.",
+        name: "Siapa namamu? Saya tidak mendengarnya ketika kami diperkenalkan.",
+        natural:
+          "Taman itu penuh dengan keindahan alam — pepohonan, bunga, dan satwa liar.",
+        near: "Apakah ada kantor pos di dekat sini? Saya perlu mengirim paket.",
+        need: "Saya perlu membeli laptop baru — laptop lama saya sangat lambat.",
+        negative:
+          "Cobalah untuk tidak bersikap begitu negatif — pikirkanlah hal-hal positifnya.",
+        neighbour:
+          "Tetangga kami dengan baik menawarkan untuk menyirami tanaman kami saat kami pergi.",
+        never:
+          "Dia belum pernah ke luar negeri, tetapi berharap bisa bepergian suatu hari nanti.",
+        new: "Apakah kamu sudah mendengar lagu baru dari band favoritnya? Itu luar biasa.",
+        news: "Saya selalu menonton berita malam untuk tetap mendapat informasi tentang peristiwa terkini.",
+        newspaper:
+          "Dia membaca koran setiap pagi sambil minum kopi dan makan roti panggang.",
+        next: "Saya mengikuti tes mengemudi untuk ketiga kalinya Senin depan — doakan saya.",
+        "next to": "Apoteknya ada di sebelah supermarket di jalan utama.",
+        nice: "Sangat menyenangkan bertemu semua teman lama saya di reuni sekolah.",
+        night:
+          "Dia begadang sepanjang malam belajar untuk ujian pentingnya keesokan paginya.",
+        nine: "Dia punya sembilan keponakan — dia suka menjadi bibi.",
+        nineteen:
+          "Dia meninggalkan rumah pada usia sembilan belas tahun untuk kuliah.",
+        ninety:
+          "Dia berusia sembilan puluh tahun tetapi masih membaca koran setiap pagi.",
+        no: "Tidak ada susu yang tersisa di kulkas — saya perlu berbelanja hari ini.",
+      };
+      WORDS.forEach(function (w) {
+        w.idExample = WORD_ID_EXAMPLES[w.word] || "";
+      });
+
+      // ── Render cards ──
+      const grid = document.getElementById("wordGrid");
+      const emptyState = document.getElementById("emptyState");
+      const visibleCount = document.getElementById("visibleCount");
+
+      function renderCards(list) {
+        // Remove existing cards (keep empty state node)
+        grid.querySelectorAll(".word-card").forEach((el) => el.remove());
+
+        if (list.length === 0) {
+          emptyState.style.display = "block";
+          visibleCount.textContent = "0";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        visibleCount.textContent = list.length;
+
+        list.forEach((item, idx) => {
+          const card = document.createElement("div");
+          card.className = "word-card";
+          card.dataset.index = idx;
+          card.innerHTML = `
+            <div class="word-card-word">${item.word}</div>
+            <div class="word-card-pos">${item.pos}</div>
+            <div class="word-card-translation">
+              <span class="flag">🇮🇩</span> ${item.id}
+            </div>
+          `;
+          card.addEventListener("click", () => openModal(idx));
+          grid.insertBefore(card, emptyState);
+        });
+      }
+
+      renderCards(WORDS);
+
+      // ── Search ──
+      let filteredWords = WORDS;
+
+      const searchInput = document.getElementById("searchInput");
+      const searchClear = document.getElementById("searchClear");
+
+      function performSearch(q) {
+        filteredWords = q
+          ? WORDS.filter(
+              (w) =>
+                w.word.toLowerCase().includes(q) ||
+                w.id.toLowerCase().includes(q) ||
+                w.pos.toLowerCase().includes(q),
+            )
+          : WORDS;
+        renderCards(filteredWords);
+        searchClear.classList.toggle("visible", q.length > 0);
+      }
+
+      searchInput.addEventListener("input", function () {
+        performSearch(this.value.trim().toLowerCase());
+      });
+
+      searchClear.addEventListener("click", () => {
+        searchInput.value = "";
+        performSearch("");
+        searchInput.focus();
+      });
+
+      // ── Modal ──
+      const backdrop = document.getElementById("modalBackdrop");
+      const modalWord = document.getElementById("modalWord");
+      const modalPos = document.getElementById("modalPos");
+      const modalTranslation = document.getElementById("modalTranslation");
+      const modalExample = document.getElementById("modalExample");
+      const modalCounter = document.getElementById("modalCounter");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      let currentIndex = 0;
+
+      function openModal(idx) {
+        currentIndex = idx;
+        updateModal();
+        backdrop.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        backdrop.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      function updateModal() {
+        const item = filteredWords[currentIndex];
+        modalWord.textContent = item.word;
+        modalPos.textContent = item.pos;
+        modalTranslation.textContent = item.id;
+        document.getElementById("modalExample").innerHTML = item.example;
+        document.getElementById("modalExampleId").textContent = item.idExample;
+        const slug = item.word
+          .split(",")[0]
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-");
+        document.getElementById("modalListenBtn").href =
+          "https://dictionary.cambridge.org/dictionary/english/" + slug;
+        modalCounter.textContent = `${currentIndex + 1} / ${filteredWords.length}`;
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === filteredWords.length - 1;
+      }
+
+      document
+        .getElementById("modalClose")
+        .addEventListener("click", closeModal);
+
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateModal();
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentIndex < filteredWords.length - 1) {
+          currentIndex++;
+          updateModal();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (!backdrop.classList.contains("open")) return;
+        if (e.key === "Escape") closeModal();
+        if (e.key === "ArrowLeft" && currentIndex > 0) {
+          currentIndex--;
+          updateModal();
+        }
+        if (e.key === "ArrowRight" && currentIndex < filteredWords.length - 1) {
+          currentIndex++;
+          updateModal();
+        }
+      });
+    </script>
+  </body>
+</html>
