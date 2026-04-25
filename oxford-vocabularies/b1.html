@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>B1 Vocabulary — Oxford 3000</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      /* ── Design Tokens ── */
+      :root {
+        color-scheme: dark;
+        --bg-1: #000000;
+        --text-1: #ffffff;
+        --text-2: #c4c4c4;
+        --border-1: rgba(255, 255, 255, 0.15);
+        --border-2: rgba(255, 255, 255, 0.25);
+        --accent: rgba(214, 188, 162, 0.9);
+        --accent-bg: rgba(214, 188, 162, 0.08);
+        --accent-border: rgba(214, 188, 162, 0.2);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding-top: 60px;
+        background-color: var(--bg-1);
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        color: var(--text-1);
+        min-height: 100vh;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      /* ── Header ── */
+      .header {
+        height: 60px;
+        padding: 0 20px;
+        border-bottom: 1px solid var(--border-1);
+        background-color: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 14px;
+        height: 32px;
+        flex-shrink: 0;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--text-1);
+        color: var(--text-1);
+      }
+
+      .back-btn i {
+        font-size: 11px;
+      }
+
+      .header-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .header-title span {
+        color: var(--text-2);
+        font-weight: 400;
+      }
+
+      .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-border);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* ── Search bar ── */
+      .search-wrap {
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .search-wrap > i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: var(--text-2);
+        pointer-events: none;
+      }
+
+      .search-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        background: rgba(255, 255, 255, 0.12);
+        border: none;
+        border-radius: 50%;
+        color: var(--text-2);
+        font-size: 9px;
+        cursor: pointer;
+        padding: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        line-height: 18px;
+        text-align: center;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+        flex-shrink: 0;
+      }
+
+      .search-clear i {
+        display: block;
+        line-height: 1;
+        position: static;
+        transform: none;
+      }
+
+      .search-clear:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: var(--text-1);
+      }
+
+      .search-clear.visible {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #searchInput {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border-1);
+        border-radius: 20px;
+        padding: 6px 30px 6px 32px;
+        font-size: 13px;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        color: var(--text-1);
+        outline: none;
+        width: 200px;
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          width 0.3s;
+      }
+
+      #searchInput::placeholder {
+        color: rgba(196, 196, 196, 0.5);
+      }
+
+      #searchInput:focus {
+        border-color: rgba(214, 188, 162, 0.4);
+        background: rgba(255, 255, 255, 0.09);
+        width: 240px;
+      }
+
+      /* ── Page ── */
+      .page {
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      /* ── Stats bar ── */
+      .stats-bar {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-2);
+      }
+
+      .stat-item i {
+        color: var(--accent);
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .stat-item strong {
+        color: var(--text-1);
+      }
+
+      .stat-divider {
+        width: 1px;
+        height: 16px;
+        background: var(--border-1);
+      }
+
+      /* ── Word Grid ── */
+      .word-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+      }
+
+      .word-card {
+        background: rgba(20, 20, 23, 0.7);
+        border: 1px solid var(--border-1);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        transition:
+          box-shadow 0.18s ease,
+          border-color 0.18s ease,
+          background 0.18s ease;
+        user-select: none;
+      }
+
+      .word-card:hover {
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.55);
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(30, 30, 34, 0.85);
+      }
+
+      .word-card:active {
+        opacity: 0.85;
+      }
+
+      .word-card-word {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-1);
+        margin-bottom: 3px;
+      }
+
+      .word-card-pos {
+        font-size: 11px;
+        color: var(--accent);
+        font-weight: 600;
+        opacity: 0.85;
+        margin-bottom: 8px;
+      }
+
+      .word-card-translation {
+        font-size: 12px;
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .word-card-translation .flag {
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .word-card.hidden {
+        display: none;
+      }
+
+      /* ── Empty state ── */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-2);
+        display: none;
+        grid-column: 1 / -1;
+      }
+
+      .empty-state i {
+        font-size: 32px;
+        opacity: 0.3;
+        margin-bottom: 12px;
+        display: block;
+      }
+
+      .empty-state p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      /* ── Modal Backdrop ── */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(6px);
+        z-index: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease;
+      }
+
+      .modal-backdrop.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* ── Modal ── */
+      .modal {
+        background: #111113;
+        border: 1px solid var(--border-2);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.85);
+        transform: translateY(16px) scale(0.97);
+        transition:
+          transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1),
+          opacity 0.22s ease;
+        opacity: 0;
+        overflow: hidden;
+      }
+
+      .modal-backdrop.open .modal {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      .modal-header {
+        padding: 24px 24px 0 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .modal-word {
+        font-size: clamp(26px, 5vw, 34px);
+        font-weight: 700;
+        color: var(--text-1);
+        line-height: 1.1;
+        margin: 0 0 6px 0;
+      }
+
+      .modal-pos {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 10px;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-border);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.4px;
+      }
+
+      .modal-close {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text-1);
+        border-color: var(--border-2);
+      }
+
+      .modal-body {
+        padding: 20px 24px 24px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* Translation row */
+      .modal-translation {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border-1);
+        border-radius: 12px;
+      }
+
+      .modal-translation .flag-icon {
+        font-size: 22px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      .modal-translation-content {
+      }
+
+      .modal-translation-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(196, 196, 196, 0.45);
+        margin-bottom: 4px;
+      }
+
+      .modal-translation-text {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-1);
+      }
+
+      /* Example area */
+      .modal-example {
+        background: rgba(214, 188, 162, 0.05);
+        border: 1px solid rgba(214, 188, 162, 0.15);
+        border-radius: 12px;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .modal-example::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at top right,
+          rgba(214, 188, 162, 0.06) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+
+      .modal-example-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(196, 196, 196, 0.45);
+        margin-bottom: 8px;
+      }
+
+      .modal-example-text {
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin: 0;
+        font-style: normal;
+      }
+
+      .modal-example-text strong {
+        color: var(--text-1);
+        font-weight: 700;
+      }
+
+      .modal-example-id {
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin: 10px 0 0 0;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      /* Listen button */
+      .modal-listen-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-1);
+        border-radius: 20px;
+        color: var(--text-2);
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        text-decoration: none;
+        align-self: flex-start;
+      }
+
+      .modal-listen-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--border-2);
+        color: var(--text-1);
+        text-decoration: none;
+      }
+
+      .modal-listen-btn i {
+        font-size: 12px;
+        color: var(--accent);
+      }
+
+      /* Nav buttons inside modal */
+      .modal-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-top: 4px;
+      }
+
+      .modal-nav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 16px;
+        height: 34px;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+      }
+
+      .modal-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--border-2);
+        color: var(--text-1);
+      }
+
+      .modal-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .modal-counter {
+        font-size: 12px;
+        color: rgba(196, 196, 196, 0.5);
+        font-weight: 600;
+      }
+
+      /* ── Footer ── */
+      .footer {
+        text-align: center;
+        padding: 20px 16px;
+        border-top: 1px solid var(--border-1);
+      }
+
+      .footer-text {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.35);
+        font-weight: 500;
+        margin: 0;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        #searchInput {
+          width: 140px;
+        }
+        #searchInput:focus {
+          width: 160px;
+        }
+        .header-title {
+          display: none;
+        }
+        .word-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── Header ── -->
+    <header class="header">
+      <div class="header-left">
+        <a href="index.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <span class="header-title"
+          >Oxford 3000 <span>/ B1 Intermediate</span></span
+        >
+        <span class="header-badge">B1</span>
+      </div>
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search words…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="search-clear" id="searchClear" aria-label="Clear search">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Page ── -->
+    <main class="page">
+      <div class="stats-bar">
+        <div class="stat-item">
+          <i class="fas fa-list"></i>
+          <span><strong id="visibleCount">71</strong> words</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Level <strong>B1</strong> — Intermediate</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <i class="fas fa-book-open"></i>
+          <span>Oxford <strong>3000</strong></span>
+        </div>
+      </div>
+
+      <div class="word-grid" id="wordGrid">
+        <!-- populated by JS -->
+        <div class="empty-state" id="emptyState">
+          <i class="fas fa-search"></i>
+          <p>No words match your search.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+      <p class="footer-text">
+        &copy; 2026 ABDULLAH C &middot; OXFORD VOCABULARIES B1
+      </p>
+    </footer>
+
+    <!-- ── Modal ── -->
+    <div
+      class="modal-backdrop"
+      id="modalBackdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Word detail"
+    >
+      <div class="modal" id="modal">
+        <div class="modal-header">
+          <div>
+            <p class="modal-word" id="modalWord"></p>
+            <span class="modal-pos" id="modalPos"></span>
+          </div>
+          <button class="modal-close" id="modalClose" aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <a class="modal-listen-btn" id="modalListenBtn" href="#">
+            <i class="fas fa-volume-up"></i> Listen on Cambridge Dictionary
+          </a>
+
+          <div class="modal-translation">
+            <span class="flag-icon">🇮🇩</span>
+            <div class="modal-translation-content">
+              <div class="modal-translation-label">Indonesian</div>
+              <div class="modal-translation-text" id="modalTranslation"></div>
+            </div>
+          </div>
+
+          <div class="modal-example">
+            <div class="modal-example-label">Example</div>
+            <p class="modal-example-text" id="modalExample"></p>
+            <p class="modal-example-id" id="modalExampleId"></p>
+          </div>
+
+          <div class="modal-nav">
+            <button class="modal-nav-btn" id="prevBtn">
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="modal-counter" id="modalCounter"></span>
+            <button class="modal-nav-btn" id="nextBtn">
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const WORDS = [
+        {
+          word: "absolutely",
+          pos: "adv.",
+          id: "sama sekali / benar-benar",
+          example:
+            "I <strong>absolutely</strong> love the new design of this building.",
+        },
+        {
+          word: "academic",
+          pos: "adj.",
+          id: "akademik / ilmiah",
+          example:
+            "Her <strong>academic</strong> results were the best in the whole school.",
+        },
+        {
+          word: "access",
+          pos: "n., v.",
+          id: "akses / mengakses",
+          example:
+            "You need a password to <strong>access</strong> the computer system.",
+        },
+        {
+          word: "accommodation",
+          pos: "n.",
+          id: "akomodasi / tempat tinggal",
+          example:
+            "We are looking for cheap <strong>accommodation</strong> near the city centre.",
+        },
+        {
+          word: "account",
+          pos: "n.",
+          id: "akun / rekening",
+          example:
+            "I need to open a bank <strong>account</strong> before I start my new job.",
+        },
+        {
+          word: "achievement",
+          pos: "n.",
+          id: "pencapaian / prestasi",
+          example:
+            "Winning the championship was a great <strong>achievement</strong> for the team.",
+        },
+        {
+          word: "act",
+          pos: "n.",
+          id: "tindakan / babak",
+          example:
+            "It was a kind <strong>act</strong> to help the old man cross the road.",
+        },
+        {
+          word: "ad",
+          pos: "n.",
+          id: "iklan",
+          example:
+            "I saw an <strong>ad</strong> for that new phone on television last night.",
+        },
+        {
+          word: "addition",
+          pos: "n.",
+          id: "tambahan / penambahan",
+          example:
+            "In <strong>addition</strong> to the main course, the menu also includes three desserts.",
+        },
+        {
+          word: "admire",
+          pos: "v.",
+          id: "mengagumi / memuja",
+          example:
+            "Everyone <strong>admires</strong> her courage in speaking out against injustice.",
+        },
+        {
+          word: "admit",
+          pos: "v.",
+          id: "mengakui / mengizinkan masuk",
+          example:
+            "He finally had to <strong>admit</strong> that he had made a mistake.",
+        },
+        {
+          word: "advanced",
+          pos: "adj.",
+          id: "lanjutan / tingkat lanjut",
+          example:
+            "This course is designed for <strong>advanced</strong> students who already know the basics.",
+        },
+        {
+          word: "advise",
+          pos: "v.",
+          id: "menyarankan / menasihati",
+          example:
+            "The doctor <strong>advised</strong> him to rest for at least a week.",
+        },
+        {
+          word: "afford",
+          pos: "v.",
+          id: "mampu membeli / sanggup",
+          example:
+            "I cannot <strong>afford</strong> to buy a new laptop this month.",
+        },
+        {
+          word: "age",
+          pos: "v.",
+          id: "menua / bertambah tua",
+          example:
+            "He has <strong>aged</strong> a lot since the last time I saw him.",
+        },
+        {
+          word: "aged",
+          pos: "adj.",
+          id: "berusia / lanjut usia",
+          example:
+            "The home provides care for <strong>aged</strong> residents who need daily support.",
+        },
+        {
+          word: "agent",
+          pos: "n.",
+          id: "agen / perwakilan",
+          example:
+            "Her travel <strong>agent</strong> helped her book the perfect holiday to Japan.",
+        },
+        {
+          word: "agreement",
+          pos: "n.",
+          id: "perjanjian / kesepakatan",
+          example:
+            "Both sides reached an <strong>agreement</strong> after several hours of negotiation.",
+        },
+        {
+          word: "ahead",
+          pos: "adv.",
+          id: "di depan / ke depan",
+          example:
+            "The team worked hard and stayed <strong>ahead</strong> throughout the entire competition.",
+        },
+        {
+          word: "aim",
+          pos: "v., n.",
+          id: "bertujuan / tujuan",
+          example:
+            "The main <strong>aim</strong> of the project is to reduce waste in the city.",
+        },
+        {
+          word: "alarm",
+          pos: "n.",
+          id: "alarm / tanda bahaya",
+          example:
+            "The fire <strong>alarm</strong> rang loudly and everyone left the building quickly.",
+        },
+        {
+          word: "album",
+          pos: "n.",
+          id: "album",
+          example:
+            "She released her first music <strong>album</strong> last year to great reviews.",
+        },
+        {
+          word: "alcohol",
+          pos: "n.",
+          id: "alkohol / minuman beralkohol",
+          example:
+            "The doctor told him to stop drinking <strong>alcohol</strong> for health reasons.",
+        },
+        {
+          word: "alcoholic",
+          pos: "adj.",
+          id: "beralkohol",
+          example:
+            "He chose a non-<strong>alcoholic</strong> drink because he was driving home.",
+        },
+        {
+          word: "alternative",
+          pos: "adj.",
+          id: "alternatif / lain",
+          example:
+            "We need to find an <strong>alternative</strong> route because the main road is closed.",
+        },
+        {
+          word: "amazed",
+          pos: "adj.",
+          id: "terkagum-kagum / sangat takjub",
+          example:
+            "She was completely <strong>amazed</strong> by the beauty of the waterfall.",
+        },
+        {
+          word: "ambition",
+          pos: "n.",
+          id: "ambisi / cita-cita",
+          example:
+            "Her greatest <strong>ambition</strong> is to become a surgeon and save lives.",
+        },
+        {
+          word: "ambitious",
+          pos: "adj.",
+          id: "ambisius / bercita-cita tinggi",
+          example:
+            "He is very <strong>ambitious</strong> and always sets himself difficult goals.",
+        },
+        {
+          word: "analyse",
+          pos: "v.",
+          id: "menganalisis",
+          example:
+            "Scientists <strong>analyse</strong> data carefully before publishing their results.",
+        },
+        {
+          word: "analysis",
+          pos: "n.",
+          id: "analisis",
+          example:
+            "The <strong>analysis</strong> of the water samples showed signs of pollution.",
+        },
+        {
+          word: "announce",
+          pos: "v.",
+          id: "mengumumkan",
+          example:
+            "The principal will <strong>announce</strong> the results of the competition tomorrow morning.",
+        },
+        {
+          word: "announcement",
+          pos: "n.",
+          id: "pengumuman",
+          example:
+            "The <strong>announcement</strong> was made during the morning assembly at school.",
+        },
+        {
+          word: "annoy",
+          pos: "v.",
+          id: "mengganggu / menjengkelkan",
+          example:
+            "It really <strong>annoys</strong> me when people talk loudly on the phone in public.",
+        },
+        {
+          word: "annoyed",
+          pos: "adj.",
+          id: "kesal / terganggu",
+          example:
+            "She was very <strong>annoyed</strong> because her flight was delayed for three hours.",
+        },
+        {
+          word: "annoying",
+          pos: "adj.",
+          id: "menjengkelkan",
+          example:
+            "That loud noise from next door is really <strong>annoying</strong>.",
+        },
+        {
+          word: "apart",
+          pos: "adv.",
+          id: "terpisah / berjauhan",
+          example:
+            "The two cities are about 200 kilometres <strong>apart</strong>.",
+        },
+        {
+          word: "apologize",
+          pos: "v.",
+          id: "meminta maaf",
+          example:
+            "He called her to <strong>apologize</strong> for forgetting their dinner reservation.",
+        },
+        {
+          word: "application",
+          pos: "n.",
+          id: "lamaran / permohonan / aplikasi",
+          example:
+            "She submitted her job <strong>application</strong> before the deadline on Friday.",
+        },
+        {
+          word: "appointment",
+          pos: "n.",
+          id: "janji temu",
+          example:
+            "I have a doctor's <strong>appointment</strong> at three o'clock this afternoon.",
+        },
+        {
+          word: "appreciate",
+          pos: "v.",
+          id: "menghargai / berterima kasih",
+          example:
+            "I really <strong>appreciate</strong> all the help you gave me with my project.",
+        },
+        {
+          word: "approximately",
+          pos: "adv.",
+          id: "kira-kira / sekitar",
+          example:
+            "The journey takes <strong>approximately</strong> two hours by train.",
+        },
+        {
+          word: "arrest",
+          pos: "v., n.",
+          id: "menangkap / penangkapan",
+          example:
+            "The police made an <strong>arrest</strong> after finding evidence at the scene.",
+        },
+        {
+          word: "arrival",
+          pos: "n.",
+          id: "kedatangan",
+          example:
+            "We checked the board to confirm the <strong>arrival</strong> time of our flight.",
+        },
+        {
+          word: "assignment",
+          pos: "n.",
+          id: "tugas / penugasan",
+          example:
+            "The teacher gave us an <strong>assignment</strong> to write a report on climate change.",
+        },
+        {
+          word: "assist",
+          pos: "v.",
+          id: "membantu / mendampingi",
+          example:
+            "Volunteers <strong>assisted</strong> the elderly passengers with their luggage.",
+        },
+        {
+          word: "atmosphere",
+          pos: "n.",
+          id: "suasana / atmosfer",
+          example:
+            "The restaurant has a very warm and relaxed <strong>atmosphere</strong>.",
+        },
+        {
+          word: "attach",
+          pos: "v.",
+          id: "melampirkan / menempelkan",
+          example:
+            "Please <strong>attach</strong> your CV to the email before sending it.",
+        },
+        {
+          word: "attitude",
+          pos: "n.",
+          id: "sikap / pandangan",
+          example:
+            "A positive <strong>attitude</strong> can make a huge difference in difficult situations.",
+        },
+        {
+          word: "attract",
+          pos: "v.",
+          id: "menarik / mengundang",
+          example:
+            "The colourful flowers <strong>attract</strong> many butterflies and bees to the garden.",
+        },
+        {
+          word: "attraction",
+          pos: "n.",
+          id: "daya tarik / tempat wisata",
+          example:
+            "The Eiffel Tower is one of the most famous tourist <strong>attractions</strong> in the world.",
+        },
+        {
+          word: "authority",
+          pos: "n.",
+          id: "otoritas / wewenang",
+          example:
+            "The manager has the <strong>authority</strong> to approve or reject any request.",
+        },
+        {
+          word: "average",
+          pos: "v.",
+          id: "merata-ratakan / rata-rata",
+          example:
+            "Our team <strong>averages</strong> about three goals per game during the season.",
+        },
+        {
+          word: "award",
+          pos: "v.",
+          id: "memberikan penghargaan / menganugerahkan",
+          example:
+            "The judges will <strong>award</strong> the top prize to the most creative entry.",
+        },
+        {
+          word: "aware",
+          pos: "adj.",
+          id: "sadar / menyadari",
+          example:
+            "Are you <strong>aware</strong> that the meeting has been moved to Thursday?",
+        },
+        {
+          word: "backwards",
+          pos: "adv.",
+          id: "ke belakang / mundur",
+          example:
+            "She fell <strong>backwards</strong> when she slipped on the wet floor.",
+        },
+        {
+          word: "bake",
+          pos: "v.",
+          id: "memanggang / membuat kue",
+          example:
+            "She loves to <strong>bake</strong> bread every Sunday morning for the family.",
+        },
+        {
+          word: "balance",
+          pos: "n., v.",
+          id: "keseimbangan / menyeimbangkan",
+          example:
+            "He lost his <strong>balance</strong> and nearly fell off the bicycle.",
+        },
+        {
+          word: "ban",
+          pos: "v., n.",
+          id: "melarang / larangan",
+          example:
+            "The city has introduced a <strong>ban</strong> on plastic bags in all shops.",
+        },
+        {
+          word: "bank (river)",
+          pos: "n.",
+          id: "tepi sungai / bantaran sungai",
+          example:
+            "We sat on the <strong>bank</strong> of the river and watched the sunset.",
+        },
+        {
+          word: "base",
+          pos: "n., v.",
+          id: "dasar / mendasarkan",
+          example:
+            "The movie is <strong>based</strong> on a true story from the Second World War.",
+        },
+        {
+          word: "basic",
+          pos: "adj.",
+          id: "dasar / mendasar",
+          example:
+            "She only has a <strong>basic</strong> understanding of Spanish at the moment.",
+        },
+        {
+          word: "basis",
+          pos: "n.",
+          id: "dasar / landasan",
+          example:
+            "The decisions were made on the <strong>basis</strong> of the latest research available.",
+        },
+        {
+          word: "battery",
+          pos: "n.",
+          id: "baterai",
+          example:
+            "My phone ran out of <strong>battery</strong> just before the important call.",
+        },
+        {
+          word: "battle",
+          pos: "n.",
+          id: "pertempuran / perjuangan",
+          example:
+            "The soldiers fought bravely in the <strong>battle</strong> for their homeland.",
+        },
+        {
+          word: "beauty",
+          pos: "n.",
+          id: "kecantikan / keindahan",
+          example:
+            "Everyone admired the natural <strong>beauty</strong> of the mountains and the lake.",
+        },
+        {
+          word: "bee",
+          pos: "n.",
+          id: "lebah",
+          example:
+            "A <strong>bee</strong> landed on the flower and began to collect pollen.",
+        },
+        {
+          word: "belief",
+          pos: "n.",
+          id: "kepercayaan / keyakinan",
+          example:
+            "It is his <strong>belief</strong> that hard work always leads to success in the end.",
+        },
+        {
+          word: "bell",
+          pos: "n.",
+          id: "bel / lonceng",
+          example:
+            "The school <strong>bell</strong> rang at exactly nine o'clock to start the day.",
+        },
+        {
+          word: "bend",
+          pos: "v., n.",
+          id: "membungkuk / tikungan",
+          example:
+            "Be careful — there is a sharp <strong>bend</strong> in the road just ahead.",
+        },
+        {
+          word: "benefit",
+          pos: "v.",
+          id: "mendapat manfaat / menguntungkan",
+          example:
+            "Regular exercise can greatly <strong>benefit</strong> your health and mental wellbeing.",
+        },
+        {
+          word: "better",
+          pos: "n.",
+          id: "yang lebih baik / kebaikan",
+          example:
+            "The change was definitely for the <strong>better</strong> once we updated the system.",
+        },
+      ];
+
+      const WORD_ID_EXAMPLES = {
+        absolutely: "Saya benar-benar menyukai desain bangunan baru ini.",
+        academic: "Hasil akademiknya adalah yang terbaik di seluruh sekolah.",
+        access: "Kamu perlu kata sandi untuk mengakses sistem komputer.",
+        accommodation: "Kami mencari akomodasi murah di dekat pusat kota.",
+        account:
+          "Saya perlu membuka rekening bank sebelum memulai pekerjaan baru.",
+        achievement:
+          "Memenangkan kejuaraan adalah pencapaian luar biasa bagi tim.",
+        act: "Itu adalah tindakan mulia untuk membantu kakek itu menyeberangi jalan.",
+        ad: "Saya melihat iklan untuk ponsel baru itu di televisi tadi malam.",
+        addition:
+          "Selain hidangan utama, menu juga menyertakan tiga pilihan makanan penutup.",
+        admire:
+          "Semua orang mengagumi keberaniannya dalam berbicara melawan ketidakadilan.",
+        admit: "Akhirnya dia harus mengakui bahwa dia telah membuat kesalahan.",
+        advanced:
+          "Kursus ini dirancang untuk siswa tingkat lanjut yang sudah mengetahui dasar-dasarnya.",
+        advise:
+          "Dokter menyarankannya untuk beristirahat setidaknya selama seminggu.",
+        afford: "Saya tidak sanggup membeli laptop baru bulan ini.",
+        age: "Dia telah banyak menua sejak terakhir kali saya melihatnya.",
+        aged: "Panti jompo itu merawat penghuni lanjut usia yang membutuhkan dukungan harian.",
+        agent:
+          "Agen perjalanannya membantu memesan liburan sempurna ke Jepang.",
+        agreement:
+          "Kedua pihak mencapai kesepakatan setelah beberapa jam negosiasi.",
+        ahead:
+          "Tim bekerja keras dan tetap di depan sepanjang seluruh kompetisi.",
+        aim: "Tujuan utama proyek ini adalah mengurangi limbah di kota.",
+        alarm:
+          "Alarm kebakaran berbunyi keras dan semua orang meninggalkan gedung dengan cepat.",
+        album:
+          "Dia merilis album musik pertamanya tahun lalu dengan ulasan yang luar biasa.",
+        alcohol:
+          "Dokter menyuruhnya berhenti minum alkohol demi alasan kesehatan.",
+        alcoholic:
+          "Dia memilih minuman non-alkohol karena dia akan mengemudi pulang.",
+        alternative:
+          "Kami perlu mencari rute alternatif karena jalan utama ditutup.",
+        amazed:
+          "Dia benar-benar terkagum-kagum dengan keindahan air terjun tersebut.",
+        ambition:
+          "Ambisi terbesarnya adalah menjadi dokter bedah dan menyelamatkan nyawa.",
+        ambitious:
+          "Dia sangat ambisius dan selalu menetapkan target yang sulit untuk dirinya sendiri.",
+        analyse:
+          "Para ilmuwan menganalisis data dengan cermat sebelum mempublikasikan hasilnya.",
+        analysis: "Analisis sampel air menunjukkan adanya tanda-tanda polusi.",
+        announce: "Kepala sekolah akan mengumumkan hasil kompetisi besok pagi.",
+        announcement:
+          "Pengumuman itu disampaikan saat upacara pagi di sekolah.",
+        annoy:
+          "Saya benar-benar terganggu ketika orang berbicara keras di telepon di tempat umum.",
+        annoyed:
+          "Dia sangat kesal karena penerbangannya tertunda selama tiga jam.",
+        annoying: "Suara keras dari sebelah itu benar-benar menjengkelkan.",
+        apart: "Kedua kota itu berjarak sekitar 200 kilometer.",
+        apologize:
+          "Dia meneleponnya untuk meminta maaf karena lupa reservasi makan malam mereka.",
+        application:
+          "Dia mengajukan lamaran kerja sebelum batas waktu hari Jumat.",
+        appointment: "Saya punya janji temu dengan dokter jam tiga sore ini.",
+        appreciate:
+          "Saya benar-benar menghargai semua bantuan yang kamu berikan untuk proyekku.",
+        approximately:
+          "Perjalanan membutuhkan waktu sekitar dua jam dengan kereta.",
+        arrest:
+          "Polisi melakukan penangkapan setelah menemukan bukti di tempat kejadian.",
+        arrival:
+          "Kami memeriksa papan untuk memastikan waktu kedatangan penerbangan kami.",
+        assignment:
+          "Guru memberikan kami tugas untuk menulis laporan tentang perubahan iklim.",
+        assist:
+          "Para relawan membantu penumpang lansia dengan barang bawaan mereka.",
+        atmosphere:
+          "Restoran itu memiliki suasana yang sangat hangat dan santai.",
+        attach: "Tolong lampirkan CV kamu ke email sebelum mengirimnya.",
+        attitude:
+          "Sikap positif dapat membuat perbedaan besar dalam situasi yang sulit.",
+        attract:
+          "Bunga-bunga berwarna-warni menarik banyak kupu-kupu dan lebah ke taman.",
+        attraction:
+          "Menara Eiffel adalah salah satu tempat wisata paling terkenal di dunia.",
+        authority:
+          "Manajer memiliki wewenang untuk menyetujui atau menolak permintaan apa pun.",
+        average:
+          "Tim kami rata-rata mencetak sekitar tiga gol per pertandingan selama musim ini.",
+        award:
+          "Para juri akan memberikan hadiah utama kepada karya paling kreatif.",
+        aware: "Apakah kamu sadar bahwa rapat telah dipindahkan ke hari Kamis?",
+        backwards:
+          "Dia terjatuh ke belakang ketika tergelincir di lantai yang basah.",
+        bake: "Dia suka memanggang roti setiap Minggu pagi untuk keluarga.",
+        balance: "Dia kehilangan keseimbangannya dan hampir jatuh dari sepeda.",
+        ban: "Kota ini telah memberlakukan larangan kantong plastik di semua toko.",
+        "bank (river)":
+          "Kami duduk di tepi sungai dan menyaksikan matahari terbenam.",
+        base: "Film itu didasarkan pada kisah nyata dari Perang Dunia Kedua.",
+        basic:
+          "Dia hanya memiliki pemahaman dasar tentang bahasa Spanyol saat ini.",
+        basis: "Keputusan dibuat berdasarkan penelitian terbaru yang tersedia.",
+        battery:
+          "Ponsel saya kehabisan baterai tepat sebelum panggilan penting.",
+        battle:
+          "Para prajurit bertempur dengan berani dalam pertempuran untuk tanah air mereka.",
+        beauty: "Semua orang mengagumi keindahan alam pegunungan dan danau.",
+        bee: "Seekor lebah hinggap di bunga dan mulai mengumpulkan serbuk sari.",
+        belief:
+          "Ini adalah keyakinannya bahwa kerja keras selalu menghasilkan kesuksesan.",
+        bell: "Bel sekolah berbunyi tepat jam sembilan pagi untuk memulai hari.",
+        bend: "Hati-hati — ada tikungan tajam di jalan tepat di depan.",
+        benefit:
+          "Olahraga teratur dapat sangat menguntungkan kesehatan dan kesejahteraan mentalmu.",
+        better:
+          "Perubahan itu jelas menuju yang lebih baik setelah kami memperbarui sistemnya.",
+      };
+
+      WORDS.forEach(function (w) {
+        w.idExample = WORD_ID_EXAMPLES[w.word] || "";
+      });
+
+      // ── Render cards ──
+      const grid = document.getElementById("wordGrid");
+      const emptyState = document.getElementById("emptyState");
+      const visibleCount = document.getElementById("visibleCount");
+
+      function renderCards(list) {
+        grid.querySelectorAll(".word-card").forEach((el) => el.remove());
+
+        if (list.length === 0) {
+          emptyState.style.display = "block";
+          visibleCount.textContent = "0";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        visibleCount.textContent = list.length;
+
+        list.forEach((item, idx) => {
+          const card = document.createElement("div");
+          card.className = "word-card";
+          card.dataset.index = idx;
+          card.innerHTML = `
+            <div class="word-card-word">${item.word}</div>
+            <div class="word-card-pos">${item.pos}</div>
+            <div class="word-card-translation">
+              <span class="flag">🇮🇩</span> ${item.id}
+            </div>
+          `;
+          card.addEventListener("click", () => openModal(idx));
+          grid.insertBefore(card, emptyState);
+        });
+      }
+
+      renderCards(WORDS);
+
+      // ── Search ──
+      let filteredWords = WORDS;
+
+      const searchInput = document.getElementById("searchInput");
+      const searchClear = document.getElementById("searchClear");
+
+      function performSearch(q) {
+        filteredWords = q
+          ? WORDS.filter(
+              (w) =>
+                w.word.toLowerCase().includes(q) ||
+                w.id.toLowerCase().includes(q) ||
+                w.pos.toLowerCase().includes(q),
+            )
+          : WORDS;
+        renderCards(filteredWords);
+        searchClear.classList.toggle("visible", q.length > 0);
+      }
+
+      searchInput.addEventListener("input", function () {
+        performSearch(this.value.trim().toLowerCase());
+      });
+
+      searchClear.addEventListener("click", () => {
+        searchInput.value = "";
+        performSearch("");
+        searchInput.focus();
+      });
+
+      // ── Modal ──
+      const backdrop = document.getElementById("modalBackdrop");
+      const modalWord = document.getElementById("modalWord");
+      const modalPos = document.getElementById("modalPos");
+      const modalTranslation = document.getElementById("modalTranslation");
+      const modalExample = document.getElementById("modalExample");
+      const modalCounter = document.getElementById("modalCounter");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      let currentIndex = 0;
+
+      function openModal(idx) {
+        currentIndex = idx;
+        updateModal();
+        backdrop.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        backdrop.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      function updateModal() {
+        const item = filteredWords[currentIndex];
+        modalWord.textContent = item.word;
+        modalPos.textContent = item.pos;
+        modalTranslation.textContent = item.id;
+        document.getElementById("modalExample").innerHTML = item.example;
+        document.getElementById("modalExampleId").textContent = item.idExample;
+        const slug = item.word
+          .split(",")[0]
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[()]/g, "");
+        document.getElementById("modalListenBtn").href =
+          "https://dictionary.cambridge.org/dictionary/english/" + slug;
+        modalCounter.textContent = `${currentIndex + 1} / ${filteredWords.length}`;
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === filteredWords.length - 1;
+      }
+
+      document
+        .getElementById("modalClose")
+        .addEventListener("click", closeModal);
+
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateModal();
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentIndex < filteredWords.length - 1) {
+          currentIndex++;
+          updateModal();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (!backdrop.classList.contains("open")) return;
+        if (e.key === "Escape") closeModal();
+        if (e.key === "ArrowLeft" && currentIndex > 0) {
+          currentIndex--;
+          updateModal();
+        }
+        if (e.key === "ArrowRight" && currentIndex < filteredWords.length - 1) {
+          currentIndex++;
+          updateModal();
+        }
+      });
+    </script>
+  </body>
+</html>

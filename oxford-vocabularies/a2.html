@@ -1,0 +1,2889 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A2 Vocabulary — Oxford 3000</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      /* ── Design Tokens ── */
+      :root {
+        color-scheme: dark;
+        --bg-1: #000000;
+        --text-1: #ffffff;
+        --text-2: #c4c4c4;
+        --border-1: rgba(255, 255, 255, 0.15);
+        --border-2: rgba(255, 255, 255, 0.25);
+        --accent: rgba(214, 188, 162, 0.9);
+        --accent-bg: rgba(214, 188, 162, 0.08);
+        --accent-border: rgba(214, 188, 162, 0.2);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding-top: 60px;
+        background-color: var(--bg-1);
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        color: var(--text-1);
+        min-height: 100vh;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      /* ── Header ── */
+      .header {
+        height: 60px;
+        padding: 0 20px;
+        border-bottom: 1px solid var(--border-1);
+        background-color: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 14px;
+        height: 32px;
+        flex-shrink: 0;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--text-1);
+        color: var(--text-1);
+      }
+
+      .back-btn i {
+        font-size: 11px;
+      }
+
+      .header-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .header-title span {
+        color: var(--text-2);
+        font-weight: 400;
+      }
+
+      .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-border);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* ── Search bar ── */
+      .search-wrap {
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .search-wrap > i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: var(--text-2);
+        pointer-events: none;
+      }
+
+      .search-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        background: rgba(255, 255, 255, 0.12);
+        border: none;
+        border-radius: 50%;
+        color: var(--text-2);
+        font-size: 9px;
+        cursor: pointer;
+        padding: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        line-height: 18px;
+        text-align: center;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+        flex-shrink: 0;
+      }
+
+      .search-clear i {
+        display: block;
+        line-height: 1;
+        position: static;
+        transform: none;
+      }
+
+      .search-clear:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: var(--text-1);
+      }
+
+      .search-clear.visible {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #searchInput {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border-1);
+        border-radius: 20px;
+        padding: 6px 30px 6px 32px;
+        font-size: 13px;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        color: var(--text-1);
+        outline: none;
+        width: 200px;
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          width 0.3s;
+      }
+
+      #searchInput::placeholder {
+        color: rgba(196, 196, 196, 0.5);
+      }
+
+      #searchInput:focus {
+        border-color: rgba(214, 188, 162, 0.4);
+        background: rgba(255, 255, 255, 0.09);
+        width: 240px;
+      }
+
+      /* ── Page ── */
+      .page {
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      /* ── Stats bar ── */
+      .stats-bar {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-2);
+      }
+
+      .stat-item i {
+        color: var(--accent);
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .stat-item strong {
+        color: var(--text-1);
+      }
+
+      .stat-divider {
+        width: 1px;
+        height: 16px;
+        background: var(--border-1);
+      }
+
+      /* ── Word Grid ── */
+      .word-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+      }
+
+      .word-card {
+        background: rgba(20, 20, 23, 0.7);
+        border: 1px solid var(--border-1);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        transition:
+          box-shadow 0.18s ease,
+          border-color 0.18s ease,
+          background 0.18s ease;
+        user-select: none;
+      }
+
+      .word-card:hover {
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.55);
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(30, 30, 34, 0.85);
+      }
+
+      .word-card:active {
+        opacity: 0.85;
+      }
+
+      .word-card-word {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-1);
+        margin-bottom: 3px;
+      }
+
+      .word-card-pos {
+        font-size: 11px;
+        color: var(--accent);
+        font-weight: 600;
+        opacity: 0.85;
+        margin-bottom: 8px;
+      }
+
+      .word-card-translation {
+        font-size: 12px;
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .word-card-translation .flag {
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .word-card.hidden {
+        display: none;
+      }
+
+      /* ── Empty state ── */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-2);
+        display: none;
+        grid-column: 1 / -1;
+      }
+
+      .empty-state i {
+        font-size: 32px;
+        opacity: 0.3;
+        margin-bottom: 12px;
+        display: block;
+      }
+
+      .empty-state p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      /* ── Modal Backdrop ── */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(6px);
+        z-index: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease;
+      }
+
+      .modal-backdrop.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* ── Modal ── */
+      .modal {
+        background: #111113;
+        border: 1px solid var(--border-2);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.85);
+        transform: translateY(16px) scale(0.97);
+        transition:
+          transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1),
+          opacity 0.22s ease;
+        opacity: 0;
+        overflow: hidden;
+      }
+
+      .modal-backdrop.open .modal {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      .modal-header {
+        padding: 24px 24px 0 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .modal-word {
+        font-size: clamp(26px, 5vw, 34px);
+        font-weight: 700;
+        color: var(--text-1);
+        line-height: 1.1;
+        margin: 0 0 6px 0;
+      }
+
+      .modal-pos {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 10px;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-border);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.4px;
+      }
+
+      .modal-close {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text-1);
+        border-color: var(--border-2);
+      }
+
+      .modal-body {
+        padding: 20px 24px 24px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* Translation row */
+      .modal-translation {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border-1);
+        border-radius: 12px;
+      }
+
+      .modal-translation .flag-icon {
+        font-size: 22px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      .modal-translation-content {
+      }
+
+      .modal-translation-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(196, 196, 196, 0.45);
+        margin-bottom: 4px;
+      }
+
+      .modal-translation-text {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-1);
+      }
+
+      /* Example area */
+      .modal-example {
+        background: rgba(214, 188, 162, 0.05);
+        border: 1px solid rgba(214, 188, 162, 0.15);
+        border-radius: 12px;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .modal-example::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at top right,
+          rgba(214, 188, 162, 0.06) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+
+      .modal-example-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(196, 196, 196, 0.45);
+        margin-bottom: 8px;
+      }
+
+      .modal-example-text {
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin: 0;
+        font-style: normal;
+      }
+
+      .modal-example-text strong {
+        color: var(--text-1);
+        font-weight: 700;
+      }
+
+      .modal-example-id {
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin: 10px 0 0 0;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      /* Listen button */
+      .modal-listen-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-1);
+        border-radius: 20px;
+        color: var(--text-2);
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        text-decoration: none;
+        align-self: flex-start;
+      }
+
+      .modal-listen-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--border-2);
+        color: var(--text-1);
+        text-decoration: none;
+      }
+
+      .modal-listen-btn i {
+        font-size: 12px;
+        color: var(--accent);
+      }
+
+      /* Nav buttons inside modal */
+      .modal-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-top: 4px;
+      }
+
+      .modal-nav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 16px;
+        height: 34px;
+        border: 1px solid var(--border-1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+      }
+
+      .modal-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--border-2);
+        color: var(--text-1);
+      }
+
+      .modal-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .modal-counter {
+        font-size: 12px;
+        color: rgba(196, 196, 196, 0.5);
+        font-weight: 600;
+      }
+
+      /* ── Footer ── */
+      .footer {
+        text-align: center;
+        padding: 20px 16px;
+        border-top: 1px solid var(--border-1);
+      }
+
+      .footer-text {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.35);
+        font-weight: 500;
+        margin: 0;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        #searchInput {
+          width: 140px;
+        }
+        #searchInput:focus {
+          width: 160px;
+        }
+        .header-title {
+          display: none;
+        }
+        .word-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── Header ── -->
+    <header class="header">
+      <div class="header-left">
+        <a href="index.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <span class="header-title"
+          >Oxford 3000 <span>/ A2 Elementary</span></span
+        >
+        <span class="header-badge">A2</span>
+      </div>
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search words…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="search-clear" id="searchClear" aria-label="Clear search">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Page ── -->
+    <main class="page">
+      <div class="stats-bar">
+        <div class="stat-item">
+          <i class="fas fa-list"></i>
+          <span><strong id="visibleCount">36</strong> words</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Level <strong>A2</strong> — Elementary</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <i class="fas fa-book-open"></i>
+          <span>Oxford <strong>3000</strong></span>
+        </div>
+      </div>
+
+      <div class="word-grid" id="wordGrid">
+        <!-- populated by JS -->
+        <div class="empty-state" id="emptyState">
+          <i class="fas fa-search"></i>
+          <p>No words match your search.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+      <p class="footer-text">
+        &copy; 2026 ABDULLAH C &middot; OXFORD VOCABULARIES A2
+      </p>
+    </footer>
+
+    <!-- ── Modal ── -->
+    <div
+      class="modal-backdrop"
+      id="modalBackdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Word detail"
+    >
+      <div class="modal" id="modal">
+        <div class="modal-header">
+          <div>
+            <p class="modal-word" id="modalWord"></p>
+            <span class="modal-pos" id="modalPos"></span>
+          </div>
+          <button class="modal-close" id="modalClose" aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <a class="modal-listen-btn" id="modalListenBtn" href="#">
+            <i class="fas fa-volume-up"></i> Listen on Cambridge Dictionary
+          </a>
+
+          <div class="modal-translation">
+            <span class="flag-icon">🇮🇩</span>
+            <div class="modal-translation-content">
+              <div class="modal-translation-label">Indonesian</div>
+              <div class="modal-translation-text" id="modalTranslation"></div>
+            </div>
+          </div>
+
+          <div class="modal-example">
+            <div class="modal-example-label">Example</div>
+            <p class="modal-example-text" id="modalExample"></p>
+            <p class="modal-example-id" id="modalExampleId"></p>
+          </div>
+
+          <div class="modal-nav">
+            <button class="modal-nav-btn" id="prevBtn">
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="modal-counter" id="modalCounter"></span>
+            <button class="modal-nav-btn" id="nextBtn">
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const WORDS = [
+        {
+          word: "ability",
+          pos: "n.",
+          id: "kemampuan / keahlian",
+          example:
+            "She has an amazing <strong>ability</strong> to learn new languages very quickly.",
+        },
+        {
+          word: "able",
+          pos: "adj.",
+          id: "mampu / bisa",
+          example:
+            "Are you <strong>able</strong> to finish the report before the end of the day?",
+        },
+        {
+          word: "abroad",
+          pos: "adv.",
+          id: "ke luar negeri / di luar negeri",
+          example:
+            "She has always dreamed of studying <strong>abroad</strong> for at least one year.",
+        },
+        {
+          word: "accept",
+          pos: "v.",
+          id: "menerima / menyetujui",
+          example:
+            "She was delighted to <strong>accept</strong> the job offer from the new company.",
+        },
+        {
+          word: "accident",
+          pos: "n.",
+          id: "kecelakaan",
+          example:
+            "There was a serious <strong>accident</strong> on the motorway early this morning.",
+        },
+        {
+          word: "according to",
+          pos: "prep.",
+          id: "menurut / berdasarkan",
+          example:
+            "<strong>According to</strong> the weather forecast, it will rain heavily tomorrow.",
+        },
+        {
+          word: "achieve",
+          pos: "v.",
+          id: "mencapai / meraih",
+          example:
+            "With hard work and determination, you can <strong>achieve</strong> your goals.",
+        },
+        {
+          word: "act",
+          pos: "v.",
+          id: "bertindak / berakting",
+          example:
+            "We need to <strong>act</strong> quickly before the situation gets any worse.",
+        },
+        {
+          word: "active",
+          pos: "adj.",
+          id: "aktif",
+          example:
+            "My grandmother is very <strong>active</strong> for her age — she goes hiking every week.",
+        },
+        {
+          word: "actually",
+          pos: "adv.",
+          id: "sebenarnya / sungguh",
+          example:
+            "I thought the film would be boring, but it was <strong>actually</strong> really good.",
+        },
+        {
+          word: "adult",
+          pos: "adj.",
+          id: "dewasa",
+          example:
+            "The film contains some scenes that are only suitable for <strong>adult</strong> viewers.",
+        },
+        {
+          word: "advantage",
+          pos: "n.",
+          id: "keuntungan / kelebihan",
+          example:
+            "One big <strong>advantage</strong> of living in the city is easy access to public transport.",
+        },
+        {
+          word: "adventure",
+          pos: "n.",
+          id: "petualangan",
+          example:
+            "Travelling alone through Southeast Asia was the greatest <strong>adventure</strong> of her life.",
+        },
+        {
+          word: "advertise",
+          pos: "v.",
+          id: "mengiklankan / beriklan",
+          example:
+            "They decided to <strong>advertise</strong> the new product on social media and television.",
+        },
+        {
+          word: "advertisement",
+          pos: "n.",
+          id: "iklan",
+          example:
+            "She saw an <strong>advertisement</strong> for the job in the local newspaper.",
+        },
+        {
+          word: "advertising",
+          pos: "n.",
+          id: "periklanan",
+          example:
+            "She works in <strong>advertising</strong> and creates campaigns for well-known brands.",
+        },
+        {
+          word: "affect",
+          pos: "v.",
+          id: "mempengaruhi / berdampak pada",
+          example:
+            "The bad weather will <strong>affect</strong> the number of visitors to the festival.",
+        },
+        {
+          word: "after",
+          pos: "conj., adv.",
+          id: "setelah / sesudah",
+          example:
+            "She went for a long walk <strong>after</strong> she finished all her work.",
+        },
+        {
+          word: "against",
+          pos: "prep.",
+          id: "melawan / menentang",
+          example:
+            "The team played <strong>against</strong> their biggest rivals in the final match.",
+        },
+        {
+          word: "ah",
+          pos: "exclam.",
+          id: "ah / oh",
+          example:
+            "<strong>Ah</strong>, I see! Now I understand exactly what you mean.",
+        },
+        {
+          word: "airline",
+          pos: "n.",
+          id: "maskapai penerbangan",
+          example:
+            "Which <strong>airline</strong> are you flying with on your trip to Tokyo?",
+        },
+        {
+          word: "alive",
+          pos: "adj.",
+          id: "hidup / masih hidup",
+          example:
+            "She was relieved to hear that all the passengers were still <strong>alive</strong>.",
+        },
+        {
+          word: "all",
+          pos: "adv.",
+          id: "sama sekali / seluruhnya",
+          example:
+            "She was <strong>all</strong> alone in the big house and felt a little scared.",
+        },
+        {
+          word: "all right",
+          pos: "adj./adv., exclam.",
+          id: "baik-baik saja / oke",
+          example:
+            "Are you feeling <strong>all right</strong>? You look a little pale today.",
+        },
+        {
+          word: "allow",
+          pos: "v.",
+          id: "mengizinkan / memperbolehkan",
+          example:
+            "Pets are not <strong>allowed</strong> inside the museum, I am afraid.",
+        },
+        {
+          word: "almost",
+          pos: "adv.",
+          id: "hampir / nyaris",
+          example:
+            "She has <strong>almost</strong> finished her essay — just one paragraph to go.",
+        },
+        {
+          word: "alone",
+          pos: "adj./adv.",
+          id: "sendirian / seorang diri",
+          example:
+            "She prefers to travel <strong>alone</strong> so she can explore at her own pace.",
+        },
+        {
+          word: "along",
+          pos: "prep., adv.",
+          id: "sepanjang / mengikuti",
+          example:
+            "They walked <strong>along</strong> the river bank and enjoyed the beautiful scenery.",
+        },
+        {
+          word: "already",
+          pos: "adv.",
+          id: "sudah / telah",
+          example:
+            "By the time we arrived, the show had <strong>already</strong> started.",
+        },
+        {
+          word: "alternative",
+          pos: "n.",
+          id: "alternatif / pilihan lain",
+          example:
+            "If the train is full, taking a bus is a good <strong>alternative</strong>.",
+        },
+        {
+          word: "although",
+          pos: "conj.",
+          id: "meskipun / walaupun",
+          example:
+            "<strong>Although</strong> it was raining heavily, they decided to go for a walk anyway.",
+        },
+        {
+          word: "among",
+          pos: "prep.",
+          id: "di antara (lebih dari dua)",
+          example:
+            "She was the youngest <strong>among</strong> all the candidates who applied for the job.",
+        },
+        {
+          word: "amount",
+          pos: "n.",
+          id: "jumlah / banyaknya",
+          example:
+            "She was surprised by the large <strong>amount</strong> of homework given that week.",
+        },
+        {
+          word: "ancient",
+          pos: "adj.",
+          id: "kuno / sangat tua",
+          example:
+            "The tourists visited an <strong>ancient</strong> temple that was over two thousand years old.",
+        },
+        {
+          word: "ankle",
+          pos: "n.",
+          id: "pergelangan kaki",
+          example:
+            "She twisted her <strong>ankle</strong> while running and had to rest for a week.",
+        },
+        {
+          word: "any",
+          pos: "adv.",
+          id: "sedikit pun / sama sekali",
+          example:
+            "Is the patient feeling <strong>any</strong> better after taking the medicine?",
+        },
+        {
+          word: "anybody",
+          pos: "pron.",
+          id: "siapapun / seseorang",
+          example:
+            "Is there <strong>anybody</strong> in the house right now?",
+        },
+        {
+          word: "any more",
+          pos: "adv.",
+          id: "lagi / lebih banyak",
+          example:
+            "I can't eat <strong>any more</strong>, I'm completely full.",
+        },
+        {
+          word: "anyway",
+          pos: "adv.",
+          id: "bagaimanapun / lagipula",
+          example:
+            "It was raining, but we decided to go out <strong>anyway</strong>.",
+        },
+        {
+          word: "anywhere",
+          pos: "adv., pron.",
+          id: "dimanapun / ke mana saja",
+          example:
+            "You can sit <strong>anywhere</strong> you like in the classroom.",
+        },
+        {
+          word: "app",
+          pos: "n.",
+          id: "aplikasi",
+          example:
+            "I downloaded a new <strong>app</strong> to help me learn Spanish.",
+        },
+        {
+          word: "appear",
+          pos: "v.",
+          id: "muncul / tampak",
+          example:
+            "He didn't <strong>appear</strong> until the party was almost over.",
+        },
+        {
+          word: "appearance",
+          pos: "n.",
+          id: "penampilan / kemunculan",
+          example:
+            "We should not judge people by their physical <strong>appearance</strong>.",
+        },
+        {
+          word: "apply",
+          pos: "v.",
+          id: "mendaftar / menerapkan",
+          example:
+            "She decided to <strong>apply</strong> for the new management position.",
+        },
+        {
+          word: "architect",
+          pos: "n.",
+          id: "arsitek",
+          example:
+            "An <strong>architect</strong> designed this beautiful modern building.",
+        },
+        {
+          word: "architecture",
+          pos: "n.",
+          id: "arsitektur",
+          example:
+            "The city is famous for its stunning historical <strong>architecture</strong>.",
+        },
+        {
+          word: "argue",
+          pos: "v.",
+          id: "berdebat / bertengkar",
+          example:
+            "I don't want to <strong>argue</strong> with you about such a small thing.",
+        },
+        {
+          word: "argument",
+          pos: "n.",
+          id: "argumen / perdebatan",
+          example:
+            "They had a loud <strong>argument</strong> in the middle of the street.",
+        },
+        {
+          word: "army",
+          pos: "n.",
+          id: "tentara / angkatan darat",
+          example:
+            "He joined the <strong>army</strong> straight after finishing high school.",
+        },
+        {
+          word: "arrange",
+          pos: "v.",
+          id: "mengatur / menyusun",
+          example:
+            "I need to <strong>arrange</strong> a meeting with my manager for tomorrow.",
+        },
+        {
+          word: "arrangement",
+          pos: "n.",
+          id: "pengaturan / kesepakatan",
+          example:
+            "We made a special <strong>arrangement</strong> to pay for the car in installments.",
+        },
+        {
+          word: "as",
+          pos: "adv., conj.",
+          id: "sebagai / seperti / ketika",
+          example:
+            "He works <strong>as</strong> a software engineer in a large tech company.",
+        },
+        {
+          word: "asleep",
+          pos: "adj.",
+          id: "tertidur",
+          example:
+            "The baby finally fell <strong>asleep</strong> after crying for an hour.",
+        },
+        {
+          word: "assistant",
+          pos: "n., adj.",
+          id: "asisten / pembantu",
+          example:
+            "She was promoted to the position of manager's <strong>assistant</strong>.",
+        },
+        {
+          word: "athlete",
+          pos: "n.",
+          id: "atlet",
+          example:
+            "A professional <strong>athlete</strong> trains for several hours every single day.",
+        },
+        {
+          word: "attack",
+          pos: "n., v.",
+          id: "serangan / menyerang",
+          example:
+            "The guard dog was trained to <strong>attack</strong> intruders on sight.",
+        },
+        {
+          word: "attend",
+          pos: "v.",
+          id: "menghadiri",
+          example:
+            "Students are required to <strong>attend</strong> all the mandatory lectures.",
+        },
+        {
+          word: "attention",
+          pos: "n., exclam.",
+          id: "perhatian",
+          example:
+            "Please pay close <strong>attention</strong> to the safety instructions before we leave.",
+        },
+        {
+          word: "attractive",
+          pos: "adj.",
+          id: "menarik / menawan",
+          example:
+            "The new restaurant has a very <strong>attractive</strong> and cozy design.",
+        },
+        {
+          word: "audience",
+          pos: "n.",
+          id: "penonton / hadirin",
+          example:
+            "The <strong>audience</strong> cheered loudly when the band came on stage.",
+        },
+        {
+          word: "author",
+          pos: "n.",
+          id: "penulis / pengarang",
+          example:
+            "She is the <strong>author</strong> of several best-selling fantasy novels.",
+        },
+        {
+          word: "available",
+          pos: "adj.",
+          id: "tersedia",
+          example:
+            "Tickets for the concert will be <strong>available</strong> online starting next week.",
+        },
+        {
+          word: "average",
+          pos: "adj., n.",
+          id: "rata-rata",
+          example:
+            "The <strong>average</strong> temperature in summer is around 28 degrees here.",
+        },
+        {
+          word: "avoid",
+          pos: "v.",
+          id: "menghindari",
+          example:
+            "We took a different road to <strong>avoid</strong> the heavy morning traffic.",
+        },
+        {
+          word: "award",
+          pos: "n.",
+          id: "penghargaan / hadiah",
+          example:
+            "The film won the highest <strong>award</strong> at the national film festival.",
+        },
+        {
+          word: "awful",
+          pos: "adj.",
+          id: "mengerikan / sangat buruk",
+          example:
+            "The weather was <strong>awful</strong> so we cancelled our picnic.",
+        },
+        {
+          word: "back",
+          pos: "adj.",
+          id: "belakang / kembali",
+          example:
+            "Please go out through the <strong>back</strong> door of the building.",
+        },
+        {
+          word: "background",
+          pos: "n.",
+          id: "latar belakang",
+          example:
+            "The designer chose a light blue color for the website's <strong>background</strong>.",
+        },
+        {
+          word: "badly",
+          pos: "adv.",
+          id: "dengan buruk / parah",
+          example:
+            "The old house was <strong>badly</strong> damaged during the strong storm.",
+        },
+        {
+          word: "bar",
+          pos: "n.",
+          id: "bar / kedai minuman",
+          example:
+            "They met their friends at a local <strong>bar</strong> to celebrate the weekend.",
+        },
+        {
+          word: "baseball",
+          pos: "n.",
+          id: "bisbol",
+          example:
+            "My brother loves playing <strong>baseball</strong> with his friends on Sunday mornings.",
+        },
+        {
+          word: "based",
+          pos: "adj.",
+          id: "berbasis / berdasarkan",
+          example:
+            "The movie is <strong>based</strong> on a true story from the Second World War.",
+        },
+        {
+          word: "basketball",
+          pos: "n.",
+          id: "bola basket",
+          example:
+            "We formed a <strong>basketball</strong> team and play together every evening.",
+        },
+        {
+          word: "bean",
+          pos: "n.",
+          id: "kacang",
+          example:
+            "I ordered a fresh cup of coffee made from the best Arabica <strong>beans</strong>.",
+        },
+        {
+          word: "bear",
+          pos: "n.",
+          id: "beruang",
+          example:
+            "We saw a big brown <strong>bear</strong> walking near the forest edge.",
+        },
+        {
+          word: "beat",
+          pos: "v.",
+          id: "mengalahkan / memukul",
+          example:
+            "Our team managed to <strong>beat</strong> the champions in the final tournament.",
+        },
+        {
+          word: "beef",
+          pos: "n.",
+          id: "daging sapi",
+          example:
+            "We had roasted <strong>beef</strong> with vegetables for dinner last night.",
+        },
+        {
+          word: "before",
+          pos: "conj., adv.",
+          id: "sebelumnya",
+          example:
+            "I had never seen that movie <strong>before</strong> we watched it together.",
+        },
+        {
+          word: "behave",
+          pos: "v.",
+          id: "berperilaku / bersikap",
+          example:
+            "Parents usually teach their children how to <strong>behave</strong> well in public.",
+        },
+        {
+          word: "behaviour",
+          pos: "n.",
+          id: "perilaku / tingkah laku",
+          example:
+            "The teacher praised the student for his excellent <strong>behaviour</strong> in class.",
+        },
+        {
+          word: "belong",
+          pos: "v.",
+          id: "termasuk / milik",
+          example:
+            "Does this umbrella <strong>belong</strong> to you or someone else?",
+        },
+        {
+          word: "belt",
+          pos: "n.",
+          id: "sabuk / ikat pinggang",
+          example:
+            "He fastened his seat <strong>belt</strong> securely before the plane took off.",
+        },
+        {
+          word: "benefit",
+          pos: "n.",
+          id: "manfaat / keuntungan",
+          example:
+            "Eating fresh fruits daily has a major <strong>benefit</strong> for your health.",
+        },
+        {
+          word: "best",
+          pos: "adv., n.",
+          id: "terbaik",
+          example:
+            "She tried her <strong>best</strong> to answer all the difficult questions in the exam.",
+        },
+        {
+          word: "better",
+          pos: "adv.",
+          id: "lebih baik",
+          example:
+            "He is feeling much <strong>better</strong> today after a good night's sleep.",
+        },
+        {
+          word: "between",
+          pos: "adv.",
+          id: "di antara (dua hal)",
+          example:
+            "The town is situated <strong>between</strong> a large forest and a beautiful lake.",
+        },
+        {
+          word: "billion",
+          pos: "number",
+          id: "miliar",
+          example:
+            "The global population has reached over eight <strong>billion</strong> people.",
+        },
+        {
+          word: "bin",
+          pos: "n.",
+          id: "tempat sampah",
+          example:
+            "Please throw your empty coffee cup into the rubbish <strong>bin</strong>.",
+        },
+        {
+          word: "biology",
+          pos: "n.",
+          id: "biologi",
+          example:
+            "She is studying <strong>biology</strong> at university to become a scientist.",
+        },
+        {
+          word: "birth",
+          pos: "n.",
+          id: "kelahiran",
+          example:
+            "The entire family gathered to celebrate the <strong>birth</strong> of the new baby.",
+        },
+        {
+          word: "biscuit",
+          pos: "n.",
+          id: "biskuit",
+          example:
+            "She always has a chocolate <strong>biscuit</strong> with her afternoon tea.",
+        },
+        {
+          word: "bit",
+          pos: "n.",
+          id: "sedikit / bagian kecil",
+          example:
+            "I need a <strong>bit</strong> more time to finish reading this long report.",
+        },
+        {
+          word: "blank",
+          pos: "adj., n.",
+          id: "kosong / hampa",
+          example:
+            "He handed me a <strong>blank</strong> piece of paper to write down my ideas.",
+        },
+        {
+          word: "blood",
+          pos: "n.",
+          id: "darah",
+          example:
+            "The doctor took a small sample of <strong>blood</strong> for the medical test.",
+        },
+        {
+          word: "blow",
+          pos: "v.",
+          id: "meniup / berhembus",
+          example:
+            "The wind started to <strong>blow</strong> strongly right before the storm hit.",
+        },
+        {
+          word: "board",
+          pos: "n.",
+          id: "papan / dewan",
+          example:
+            "The teacher wrote the math problem on the white <strong>board</strong>.",
+        },
+        {
+          word: "boil",
+          pos: "v.",
+          id: "mendidih / merebus",
+          example:
+            "Could you please <strong>boil</strong> some water so we can make pasta?",
+        },
+        {
+          word: "bone",
+          pos: "n.",
+          id: "tulang",
+          example:
+            "He sadly broke a <strong>bone</strong> in his arm when he fell off his bike.",
+        },
+        {
+          word: "book",
+          pos: "v.",
+          id: "memesan (tiket/tempat)",
+          example:
+            "I need to <strong>book</strong> a hotel room for our upcoming trip to Paris.",
+        },
+        {
+          word: "borrow",
+          pos: "v.",
+          id: "meminjam",
+          example:
+            "Can I <strong>borrow</strong> your pen for a moment to sign this document?",
+        },
+        {
+          word: "boss",
+          pos: "n.",
+          id: "bos / atasan",
+          example:
+            "My <strong>boss</strong> gave me positive feedback on my presentation yesterday.",
+        },
+        {
+          word: "bottom",
+          pos: "n., adj.",
+          id: "bawah / dasar",
+          example:
+            "You will find the page numbers at the <strong>bottom</strong> of every page.",
+        },
+        {
+          word: "bowl",
+          pos: "n.",
+          id: "mangkuk",
+          example:
+            "I had a large <strong>bowl</strong> of hot chicken soup for lunch today.",
+        },
+        {
+          word: "brain",
+          pos: "n.",
+          id: "otak",
+          example:
+            "The human <strong>brain</strong> is an incredibly complex and fascinating organ.",
+        },
+        {
+          word: "bridge",
+          pos: "n.",
+          id: "jembatan",
+          example:
+            "Make sure to cross the old stone <strong>bridge</strong> to get to the island.",
+        },
+        {
+          word: "bright",
+          pos: "adj.",
+          id: "terang / cerdas",
+          example:
+            "The sun was shining so <strong>bright</strong> that I had to wear sunglasses.",
+        },
+        {
+          word: "brilliant",
+          pos: "adj.",
+          id: "brilian / cemerlang",
+          example:
+            "The scientist had a <strong>brilliant</strong> idea for a new invention.",
+        },
+        {
+          word: "broken",
+          pos: "adj.",
+          id: "rusak / patah",
+          example:
+            "My phone is <strong>broken</strong> so I need to buy a new one.",
+        },
+        {
+          word: "brush",
+          pos: "v., n.",
+          id: "menyikat / sikat",
+          example:
+            "You should <strong>brush</strong> your teeth twice a day.",
+        },
+        {
+          word: "burn",
+          pos: "v.",
+          id: "membakar / terbakar",
+          example:
+            "Be careful not to <strong>burn</strong> yourself when cooking.",
+        },
+        {
+          word: "businessman",
+          pos: "n.",
+          id: "pengusaha",
+          example:
+            "My uncle is a successful <strong>businessman</strong> who owns three restaurants.",
+        },
+        {
+          word: "button",
+          pos: "n.",
+          id: "tombol / kancing",
+          example:
+            "Press the red <strong>button</strong> to stop the machine.",
+        },
+        {
+          word: "camp",
+          pos: "n., v.",
+          id: "kemah / berkemah",
+          example:
+            "We decided to pitch our <strong>camp</strong> near the river.",
+        },
+        {
+          word: "camping",
+          pos: "n.",
+          id: "berkemah",
+          example:
+            "We are going <strong>camping</strong> in the mountains next weekend.",
+        },
+        {
+          word: "can",
+          pos: "n.",
+          id: "kaleng",
+          example:
+            "I drank a <strong>can</strong> of soda with my lunch.",
+        },
+        {
+          word: "care",
+          pos: "n., v.",
+          id: "peduli / perawatan",
+          example:
+            "Nurses provide excellent <strong>care</strong> for their patients.",
+        },
+        {
+          word: "careful",
+          pos: "adj.",
+          id: "hati-hati",
+          example:
+            "Please be <strong>careful</strong> when you cross the busy street.",
+        },
+        {
+          word: "carefully",
+          pos: "adv.",
+          id: "dengan hati-hati",
+          example:
+            "He drove the car very <strong>carefully</strong> through the snow.",
+        },
+        {
+          word: "carpet",
+          pos: "n.",
+          id: "karpet",
+          example:
+            "We bought a beautiful new <strong>carpet</strong> for the living room.",
+        },
+        {
+          word: "cartoon",
+          pos: "n.",
+          id: "kartun",
+          example:
+            "My children love watching this animated <strong>cartoon</strong> every morning.",
+        },
+        {
+          word: "case",
+          pos: "n.",
+          id: "kasus / kotak",
+          example:
+            "The detective is working hard to solve this mysterious <strong>case</strong>.",
+        },
+        {
+          word: "cash",
+          pos: "n.",
+          id: "uang tunai",
+          example:
+            "I prefer paying with <strong>cash</strong> instead of a credit card.",
+        },
+        {
+          word: "castle",
+          pos: "n.",
+          id: "kastil / istana",
+          example:
+            "The ancient stone <strong>castle</strong> is located on top of the hill.",
+        },
+        {
+          word: "catch",
+          pos: "v.",
+          id: "menangkap / mengejar",
+          example:
+            "I need to run to the station to <strong>catch</strong> my train.",
+        },
+        {
+          word: "cause",
+          pos: "n., v.",
+          id: "penyebab / menyebabkan",
+          example:
+            "Heavy rain can sometimes <strong>cause</strong> flooding in the city.",
+        },
+        {
+          word: "celebrate",
+          pos: "v.",
+          id: "merayakan",
+          example:
+            "We are going to <strong>celebrate</strong> his birthday with a big party.",
+        },
+        {
+          word: "celebrity",
+          pos: "n.",
+          id: "selebriti",
+          example:
+            "The restaurant is often visited by a famous <strong>celebrity</strong>.",
+        },
+        {
+          word: "certain",
+          pos: "adj.",
+          id: "pasti / tertentu",
+          example:
+            "Are you absolutely <strong>certain</strong> about the time of the meeting?",
+        },
+        {
+          word: "certainly",
+          pos: "adv.",
+          id: "tentu saja / pasti",
+          example:
+            "I will <strong>certainly</strong> help you with your homework tonight.",
+        },
+        {
+          word: "chance",
+          pos: "n.",
+          id: "peluang / kesempatan",
+          example:
+            "This job offer is a great <strong>chance</strong> to improve your career.",
+        },
+        {
+          word: "character",
+          pos: "n.",
+          id: "karakter / tokoh",
+          example:
+            "My favorite <strong>character</strong> in the book is the brave young knight.",
+        },
+        {
+          word: "charity",
+          pos: "n.",
+          id: "amal / yayasan amal",
+          example:
+            "She donates a portion of her salary to a local <strong>charity</strong>.",
+        },
+        {
+          word: "chat",
+          pos: "v., n.",
+          id: "mengobrol / obrolan",
+          example:
+            "I had a quick <strong>chat</strong> with my neighbor this morning.",
+        },
+        {
+          word: "check",
+          pos: "n.",
+          id: "pemeriksaan / cek",
+          example:
+            "The doctor will perform a quick health <strong>check</strong> on you.",
+        },
+        {
+          word: "chef",
+          pos: "n.",
+          id: "koki",
+          example:
+            "The head <strong>chef</strong> has prepared a special menu for tonight.",
+        },
+        {
+          word: "chemistry",
+          pos: "n.",
+          id: "kimia",
+          example:
+            "We learned about different elements in our <strong>chemistry</strong> class.",
+        },
+        {
+          word: "chip",
+          pos: "n.",
+          id: "keripik / kepingan",
+          example:
+            "I always eat a bag of potato <strong>chips</strong> while watching a movie.",
+        },
+        {
+          word: "choice",
+          pos: "n.",
+          id: "pilihan",
+          example:
+            "You have the <strong>choice</strong> between the red or the blue shirt.",
+        },
+        {
+          word: "church",
+          pos: "n.",
+          id: "gereja",
+          example:
+            "They usually go to the local <strong>church</strong> every Sunday morning.",
+        },
+        {
+          word: "cigarette",
+          pos: "n.",
+          id: "rokok",
+          example:
+            "Smoking a <strong>cigarette</strong> is very bad for your lungs.",
+        },
+        {
+          word: "circle",
+          pos: "n., v.",
+          id: "lingkaran / melingkari",
+          example:
+            "Please gather your chairs into a large <strong>circle</strong> for the discussion.",
+        },
+        {
+          word: "classical",
+          pos: "adj.",
+          id: "klasik",
+          example:
+            "I love listening to beautiful <strong>classical</strong> music when I study.",
+        },
+        {
+          word: "clear",
+          pos: "adj.",
+          id: "jelas / jernih",
+          example:
+            "The sky was completely <strong>clear</strong> and full of stars.",
+        },
+        {
+          word: "clearly",
+          pos: "adv.",
+          id: "dengan jelas",
+          example:
+            "Please speak <strong>clearly</strong> so that everyone in the room can hear you.",
+        },
+        {
+          word: "clever",
+          pos: "adj.",
+          id: "pintar / cerdik",
+          example:
+            "That is a very <strong>clever</strong> solution to our difficult problem.",
+        },
+        {
+          word: "climate",
+          pos: "n.",
+          id: "iklim",
+          example:
+            "The country has a warm tropical <strong>climate</strong> almost all year.",
+        },
+        {
+          word: "close",
+          pos: "adj.",
+          id: "dekat",
+          example:
+            "The supermarket is very <strong>close</strong> to my house.",
+        },
+        {
+          word: "closed",
+          pos: "adj.",
+          id: "tertutup / tutup",
+          example:
+            "The shop is completely <strong>closed</strong> on public holidays.",
+        },
+        {
+          word: "clothing",
+          pos: "n.",
+          id: "pakaian",
+          example:
+            "You should pack some warm <strong>clothing</strong> for the winter trip.",
+        },
+        {
+          word: "cloud",
+          pos: "n.",
+          id: "awan",
+          example:
+            "There wasn't a single <strong>cloud</strong> in the bright blue sky.",
+        },
+        {
+          word: "coach",
+          pos: "n.",
+          id: "pelatih / bus",
+          example:
+            "Our tennis <strong>coach</strong> taught us a new technique today.",
+        },
+        {
+          word: "coast",
+          pos: "n.",
+          id: "pantai / pesisir",
+          example:
+            "They drove along the rocky <strong>coast</strong> to enjoy the ocean view.",
+        },
+        {
+          word: "code",
+          pos: "n.",
+          id: "kode",
+          example:
+            "You need to enter a secret <strong>code</strong> to unlock this door.",
+        },
+        {
+          word: "colleague",
+          pos: "n.",
+          id: "rekan kerja",
+          example:
+            "I went out for dinner with a close <strong>colleague</strong> after work.",
+        },
+        {
+          word: "collect",
+          pos: "v.",
+          id: "mengumpulkan",
+          example:
+            "Many people like to <strong>collect</strong> old stamps as a hobby.",
+        },
+        {
+          word: "column",
+          pos: "n.",
+          id: "kolom / tiang",
+          example:
+            "Please write your full name in the first <strong>column</strong> of the form.",
+        },
+        {
+          word: "comedy",
+          pos: "n.",
+          id: "komedi",
+          example:
+            "We watched a hilarious <strong>comedy</strong> that made us laugh all night.",
+        },
+        {
+          word: "comfortable",
+          pos: "adj.",
+          id: "nyaman",
+          example:
+            "These new shoes are incredibly <strong>comfortable</strong> for walking long distances.",
+        },
+        {
+          word: "comment",
+          pos: "n.",
+          id: "komentar",
+          example:
+            "She left a lovely <strong>comment</strong> on my recent social media post.",
+        },
+        {
+          word: "communicate",
+          pos: "v.",
+          id: "berkomunikasi",
+          example:
+            "Animals have their own unique ways to <strong>communicate</strong> with each other.",
+        },
+        {
+          word: "community",
+          pos: "n.",
+          id: "masyarakat / komunitas",
+          example:
+            "The local <strong>community</strong> worked together to build a new park.",
+        },
+        {
+          word: "compete",
+          pos: "v.",
+          id: "bersaing / bertanding",
+          example:
+            "Athletes from all over the world will <strong>compete</strong> in the Olympic games.",
+        },
+        {
+          word: "competition",
+          pos: "n.",
+          id: "kompetisi / pertandingan",
+          example:
+            "She won first place in the national singing <strong>competition</strong>.",
+        },
+        {
+          word: "complain",
+          pos: "v.",
+          id: "mengeluh",
+          example:
+            "Some customers called to <strong>complain</strong> about the slow service.",
+        },
+        {
+          word: "completely",
+          pos: "adv.",
+          id: "sepenuhnya / sama sekali",
+          example:
+            "I had <strong>completely</strong> forgotten that we had a meeting scheduled.",
+        },
+        {
+          word: "condition",
+          pos: "n.",
+          id: "kondisi / keadaan",
+          example:
+            "The used car is still in surprisingly good <strong>condition</strong>.",
+        },
+        {
+          word: "conference",
+          pos: "n.",
+          id: "konferensi / rapat",
+          example:
+            "He traveled to London to attend a large medical <strong>conference</strong>.",
+        },
+        {
+          word: "connect",
+          pos: "v.",
+          id: "menghubungkan",
+          example:
+            "You can use this cable to <strong>connect</strong> your phone to the computer.",
+        },
+        {
+          word: "connected",
+          pos: "adj.",
+          id: "terhubung",
+          example:
+            "Make sure your television is properly <strong>connected</strong> to the internet.",
+        },
+        {
+          word: "consider",
+          pos: "v.",
+          id: "mempertimbangkan",
+          example:
+            "You should carefully <strong>consider</strong> all your options before deciding.",
+        },
+        {
+          word: "contain",
+          pos: "v.",
+          id: "berisi / mengandung",
+          example:
+            "These fresh vegetables <strong>contain</strong> many essential vitamins.",
+        },
+        {
+          word: "context",
+          pos: "n.",
+          id: "konteks",
+          example:
+            "You need to read the whole paragraph to understand the <strong>context</strong>.",
+        },
+        {
+          word: "continent",
+          pos: "n.",
+          id: "benua",
+          example:
+            "Asia is the largest <strong>continent</strong> directly connected to Europe.",
+        },
+        {
+          word: "continue",
+          pos: "v.",
+          id: "melanjutkan / terus",
+          example:
+            "Please <strong>continue</strong> working on your project until it is finished.",
+        },
+        {
+          word: "control",
+          pos: "n., v.",
+          id: "kendali / mengendalikan",
+          example:
+            "The pilot slowly lost <strong>control</strong> of the small airplane.",
+        },
+        {
+          word: "cook",
+          pos: "n.",
+          id: "juru masak",
+          example:
+            "My grandmother is an amazing <strong>cook</strong> who makes the best pies.",
+        },
+        {
+          word: "cooker",
+          pos: "n.",
+          id: "kompor",
+          example:
+            "We need to buy a new gas <strong>cooker</strong> for our kitchen.",
+        },
+        {
+          word: "copy",
+          pos: "n., v.",
+          id: "salinan / menyalin",
+          example:
+            "Please make a <strong>copy</strong> of this important document.",
+        },
+        {
+          word: "corner",
+          pos: "n.",
+          id: "sudut / pojok",
+          example:
+            "The small cafe is located just around the <strong>corner</strong>.",
+        },
+        {
+          word: "correctly",
+          pos: "adv.",
+          id: "dengan benar",
+          example:
+            "Make sure you answer all the exam questions <strong>correctly</strong>.",
+        },
+        {
+          word: "count",
+          pos: "v.",
+          id: "menghitung",
+          example:
+            "The little boy learned how to <strong>count</strong> from one to ten.",
+        },
+        {
+          word: "couple",
+          pos: "n.",
+          id: "pasangan / beberapa",
+          example:
+            "A young <strong>couple</strong> just moved into the house next door.",
+        },
+        {
+          word: "cover",
+          pos: "v.",
+          id: "menutupi",
+          example:
+            "You should <strong>cover</strong> the food so the flies don't get on it.",
+        },
+        {
+          word: "crazy",
+          pos: "adj.",
+          id: "gila",
+          example:
+            "It is <strong>crazy</strong> to go outside in this freezing weather without a coat.",
+        },
+        {
+          word: "creative",
+          pos: "adj.",
+          id: "kreatif",
+          example:
+            "She is a very <strong>creative</strong> person who loves painting and writing.",
+        },
+        {
+          word: "credit",
+          pos: "n.",
+          id: "kredit / pujian",
+          example:
+            "He always uses a <strong>credit</strong> card when shopping online.",
+        },
+        {
+          word: "crime",
+          pos: "n.",
+          id: "kejahatan",
+          example:
+            "The city has seen a significant drop in violent <strong>crime</strong> this year.",
+        },
+        {
+          word: "criminal",
+          pos: "n.",
+          id: "penjahat",
+          example:
+            "The police finally caught the famous <strong>criminal</strong> after a long chase.",
+        },
+        {
+          word: "cross",
+          pos: "v., n.",
+          id: "menyeberang / salib",
+          example:
+            "Be very careful when you <strong>cross</strong> the busy road.",
+        },
+        {
+          word: "crowd",
+          pos: "n.",
+          id: "kerumunan",
+          example:
+            "A huge <strong>crowd</strong> gathered to watch the street performance.",
+        },
+        {
+          word: "crowded",
+          pos: "adj.",
+          id: "penuh sesak",
+          example:
+            "The train was so <strong>crowded</strong> that we couldn't find a seat.",
+        },
+        {
+          word: "cry",
+          pos: "v.",
+          id: "menangis",
+          example:
+            "The sad movie always makes me want to <strong>cry</strong>.",
+        },
+        {
+          word: "cupboard",
+          pos: "n.",
+          id: "lemari",
+          example:
+            "You can find the clean plates inside the kitchen <strong>cupboard</strong>.",
+        },
+        {
+          word: "curly",
+          pos: "adj.",
+          id: "keriting",
+          example:
+            "She has beautiful long <strong>curly</strong> hair.",
+        },
+        {
+          word: "cycle",
+          pos: "n., v.",
+          id: "siklus / bersepeda",
+          example:
+            "I usually <strong>cycle</strong> to work instead of taking the bus.",
+        },
+        {
+          word: "daily",
+          pos: "adj.",
+          id: "harian",
+          example:
+            "Reading the <strong>daily</strong> newspaper is a good habit to stay informed.",
+        },
+        {
+          word: "danger",
+          pos: "n.",
+          id: "bahaya",
+          example:
+            "The warning sign indicated that there was a <strong>danger</strong> of falling rocks.",
+        },
+        {
+          word: "dark",
+          pos: "n.",
+          id: "kegelapan",
+          example:
+            "I am a little bit scared of sitting alone in the <strong>dark</strong>.",
+        },
+        {
+          word: "data",
+          pos: "n.",
+          id: "data",
+          example:
+            "We need to collect more <strong>data</strong> before making a final decision.",
+        },
+        {
+          word: "dead",
+          pos: "adj.",
+          id: "mati",
+          example:
+            "We found a <strong>dead</strong> bird quietly lying in the garden.",
+        },
+        {
+          word: "deal",
+          pos: "v.",
+          id: "berurusan / menangani",
+          example:
+            "He knows how to <strong>deal</strong> with difficult customers politely.",
+        },
+        {
+          word: "dear",
+          pos: "exclam.",
+          id: "ya ampun / sayang",
+          example:
+            "Oh <strong>dear</strong>, I think I have lost my house keys!",
+        },
+        {
+          word: "death",
+          pos: "n.",
+          id: "kematian",
+          example:
+            "The tragic <strong>death</strong> of the hero brought tears to the audience.",
+        },
+        {
+          word: "decision",
+          pos: "n.",
+          id: "keputusan",
+          example:
+            "Choosing moving to another city is a huge <strong>decision</strong>.",
+        },
+        {
+          word: "deep",
+          pos: "adj.",
+          id: "dalam",
+          example:
+            "The water in this pool is too <strong>deep</strong> for children.",
+        },
+        {
+          word: "definitely",
+          pos: "adv.",
+          id: "pasti",
+          example:
+            "I will <strong>definitely</strong> attend your graduation ceremony next week.",
+        },
+        {
+          word: "degree",
+          pos: "n.",
+          id: "gelar / derajat",
+          example:
+            "She recently earned a master's <strong>degree</strong> in computer science.",
+        },
+        {
+          word: "dentist",
+          pos: "n.",
+          id: "dokter gigi",
+          example:
+            "You should visit the <strong>dentist</strong> twice a year for a checkup.",
+        },
+        {
+          word: "department",
+          pos: "n.",
+          id: "departemen / bagian",
+          example:
+            "You can find men's clothing in the menswear <strong>department</strong>.",
+        },
+        {
+          word: "depend",
+          pos: "v.",
+          id: "bergantung",
+          example:
+            "The cost of the trip will <strong>depend</strong> on which hotel you choose.",
+        },
+        {
+          word: "desert",
+          pos: "n.",
+          id: "gurun",
+          example:
+            "Camels can survive for days in the hot sandy <strong>desert</strong> without water.",
+        },
+        {
+          word: "designer",
+          pos: "n.",
+          id: "desainer / perancang",
+          example:
+            "A famous fashion <strong>designer</strong> created this beautiful dress.",
+        },
+        {
+          word: "destroy",
+          pos: "v.",
+          id: "menghancurkan",
+          example:
+            "The powerful earthquake could <strong>destroy</strong> many old buildings in the city.",
+        },
+        {
+          word: "detective",
+          pos: "n.",
+          id: "detektif",
+          example:
+            "The clever <strong>detective</strong> finally uncovered the truth behind the mystery.",
+        },
+        {
+          word: "develop",
+          pos: "v.",
+          id: "mengembangkan",
+          example:
+            "Reading books can help to <strong>develop</strong> your vocabulary and imagination.",
+        },
+        {
+          word: "device",
+          pos: "n.",
+          id: "perangkat",
+          example:
+            "My smartphone is the most useful electronic <strong>device</strong> I own.",
+        },
+        {
+          word: "diary",
+          pos: "n.",
+          id: "buku harian",
+          example:
+            "She writes all her secret thoughts in her personal <strong>diary</strong> every night.",
+        },
+        {
+          word: "differently",
+          pos: "adv.",
+          id: "dengan cara yang berbeda",
+          example:
+            "Everyone thinks <strong>differently</strong> when solving a complex puzzle.",
+        },
+        {
+          word: "digital",
+          pos: "adj.",
+          id: "digital",
+          example:
+            "Many people now prefer reading <strong>digital</strong> books on their tablets.",
+        },
+        {
+          word: "direct",
+          pos: "adj.",
+          id: "langsung",
+          example:
+            "Is there a <strong>direct</strong> flight from London to Tokyo without stopping?",
+        },
+        {
+          word: "direction",
+          pos: "n.",
+          id: "arah",
+          example:
+            "Make sure you are driving in the right <strong>direction</strong>.",
+        },
+        {
+          word: "director",
+          pos: "n.",
+          id: "direktur / sutradara",
+          example:
+            "The famous film <strong>director</strong> won an Oscar for his latest movie.",
+        },
+        {
+          word: "disagree",
+          pos: "v.",
+          id: "tidak setuju",
+          example:
+            "I have to <strong>disagree</strong> with your opinion about that movie.",
+        },
+        {
+          word: "disappear",
+          pos: "v.",
+          id: "menghilang",
+          example:
+            "The sun started to <strong>disappear</strong> slowly behind the dark clouds.",
+        },
+        {
+          word: "disaster",
+          pos: "n.",
+          id: "bencana",
+          example:
+            "The massive flood was the worst natural <strong>disaster</strong> in the country's history.",
+        },
+        {
+          word: "discover",
+          pos: "v.",
+          id: "menemukan",
+          example:
+            "Scientists hope to <strong>discover</strong> a cure for this rare disease soon.",
+        },
+        {
+          word: "discovery",
+          pos: "n.",
+          id: "penemuan",
+          example:
+            "The <strong>discovery</strong> of electricity completely changed how people live.",
+        },
+        {
+          word: "discussion",
+          pos: "n.",
+          id: "diskusi",
+          example:
+            "We had a long <strong>discussion</strong> about our upcoming holiday plans.",
+        },
+        {
+          word: "disease",
+          pos: "n.",
+          id: "penyakit",
+          example:
+            "Eating healthy food can help prevent heart <strong>disease</strong>.",
+        },
+        {
+          word: "distance",
+          pos: "n.",
+          id: "jarak",
+          example:
+            "The <strong>distance</strong> between the two cities is about two hundred miles.",
+        },
+        {
+          word: "divorced",
+          pos: "adj.",
+          id: "bercerai",
+          example:
+            "His parents got <strong>divorced</strong> when he was only five years old.",
+        },
+        {
+          word: "document",
+          pos: "n.",
+          id: "dokumen",
+          example:
+            "Please sign this official <strong>document</strong> at the bottom of the page.",
+        },
+        {
+          word: "double",
+          pos: "adj., det., pron., v.",
+          id: "ganda / dua kali lipat",
+          example:
+            "I would like a <strong>double</strong> espresso with some hot milk, please.",
+        },
+        {
+          word: "download",
+          pos: "v., n.",
+          id: "mengunduh / unduhan",
+          example:
+            "You can simply <strong>download</strong> the application directly from their website.",
+        },
+        {
+          word: "downstairs",
+          pos: "adj.",
+          id: "di lantai bawah",
+          example:
+            "The kitchen and the living room are both located <strong>downstairs</strong>.",
+        },
+        {
+          word: "drama",
+          pos: "n.",
+          id: "drama",
+          example:
+            "My favorite television series is an exciting historical <strong>drama</strong>.",
+        },
+        {
+          word: "drawing",
+          pos: "n.",
+          id: "gambar / lukisan",
+          example:
+            "The child made a beautiful <strong>drawing</strong> of a house and a tree.",
+        },
+        {
+          word: "dream",
+          pos: "n., v.",
+          id: "mimpi / bermimpi",
+          example:
+            "It has always been my big <strong>dream</strong> to travel around the world.",
+        },
+        {
+          word: "drive",
+          pos: "n.",
+          id: "perjalanan darat / jalan masuk",
+          example:
+            "It's a long <strong>drive</strong> from the city to the beach.",
+        },
+        {
+          word: "driving",
+          pos: "n.",
+          id: "mengemudi",
+          example:
+            "He has to take a special <strong>driving</strong> test to get his license.",
+        },
+        {
+          word: "drop",
+          pos: "v.",
+          id: "menjatuhkan",
+          example:
+            "Be careful not to <strong>drop</strong> your expensive new phone on the floor.",
+        },
+        {
+          word: "drug",
+          pos: "n.",
+          id: "obat / narkoba",
+          example:
+            "The doctor prescribed a new <strong>drug</strong> to help cure the infection.",
+        },
+        {
+          word: "dry",
+          pos: "adj., v.",
+          id: "kering / mengeringkan",
+          example:
+            "The soil was incredibly <strong>dry</strong> after weeks without any rain.",
+        },
+        {
+          word: "earn",
+          pos: "v.",
+          id: "menghasilkan",
+          example:
+            "He works hard to <strong>earn</strong> an honest living for his family.",
+        },
+        {
+          word: "earth",
+          pos: "n.",
+          id: "bumi",
+          example:
+            "The moon constantly revolves around the <strong>earth</strong>.",
+        },
+        {
+          word: "easily",
+          pos: "adv.",
+          id: "dengan mudah",
+          example:
+            "She passed the difficult exam very <strong>easily</strong> because she had studied well.",
+        },
+      ];
+
+      // ── Indonesian example translations ──
+      const WORD_ID_EXAMPLES = {
+        ability:
+          "Dia memiliki kemampuan luar biasa untuk mempelajari bahasa baru dengan sangat cepat.",
+        able: "Apakah kamu mampu menyelesaikan laporan itu sebelum akhir hari?",
+        abroad:
+          "Dia selalu bermimpi untuk belajar di luar negeri setidaknya selama satu tahun.",
+        accept:
+          "Dia sangat senang menerima tawaran pekerjaan dari perusahaan baru itu.",
+        accident: "Ada kecelakaan serius di jalan tol pagi ini.",
+        "according to":
+          "Menurut prakiraan cuaca, besok akan turun hujan lebat.",
+        achieve: "Dengan kerja keras dan tekad, kamu bisa mencapai tujuanmu.",
+        act: "Kita perlu bertindak cepat sebelum situasinya semakin memburuk.",
+        active:
+          "Nenekku sangat aktif untuk usianya — dia mendaki setiap minggu.",
+        actually:
+          "Saya pikir filmnya akan membosankan, tetapi sebenarnya sangat bagus.",
+        adult:
+          "Film itu mengandung beberapa adegan yang hanya cocok untuk penonton dewasa.",
+        advantage:
+          "Salah satu keuntungan besar tinggal di kota adalah kemudahan akses transportasi umum.",
+        adventure:
+          "Bepergian sendiri melalui Asia Tenggara adalah petualangan terbesar dalam hidupnya.",
+        advertise:
+          "Mereka memutuskan untuk mengiklankan produk baru itu di media sosial dan televisi.",
+        advertisement:
+          "Dia melihat iklan lowongan pekerjaan itu di surat kabar lokal.",
+        advertising:
+          "Dia bekerja di bidang periklanan dan membuat kampanye untuk merek-merek terkenal.",
+        affect: "Cuaca buruk akan mempengaruhi jumlah pengunjung festival itu.",
+        after:
+          "Dia pergi jalan-jalan panjang setelah menyelesaikan semua pekerjaannya.",
+        against:
+          "Tim itu bermain melawan rival terbesar mereka di pertandingan final.",
+        ah: "Ah, saya mengerti! Sekarang saya benar-benar memahami apa yang kamu maksud.",
+        airline:
+          "Maskapai penerbangan mana yang kamu gunakan untuk perjalananmu ke Tokyo?",
+        alive: "Dia lega mendengar bahwa semua penumpang masih hidup.",
+        all: "Dia benar-benar sendirian di rumah besar itu dan merasa sedikit takut.",
+        "all right":
+          "Apakah kamu baik-baik saja? Kamu terlihat sedikit pucat hari ini.",
+        allow:
+          "Hewan peliharaan tidak diizinkan masuk ke dalam museum, sayangnya.",
+        almost:
+          "Dia hampir menyelesaikan esainya — hanya tinggal satu paragraf lagi.",
+        alone:
+          "Dia lebih suka bepergian sendirian sehingga bisa menjelajah dengan caranya sendiri.",
+        along:
+          "Mereka berjalan di sepanjang tepi sungai dan menikmati pemandangan yang indah.",
+        already: "Ketika kami tiba, pertunjukannya sudah dimulai.",
+        alternative:
+          "Jika keretanya penuh, naik bus adalah alternatif yang baik.",
+        although:
+          "Meskipun hujan lebat, mereka tetap memutuskan untuk pergi berjalan-jalan.",
+        among:
+          "Dia adalah yang termuda di antara semua kandidat yang melamar pekerjaan itu.",
+        amount:
+          "Dia terkejut dengan jumlah PR yang banyak yang diberikan minggu itu.",
+        ancient:
+          "Para wisatawan mengunjungi kuil kuno yang berusia lebih dari dua ribu tahun.",
+        ankle:
+          "Dia memuntir pergelangan kakinya saat berlari dan harus beristirahat selama seminggu.",
+        any: "Apakah pasien merasa sedikit lebih baik setelah minum obatnya?",
+        anybody: "Apakah ada siapapun di dalam rumah saat ini?",
+        "any more": "Saya tidak bisa makan lebih banyak lagi, saya benar-benar kenyang.",
+        anyway: "Saat itu sedang hujan, namun kami tetap memutuskan untuk pergi keluar lagipula.",
+        anywhere: "Kamu bisa duduk di manapun yang kamu suka di ruang kelas.",
+        app: "Saya mengunduh aplikasi baru untuk membantu saya belajar bahasa Spanyol.",
+        appear: "Dia tidak muncul sampai pestanya hampir berakhir.",
+        appearance: "Kita tidak boleh menilai orang dari penampilan fisik mereka.",
+        apply: "Dia memutuskan untuk mendaftar pada posisi manajemen yang baru itu.",
+        architect: "Seorang arsitek merancang bangunan modern yang indah ini.",
+        architecture: "Kota ini terkenal karena arsitektur bersejarahnya yang memukau.",
+        argue: "Saya tidak ingin berdebat denganmu tentang hal kecil seperti ini.",
+        argument: "Mereka mengalami perdebatan keras di tengah jalan.",
+        army: "Dia bergabung dengan angkatan darat langsung setelah tamat sekolah menengah.",
+        arrange: "Saya perlu mengatur pertemuan dengan manajer saya untuk besok.",
+        arrangement: "Kami membuat kesepakatan khusus untuk membayar mobil tersebut dengan mencicil.",
+        as: "Dia bekerja sebagai insinyur perangkat lunak di sebuah perusahaan teknologi besar.",
+        asleep: "Bayi itu akhirnya tertidur setelah menangis selama satu jam.",
+        assistant: "Dia dipromosikan ke posisi asisten manajer.",
+        athlete: "Seorang atlet profesional berlatih selama beberapa jam setiap harinya.",
+        attack: "Anjing penjaga itu dilatih untuk menyerang penyusup seketika.",
+        attend: "Siswa diwajibkan menghadiri semua perkuliahan yang wajib.",
+        attention: "Mohon berikan perhatian penuh pada instruksi keselamatan sebelum kita berangkat.",
+        attractive: "Restoran baru ini memiliki desain yang sangat menarik dan nyaman.",
+        audience: "Para hadirin bersorak gembira ketika band tersebut naik ke panggung.",
+        author: "Dia adalah penulis dari beberapa novel fantasi berpenjualan terbaik.",
+        available: "Tiket untuk konser ini akan tersedia secara online mulai minggu depan.",
+        average: "Suhu rata-rata di musim panas adalah sekitar 28 derajat di sini.",
+        avoid: "Kami mengambil jalan yang berbeda untuk menghindari kemacetan lalu lintas pagi yang padat.",
+        award: "Film itu memenangkan penghargaan tertinggi pada festival film nasional.",
+        awful: "Cuacanya sangat buruk sehingga kami membatalkan piknik kami.",
+        back: "Tolong keluarlah melalui pintu belakang dari bangunan ini.",
+        background: "Desainer tersebut memilih warna biru muda untuk latar belakang situs web itu.",
+        badly: "Rumah tua itu rusak parah akibat badai yang kuat.",
+        bar: "Mereka bertemu dengan teman-teman di bar lokal untuk merayakan akhir pekan.",
+        baseball: "Adik laki-lakiku suka bermain bisbol bersama teman-temannya di Minggu pagi.",
+        based: "Film ini berdasarkan pada kisah nyata dari Perang Dunia Kedua.",
+        basketball: "Kami membentuk sebuah tim bola basket dan bermain bersama setiap sore.",
+        bean: "Saya memesan secangkir kopi segar yang terbuat dari biji kopi Arabika terbaik.",
+        bear: "Kami melihat seekor beruang cokelat besar sedang berjalan di dekat tepi hutan.",
+        beat: "Tim kami berhasil mengalahkan sang juara di turnamen final.",
+        beef: "Kami makan malam dengan daging sapi panggang dan sayuran semalam.",
+        before: "Saya belum pernah melihat film itu sebelumnya ketika kita menontonnya bersama.",
+        behave: "Orangtua biasanya mengajari anak-anak mereka bagaimana berperilaku baik di depan umum.",
+        behaviour: "Guru memuji murid tersebut atas perilaku yang sangat baik di dalam kelas.",
+        belong: "Apakah payung ini milikmu atau orang lain?",
+        belt: "Dia mengencangkan sabuk pengamannya dengan kuat sebelum pesawat terbang lepas landas.",
+        benefit: "Makan buah segar setiap hari memberikan manfaat besar untuk kesehatan Anda.",
+        best: "Dia berusaha melakukan yang terbaik untuk menjawab semua pertanyaan sulit dalam ujian itu.",
+        better: "Dia merasa jauh lebih baik hari ini setelah mendapatkan tidur yang cukup.",
+        between: "Kota tersebut terletak di antara hutan besar dan sebuah danau yang indah.",
+        billion: "Populasi global telah mencapai lebih dari delapan miliar orang.",
+        bin: "Tolong buang cangkir kopi Anda yang kosong ke dalam tempat sampah.",
+        biology: "Dia sedang belajar biologi di universitas untuk menjadi seorang ilmuwan.",
+        birth: "Seluruh keluarga berkumpul untuk merayakan kelahiran bayi yang baru.",
+        biscuit: "Dia selalu menyertakan sebuah biskuit cokelat saat minum teh sore harinya.",
+        bit: "Saya butuh sedikit lebih banyak waktu untuk selesai membaca laporan panjang ini.",
+        blank: "Dia memberiku selembar kertas kosong untuk menuliskan ide-ideku.",
+        blood: "Dokter mengambil sedikit sampel darah untuk tes medis.",
+        blow: "Angin mulai berhembus kuat tepat sebelum badai menyergap.",
+        board: "Guru itu menulis soal matematika pada papan tulis putih.",
+        boil: "Bisakah kamu merebus sedikit air agar kita bisa memasak pasta?",
+        bone: "Dia dengan nahas mematahkan tulang di lengannya ketika jatuh dari sepeda.",
+        book: "Saya perlu memesan kamar hotel untuk liburan kita ke Paris yang akan datang.",
+        borrow: "Bolehkah saya meminjam pulpenmu sebentar untuk menandatangani dokumen ini?",
+        boss: "Atasan saya memberikan umpan balik positif mengenai presentasi saya kemarin.",
+        bottom: "Kamu akan menemukan nomor halaman di bagian bawah setiap halamannya.",
+        bowl: "Saya memakan satu mangkuk besar berisi sup ayam hangat untuk makan siang hari ini.",
+        brain: "Otak manusia adalah organ yang luar biasa kompleks dan sangat menakjubkan.",
+        bridge: "Pastikan untuk menyeberangi jembatan batu tua tersebut untuk menuju pulau itu.",
+        bright: "Matahari bersinar amat terang sehingga saya harus mengenakan kacamata hitam.",
+        brilliant: "Ilmuwan itu memiliki ide cemerlang untuk sebuah penemuan baru.",
+        broken: "Ponsel saya rusak jadi saya perlu membeli yang baru.",
+        brush: "Kamu harus menyikat gigimu dua kali sehari.",
+        burn: "Berhati-hatilah agar tidak membakar dirimu saat memasak.",
+        businessman: "Paman saya adalah pengusaha sukses yang memiliki tiga restoran.",
+        button: "Tekan tombol merah untuk menghentikan mesin tersebut.",
+        camp: "Kami memutuskan untuk mendirikan kemah kami di dekat sungai.",
+        camping: "Kami akan pergi berkemah di pegunungan akhir pekan depan.",
+        can: "Saya meminum sekaleng soda bersama makan siang saya.",
+        care: "Perawat memberikan perawatan yang sangat baik bagi pasien mereka.",
+        careful: "Tolong berhati-hatilah saat kamu menyeberangi jalan yang sibuk itu.",
+        carefully: "Dia mengemudikan mobilnya dengan sangat hati-hati menembus salju.",
+        carpet: "Kami membeli karpet baru yang indah untuk ruang tamu.",
+        cartoon: "Anak-anak saya suka menonton kartun animasi ini setiap pagi.",
+        case: "Detektif itu bekerja keras untuk memecahkan kasus misterius ini.",
+        cash: "Saya lebih suka membayar dengan uang tunai daripada kartu kredit.",
+        castle: "Kastil batu kuno tersebut terletak di atas bukit.",
+        catch: "Saya harus berlari ke stasiun untuk mengejar kereta saya.",
+        cause: "Hujan lebat terkadang bisa menyebabkan banjir di kota.",
+        celebrate: "Kami akan merayakan ulang tahunnya dengan pesta besar.",
+        celebrity: "Restoran itu sering dikunjungi oleh seorang selebriti terkenal.",
+        certain: "Apakah kamu benar-benar pasti tentang waktu pertemuan tersebut?",
+        certainly: "Saya pasti akan membantumu dengan PR-mu malam ini.",
+        chance: "Tawaran pekerjaan ini adalah peluang besar untuk meningkatkan karirmu.",
+        character: "Tokoh favorit saya di buku ini adalah kesatria muda pemberani itu.",
+        charity: "Dia mendonasikan sebagian gajinya untuk yayasan amal setempat.",
+        chat: "Saya memiliki obrolan singkat dengan tetangga saya pagi ini.",
+        check: "Dokter akan melakukan pemeriksaan kesehatan singkat pada Anda.",
+        chef: "Kepala koki telah menyiapkan menu khusus untuk malam ini.",
+        chemistry: "Kami belajar tentang berbagai unsur di kelas kimia kami.",
+        chip: "Saya selalu makan sebungkus keripik kentang saat menonton film.",
+        choice: "Kamu memiliki pilihan antara kemeja merah atau biru.",
+        church: "Mereka biasanya pergi ke gereja setempat setiap Minggu pagi.",
+        cigarette: "Menghisap rokok sangat buruk bagi paru-parumu.",
+        circle: "Tolong kumpulkan kursi-kursi kalian menjadi satu lingkaran besar untuk diskusi.",
+        classical: "Saya suka mendengarkan musik klasik yang indah saat saya belajar.",
+        clear: "Langit benar-benar jernih dan penuh dengan bintang-bintang.",
+        clearly: "Tolong bicaralah dengan jelas agar semua orang di ruangan bisa mendengarmu.",
+        clever: "Itu adalah solusi yang amat cerdik untuk masalah sulit kita.",
+        climate: "Negara ini memiliki iklim tropis yang hangat hampir sepanjang tahun.",
+        close: "Supermarket itu sangat dekat dengan rumah saya.",
+        closed: "Toko tersebut sepenuhnya tutup pada hari libur nasional.",
+        clothing: "Kamu harus mengemas beberapa pakaian hangat untuk perjalanan musim dingin itu.",
+        cloud: "Tidak ada satu awan pun di langit biru yang cerah.",
+        coach: "Pelatih tenis kami mengajarkan kami teknik baru hari ini.",
+        coast: "Mereka berkendara di sepanjang pesisir berbatu untuk menikmati pemandangan laut.",
+        code: "Kamu perlu memasukkan sebuah kode rahasia untuk membuka kunci pintu ini.",
+        colleague: "Saya pergi keluar untuk makan malam dengan rekan kerja dekat setelah bekerja.",
+        collect: "Banyak orang suka mengumpulkan perangko tua sebagai hobi.",
+        column: "Tolong tulis nama lengkapmu di kolom pertama formulir tersebut.",
+        comedy: "Kami menonton sebuah komedi lucu yang membuat kami tertawa semalaman.",
+        comfortable: "Sepatu baru ini sungguh luar biasa nyaman untuk berjalan jarak jauh.",
+        comment: "Dia meninggalkan komentar yang manis di postingan media sosial saya baru-baru ini.",
+        communicate: "Hewan-hewan memiliki cara unik mereka sendiri untuk saling berkomunikasi.",
+        community: "Komunitas setempat bekerja sama untuk membangun taman yang baru.",
+        compete: "Atlet dari seluruh dunia akan bertanding di pertandingan Olimpiade.",
+        competition: "Dia memenangkan juara pertama dalam kompetisi menyanyi nasional.",
+        complain: "Beberapa pelanggan menelepon untuk mengeluh tentang layanan yang lambat.",
+        completely: "Saya benar-benar lupa bahwa kita memiliki jadwal pertemuan.",
+        condition: "Mobil bekas itu masih dalam kondisi yang secara mengejutkan baik.",
+        conference: "Dia bepergian ke London untuk menghadiri sebuah konferensi medis besar.",
+        connect: "Anda dapat menggunakan kabel ini untuk menghubungkan ponsel Anda ke komputer.",
+        connected: "Pastikan televisi Anda sudah terhubung ke internet dengan benar.",
+        consider: "Kamu harus mempertimbangkan semua pilihanmu dengan cermat sebelum memutuskan.",
+        contain: "Sayuran segar ini mengandung banyak vitamin penting.",
+        context: "Kamu perlu membaca seluruh paragraf untuk memahami konteksnya.",
+        continent: "Asia adalah benua terbesar yang terhubung langsung dengan Eropa.",
+        continue: "Tolong lanjutkan bekerja pada proyekmu sampai itu selesai.",
+        control: "Pilot itu perlahan kehilangan kendali atas pesawat kecil itu.",
+        cook: "Nenek saya adalah juru masak luar biasa yang membuat kue pai terbaik.",
+        cooker: "Kita perlu membeli kompor gas baru untuk dapur kita.",
+        copy: "Tolong buat salinan dari dokumen penting ini.",
+        corner: "Kafe kecil itu terletak tepat di tikungan sudut.",
+        correctly: "Pastikan kamu menjawab semua pertanyaan ujian dengan benar.",
+        count: "Bocah kecil itu belajar cara menghitung dari satu hingga sepuluh.",
+        couple: "Sepasang muda-mudi baru saja pindah ke rumah di sebelah.",
+        cover: "Kamu harus menutupi makanannya agar lalat tidak hinggap di sana.",
+        crazy: "Gila rasanya pergi keluar di cuaca yang sangat dingin ini tanpa mantel.",
+        creative: "Dia adalah orang yang sangat kreatif yang suka melukis dan menulis.",
+        credit: "Dia selalu menggunakan kartu kredit saat berbelanja online.",
+        crime: "Kota ini telah melihat penurunan signifikan dalam kejahatan kekerasan tahun ini.",
+        criminal: "Polisi akhirnya menangkap penjahat terkenal itu setelah pengejaran panjang.",
+        cross: "Sangat berhati-hatilah saat kamu menyeberangi jalan yang sibuk itu.",
+        crowd: "Kerumunan besar berkumpul untuk menonton pertunjukan jalanan itu.",
+        crowded: "Kereta itu begitu penuh sesak sehingga kami tidak bisa menemukan tempat duduk.",
+        cry: "Film sedih itu selalu membuatku ingin menangis.",
+        cupboard: "Kamu bisa menemukan piring bersih di dalam lemari dapur.",
+        curly: "Dia memiliki rambut keriting panjang yang indah.",
+        cycle: "Saya biasanya bersepeda ke tempat kerja daripada naik bus.",
+        daily: "Membaca surat kabar harian adalah kebiasaan baik untuk tetap mendapat informasi.",
+        danger: "Papan peringatan itu menunjukkan bahwa ada bahaya batu jatuh.",
+        dark: "Saya sedikit takut duduk sendirian dalam kegelapan.",
+        data: "Kita perlu mengumpulkan lebih banyak data sebelum membuat keputusan akhir.",
+        dead: "Kami menemukan seekor burung mati tergeletak begitu saja di kebun.",
+        deal: "Dia tahu cara menghadapi pelanggan yang sulit dengan sopan.",
+        dear: "Oh ya ampun, sepertinya saya kehilangan kunci rumah!",
+        death: "Kematian tragis pahlawan itu membuat penonton menitikkan air mata.",
+        decision: "Memilih pindah ke kota lain adalah keputusan yang sangat besar.",
+        deep: "Air di kolam ini terlalu dalam untuk anak-anak.",
+        definitely: "Saya pasti akan menghadiri upacara kelulusanmu minggu depan.",
+        degree: "Dia baru saja mendapatkan gelar master di bidang ilmu komputer.",
+        dentist: "Kamu harus mengunjungi dokter gigi dua kali setahun untuk pemeriksaan.",
+        department: "Kamu bisa menemukan pakaian pria di bagian pakaian pria.",
+        depend: "Biaya perjalanan itu akan bergantung pada hotel mana yang kamu pilih.",
+        desert: "Unta dapat bertahan berhari-hari di gurun pasir yang panas tanpa air.",
+        designer: "Seorang desainer fashion terkenal merancang gaun yang indah ini.",
+        destroy: "Gempa bumi yang kuat itu dapat menghancurkan banyak bangunan tua di kota.",
+        detective: "Detektif yang cerdik itu akhirnya mengungkap kebenaran di balik misteri tersebut.",
+        develop: "Membaca buku dapat membantu mengembangkan kosa kata dan imajinasimu.",
+        device: "Ponsel pintar saya adalah perangkat elektronik paling berguna yang saya miliki.",
+        diary: "Dia menulis semua pikiran rahasianya di buku harian pribadinya setiap malam.",
+        differently: "Setiap orang berpikir dengan cara yang berbeda saat memecahkan teka-teki yang rumit.",
+        digital: "Banyak orang sekarang lebih suka membaca buku digital di tablet mereka.",
+        direct: "Apakah ada penerbangan langsung dari London ke Tokyo tanpa henti?",
+        direction: "Pastikan kamu mengemudi ke arah yang benar.",
+        director: "Sutradara film terkenal itu memenangkan Oscar untuk film terbarunya.",
+        disagree: "Saya harus tidak setuju dengan pendapatmu mengenai film itu.",
+        disappear: "Matahari mulai menghilang perlahan di balik awan gelap itu.",
+        disaster: "Banjir besar itu adalah bencana alam terburuk dalam sejarah negara tersebut.",
+        discover: "Para ilmuwan berharap dapat menemukan obat untuk penyakit langka ini segera.",
+        discovery: "Penemuan listrik benar-benar mengubah cara orang hidup.",
+        discussion: "Kami memiliki diskusi panjang tentang rencana liburan kami yang akan datang.",
+        disease: "Makan makanan sehat dapat membantu mencegah penyakit jantung.",
+        distance: "Jarak antara kedua kota itu sekitar dua ratus mil.",
+        divorced: "Orang tuanya bercerai ketika dia baru berusia lima tahun.",
+        document: "Tolong tandatangani dokumen resmi ini di bagian bawah halamannya.",
+        double: "Saya ingin pesan espresso ganda dengan sedikit susu panas.",
+        download: "Kamu cukup mengunduh aplikasi itu langsung dari situs web mereka.",
+        downstairs: "Dapur dan ruang tamu keduanya terletak di lantai bawah.",
+        drama: "Serial televisi favorit saya adalah drama sejarah yang menarik.",
+        drawing: "Anak itu membuat gambar rumah dan pohon yang indah.",
+        dream: "Sudah selalu menjadi mimpi besar saya untuk bepergian keliling dunia.",
+        drive: "Ini adalah perjalanan darat yang panjang dari kota ke pantai.",
+        driving: "Dia harus mengikuti ujian mengemudi khusus untuk mendapatkan SIM-nya.",
+        drop: "Berhati-hatilah agar tidak menjatuhkan ponsel baru mahalmu ke lantai.",
+        drug: "Dokter meresepkan obat baru untuk membantu menyembuhkan infeksi itu.",
+        dry: "Tanah tersebut sangat kering setelah berminggu-minggu tanpa hujan.",
+        earn: "Dia bekerja keras untuk menghasilkan nafkah yang halal bagi keluarganya.",
+        earth: "Bulan secara konstan berputar mengelilingi bumi.",
+        easily: "Dia lulus ujian yang sulit itu dengan sangat mudah karena dia telah belajar dengan baik.",
+      };
+      WORDS.forEach(function (w) {
+        w.idExample = WORD_ID_EXAMPLES[w.word] || "";
+      });
+
+      // ── Render cards ──
+      const grid = document.getElementById("wordGrid");
+      const emptyState = document.getElementById("emptyState");
+      const visibleCount = document.getElementById("visibleCount");
+
+      function renderCards(list) {
+        // Remove existing cards (keep empty state node)
+        grid.querySelectorAll(".word-card").forEach((el) => el.remove());
+
+        if (list.length === 0) {
+          emptyState.style.display = "block";
+          visibleCount.textContent = "0";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        visibleCount.textContent = list.length;
+
+        list.forEach((item, idx) => {
+          const card = document.createElement("div");
+          card.className = "word-card";
+          card.dataset.index = idx;
+          card.innerHTML = `
+            <div class="word-card-word">${item.word}</div>
+            <div class="word-card-pos">${item.pos}</div>
+            <div class="word-card-translation">
+              <span class="flag">🇮🇩</span> ${item.id}
+            </div>
+          `;
+          card.addEventListener("click", () => openModal(idx));
+          grid.insertBefore(card, emptyState);
+        });
+      }
+
+      renderCards(WORDS);
+
+      // ── Search ──
+      let filteredWords = WORDS;
+
+      const searchInput = document.getElementById("searchInput");
+      const searchClear = document.getElementById("searchClear");
+
+      function performSearch(q) {
+        filteredWords = q
+          ? WORDS.filter(
+              (w) =>
+                w.word.toLowerCase().includes(q) ||
+                w.id.toLowerCase().includes(q) ||
+                w.pos.toLowerCase().includes(q),
+            )
+          : WORDS;
+        renderCards(filteredWords);
+        searchClear.classList.toggle("visible", q.length > 0);
+      }
+
+      searchInput.addEventListener("input", function () {
+        performSearch(this.value.trim().toLowerCase());
+      });
+
+      searchClear.addEventListener("click", () => {
+        searchInput.value = "";
+        performSearch("");
+        searchInput.focus();
+      });
+
+      // ── Modal ──
+      const backdrop = document.getElementById("modalBackdrop");
+      const modalWord = document.getElementById("modalWord");
+      const modalPos = document.getElementById("modalPos");
+      const modalTranslation = document.getElementById("modalTranslation");
+      const modalExample = document.getElementById("modalExample");
+      const modalCounter = document.getElementById("modalCounter");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      let currentIndex = 0;
+
+      function openModal(idx) {
+        currentIndex = idx;
+        updateModal();
+        backdrop.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        backdrop.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      function updateModal() {
+        const item = filteredWords[currentIndex];
+        modalWord.textContent = item.word;
+        modalPos.textContent = item.pos;
+        modalTranslation.textContent = item.id;
+        document.getElementById("modalExample").innerHTML = item.example;
+        document.getElementById("modalExampleId").textContent = item.idExample;
+        const slug = item.word
+          .split(",")[0]
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-");
+        document.getElementById("modalListenBtn").href =
+          "https://dictionary.cambridge.org/dictionary/english/" + slug;
+        modalCounter.textContent = `${currentIndex + 1} / ${filteredWords.length}`;
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === filteredWords.length - 1;
+      }
+
+      document
+        .getElementById("modalClose")
+        .addEventListener("click", closeModal);
+
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateModal();
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentIndex < filteredWords.length - 1) {
+          currentIndex++;
+          updateModal();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (!backdrop.classList.contains("open")) return;
+        if (e.key === "Escape") closeModal();
+        if (e.key === "ArrowLeft" && currentIndex > 0) {
+          currentIndex--;
+          updateModal();
+        }
+        if (e.key === "ArrowRight" && currentIndex < filteredWords.length - 1) {
+          currentIndex++;
+          updateModal();
+        }
+      });
+    </script>
+  </body>
+</html>
