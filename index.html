@@ -847,33 +847,62 @@
         box-shadow: 0 0 8px rgba(214, 188, 162, 0.5);
       }
 
-      .timeline-date {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--accent);
-        margin-bottom: 6px;
-        opacity: 0.9;
+      .timeline-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+
+      .timeline-logo {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        border-radius: 8px;
+        background: #fff;
+        padding: 4px;
+        flex-shrink: 0;
+        border: 1px solid rgba(255,255,255,0.12);
+      }
+
+      .timeline-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
       }
 
       .timeline-role {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
         color: var(--text-1);
-        margin: 0 0 3px 0;
+        margin: 0;
       }
 
       .timeline-company {
         font-size: 13px;
         color: var(--text-2);
-        margin: 0 0 12px 0;
+        margin: 0;
+      }
+
+      .timeline-date {
+        font-size: 12px;
+        color: var(--text-2);
+        opacity: 0.8;
+        margin: 0;
+      }
+
+      .timeline-location {
+        font-size: 12px;
+        color: var(--text-2);
+        opacity: 0.8;
+        margin: 0;
       }
 
       .timeline-body {
         font-size: 13px;
         color: var(--text-2);
         line-height: 1.65;
+        padding-left: 62px;
       }
 
       .timeline-body ul {
@@ -1574,9 +1603,15 @@
 
       <div class="timeline">
         <div class="timeline-item reveal">
-          <div class="timeline-date">May 2024 — Present</div>
-          <h3 class="timeline-role">Digital Transformation Development</h3>
-          <p class="timeline-company">PT Mattel Indonesia &middot; Full-time &middot; West Java, Indonesia &middot; On-site</p>
+          <div class="timeline-header">
+            <img src="img/mattel-logo.png" alt="PT Mattel Indonesia" class="timeline-logo" />
+            <div class="timeline-info">
+              <h3 class="timeline-role">Digital Transformation Development</h3>
+              <p class="timeline-company">PT Mattel Indonesia &middot; Full-time</p>
+              <p class="timeline-date">May 2024 &ndash; Present &middot; <span id="mattelDuration"></span></p>
+              <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
+            </div>
+          </div>
           <div class="timeline-body">
             <ul>
               <li>
@@ -1596,9 +1631,15 @@
         </div>
 
         <div class="timeline-item reveal">
-          <div class="timeline-date">Aug 2022 — May 2024</div>
-          <h3 class="timeline-role">OEE System Development</h3>
-          <p class="timeline-company">PT Bumiputra Manufaktur Teknologi &middot; Full-time &middot; West Java, Indonesia &middot; On-site</p>
+          <div class="timeline-header">
+            <img src="img/bmt-logo.png" alt="PT Bumiputra Manufaktur Teknologi" class="timeline-logo" />
+            <div class="timeline-info">
+              <h3 class="timeline-role">OEE System Development</h3>
+              <p class="timeline-company">PT Bumiputra Manufaktur Teknologi &middot; Full-time</p>
+              <p class="timeline-date">Aug 2022 &ndash; May 2024 &middot; 1 yr 9 mos</p>
+              <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
+            </div>
+          </div>
           <div class="timeline-body">
             <ul>
               <li>
@@ -1804,6 +1845,20 @@
           (new Date() - start) / (1000 * 60 * 60 * 24 * 365.25),
         );
         document.getElementById("expYears").textContent = years + "+ Years";
+      })();
+
+      // ── Job duration (Mattel) ──
+      (function () {
+        const start = new Date(2024, 4, 1); // May 2024
+        const now = new Date();
+        let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+        const yrs = Math.floor(months / 12);
+        const mos = months % 12;
+        const parts = [];
+        if (yrs) parts.push(yrs + " yr" + (yrs > 1 ? "s" : ""));
+        if (mos) parts.push(mos + " mo" + (mos > 1 ? "s" : ""));
+        const el = document.getElementById("mattelDuration");
+        if (el) el.textContent = parts.join(" ") || "< 1 mo";
       })();
 
       // ── Smooth scroll with fixed-header offset ──
