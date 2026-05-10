@@ -815,16 +815,6 @@
         flex-direction: column;
       }
 
-      .timeline::before {
-        content: "";
-        position: absolute;
-        left: 7px;
-        top: 10px;
-        bottom: 10px;
-        width: 1px;
-        background: var(--border-1);
-      }
-
       .timeline-item {
         position: relative;
         padding: 0 0 36px 24px;
@@ -832,6 +822,18 @@
 
       .timeline-item:last-child {
         padding-bottom: 0;
+      }
+
+      .timeline-item:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        left: -17px;
+        top: 16px;
+        bottom: -12px;
+        width: 1px;
+        transform: translateX(-50%);
+        background: var(--border-1);
+        z-index: 0;
       }
 
       .timeline-item::before {
@@ -845,6 +847,7 @@
         background: var(--accent);
         opacity: 0.75;
         box-shadow: 0 0 8px rgba(214, 188, 162, 0.5);
+        z-index: 1;
       }
 
       .timeline-header {
@@ -1608,7 +1611,10 @@
             <div class="timeline-info">
               <h3 class="timeline-role">Digital Transformation Development</h3>
               <p class="timeline-company">PT Mattel Indonesia &middot; Full-time</p>
-              <p class="timeline-date">May 2024 &ndash; Present &middot; <span id="mattelDuration"></span></p>
+              <p class="timeline-date">
+                May 2024 &ndash; Present &middot;
+                <span class="work-duration" data-start="2024-05" data-end="present"></span>
+              </p>
               <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
             </div>
           </div>
@@ -1636,7 +1642,10 @@
             <div class="timeline-info">
               <h3 class="timeline-role">OEE System Development</h3>
               <p class="timeline-company">PT Bumiputra Manufaktur Teknologi &middot; Full-time</p>
-              <p class="timeline-date">Aug 2022 &ndash; May 2024 &middot; 1 yr 9 mos</p>
+              <p class="timeline-date">
+                Aug 2022 &ndash; May 2024 &middot;
+                <span class="work-duration" data-start="2022-08" data-end="2024-05"></span>
+              </p>
               <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
             </div>
           </div>
@@ -1847,18 +1856,36 @@
         document.getElementById("expYears").textContent = years + "+ Years";
       })();
 
-      // ── Job duration (Mattel) ──
+      // ── Job durations ──
       (function () {
-        const start = new Date(2024, 4, 1); // May 2024
-        const now = new Date();
-        let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
-        const yrs = Math.floor(months / 12);
-        const mos = months % 12;
-        const parts = [];
-        if (yrs) parts.push(yrs + " yr" + (yrs > 1 ? "s" : ""));
-        if (mos) parts.push(mos + " mo" + (mos > 1 ? "s" : ""));
-        const el = document.getElementById("mattelDuration");
-        if (el) el.textContent = parts.join(" ") || "< 1 mo";
+        function parseWorkMonth(value) {
+          if (value === "present") {
+            const now = new Date();
+            return { year: now.getFullYear(), month: now.getMonth() + 1 };
+          }
+
+          const [year, month] = value.split("-").map(Number);
+          return { year, month };
+        }
+
+        function formatWorkDuration(startValue, endValue) {
+          const start = parseWorkMonth(startValue);
+          const end = parseWorkMonth(endValue);
+          const totalMonths =
+            (end.year - start.year) * 12 + (end.month - start.month);
+          const years = Math.floor(totalMonths / 12);
+          const months = totalMonths % 12;
+          const parts = [];
+
+          if (years) parts.push(years + " yr" + (years > 1 ? "s" : ""));
+          if (months) parts.push(months + " mo" + (months > 1 ? "s" : ""));
+
+          return parts.join(" ") || "< 1 mo";
+        }
+
+        document.querySelectorAll(".work-duration").forEach((el) => {
+          el.textContent = formatWorkDuration(el.dataset.start, el.dataset.end);
+        });
       })();
 
       // ── Smooth scroll with fixed-header offset ──
