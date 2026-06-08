@@ -186,8 +186,45 @@ Every instance method must take `self` as its first parameter.
 
 ---
 
-### 2. Google Colab-Compatible Code Example
-Copy and run this cell in Google Colab:
+### 2. Google Colab-Compatible Code Examples
+
+#### A. Simple Example (No parameters except `self`)
+Copy and run this cell to see a basic instance method:
+
+```python
+class MotoGPBike:
+    def __init__(self, rider):
+        self.rider = rider
+
+    # A simple instance method that prints a message
+    def start_engine(self):
+        print(f"{self.rider}'s engine starts: VROOM!")
+
+bike = MotoGPBike("Pecco Bagnaia")
+bike.start_engine()
+```
+
+#### B. Medium Example (Accepting arguments to modify state)
+Copy and run this cell to see an instance method that accepts arguments and updates an instance attribute:
+
+```python
+class MotoGPBike:
+    def __init__(self, rider):
+        self.rider = rider
+        self.speed_kph = 0  # Initial speed is 0
+
+    # Instance method that takes an argument to modify state
+    def accelerate(self, increase):
+        self.speed_kph += increase
+        print(f"{self.rider} accelerated. Current speed: {self.speed_kph} km/h")
+
+bike = MotoGPBike("Pecco Bagnaia")
+bike.accelerate(80)
+bike.accelerate(120)
+```
+
+#### C. Advanced Example (Modifying state with arguments & validation)
+Copy and run this cell to see how instance methods can accept arguments, modify state, and include validation logic:
 
 ```python
 class MotoGPBike:
