@@ -302,31 +302,79 @@ In MotoGP, the sole control tire manufacturer is Michelin. Every single team and
 
 ---
 
-### 2. Google Colab-Compatible Code Example
-Copy and run this cell in Google Colab:
+### 2. Google Colab-Compatible Code Examples
+
+#### A. Simple Example (Defining and accessing class attributes)
+Copy and run this cell to see how class attributes are shared:
 
 ```python
 class MotoGPBike:
-    # CLASS ATTRIBUTES (Shared by all instances)
+    # CLASS ATTRIBUTE (Constant across all instances)
     SOLE_TIRE_SUPPLIER = "Michelin"
+
+    def __init__(self, rider):
+        # INSTANCE ATTRIBUTE (Unique to each bike)
+        self.rider = rider
+
+# Create instances
+bike_a = MotoGPBike("Francesco Bagnaia")
+bike_b = MotoGPBike("Marc Marquez")
+
+# Access class attribute through class or instances
+print("Access via Class:", MotoGPBike.SOLE_TIRE_SUPPLIER)
+print("Access via Bike A:", bike_a.SOLE_TIRE_SUPPLIER)
+print("Access via Bike B:", bike_b.SOLE_TIRE_SUPPLIER)
+```
+
+#### B. Medium Example (Modifying class attributes/tracking class-wide state)
+Copy and run this cell to see how class attributes track state across all instances:
+
+```python
+class MotoGPBike:
+    # CLASS ATTRIBUTE (Shared state)
     total_bikes_on_grid = 0
 
-    def __init__(self, rider, manufacturer):
-        # INSTANCE ATTRIBUTES (Unique to each bike)
+    def __init__(self, rider):
         self.rider = rider
-        self.manufacturer = manufacturer
-        
-        # Track total bikes constructed
+        # Increment the class attribute when a new instance is created
         MotoGPBike.total_bikes_on_grid += 1
 
-# Instantiate bikes
-bike_a = MotoGPBike("Jorge Martin", "Ducati")
-bike_b = MotoGPBike("Aleix Espargaro", "Aprilia")
+# Instantiate multiple bikes
+bike1 = MotoGPBike("Fabio Quartararo")
+bike2 = MotoGPBike("Brad Binder")
+bike3 = MotoGPBike("Maverick Viñales")
 
-print("Bike A Tire Supplier:", bike_a.SOLE_TIRE_SUPPLIER)
-print("Bike B Tire Supplier:", bike_b.SOLE_TIRE_SUPPLIER)
-print("Class Level Access:", MotoGPBike.SOLE_TIRE_SUPPLIER)
-print("Total Registered Grid Competitors:", MotoGPBike.total_bikes_on_grid)
+print("Total registered grid competitors:", MotoGPBike.total_bikes_on_grid)
+```
+
+#### C. Advanced Example (Class Attribute Shadowing and Pitfalls)
+Copy and run this cell to understand how shadowing works and how modifying a class attribute affects instances:
+
+```python
+class MotoGPBike:
+    SOLE_TIRE_SUPPLIER = "Michelin"
+
+    def __init__(self, rider):
+        self.rider = rider
+
+bike_a = MotoGPBike("Jorge Martin")
+bike_b = MotoGPBike("Enea Bastianini")
+
+# 1. SHADOWING PITFALL: Modifying class attribute via instance does NOT change the class!
+# This actually creates a new instance attribute 'SOLE_TIRE_SUPPLIER' on bike_a,
+# leaving the class attribute and bike_b's reference untouched.
+bike_a.SOLE_TIRE_SUPPLIER = "Pirelli" 
+print("Bike A supplier (shadowed):", bike_a.SOLE_TIRE_SUPPLIER)  # "Pirelli"
+print("Bike B supplier (original):", bike_b.SOLE_TIRE_SUPPLIER)  # "Michelin"
+print("Class supplier (unchanged):", MotoGPBike.SOLE_TIRE_SUPPLIER) # "Michelin"
+
+# 2. CORRECT MODIFICATION: Modify directly via the Class
+# This changes it for all instances that don't have a shadowed instance attribute.
+MotoGPBike.SOLE_TIRE_SUPPLIER = "Dunlop"
+print("\n--- After Class-Level modification ---")
+print("Bike A supplier (still shadowed):", bike_a.SOLE_TIRE_SUPPLIER)  # "Pirelli"
+print("Bike B supplier (updated class attribute):", bike_b.SOLE_TIRE_SUPPLIER)  # "Dunlop"
+print("Class supplier:", MotoGPBike.SOLE_TIRE_SUPPLIER) # "Dunlop"
 ```
 
 ---
