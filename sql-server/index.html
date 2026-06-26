@@ -1,0 +1,1213 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SQL Server</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Highlight.js for Code Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" />
+  <style>
+    /* ── Design System & Theme ── */
+    :root {
+      color-scheme: dark;
+      --bg-base: #000000;
+      --bg-panel: #0d0d0f;
+      --bg-card: #151518;
+      --bg-code: #1b1b1f;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a5;
+      --text-muted: #6e6e73;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      --accent: rgba(214, 188, 162, 0.9);
+      --accent-bg: rgba(214, 188, 162, 0.08);
+      --accent-border: rgba(214, 188, 162, 0.2);
+      --accent-glow: rgba(214, 188, 162, 0.15);
+      --sidebar-width: 320px;
+      --header-height: 64px;
+      --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+      --scrollbar-track: rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--header-height) + 20px);
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      background-image:
+        radial-gradient(1200px 800px at 10% -10%, var(--accent-glow) 0%, transparent 60%),
+        radial-gradient(800px 600px at 90% 10%, rgba(214, 188, 162, 0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* ── Custom Scrollbar ── */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ── Header ── */
+    header {
+      height: var(--header-height);
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      height: 36px;
+      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    }
+
+    .page-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-title i {
+      color: var(--accent);
+    }
+
+    /* ── File Switcher Tabs ── */
+
+
+    /* ── Main Layout ── */
+    .main-container {
+      display: flex;
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+      position: relative;
+    }
+
+    /* ── Sidebar (TOC) ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+      overscroll-behavior: contain;
+    }
+
+    .sidebar-search-container {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-wrapper i {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .toc-search {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 12px 8px 36px;
+      color: var(--text-primary);
+      font-family: "Manrope", sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .toc-search:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(214, 188, 162, 0.15);
+    }
+
+    .clear-search-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+    }
+
+    .clear-search-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .toc-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 8px;
+      overscroll-behavior-y: contain;
+    }
+
+    .toc-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      padding: 0 12px 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toc-list {
+      list-style: none;
+    }
+
+    .toc-item {
+      margin-bottom: 2px;
+    }
+
+    .toc-link {
+      display: block;
+      padding: 6px 12px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toc-link:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-primary);
+    }
+
+    .toc-link.active {
+      background: var(--accent-bg);
+      color: var(--accent);
+      font-weight: 600;
+      border-left: 2px solid var(--accent);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    /* TOC heading indentation levels */
+    .toc-h1 {
+      font-weight: 700;
+      padding-left: 12px;
+      font-size: 13.5px;
+      margin-top: 10px;
+      color: var(--text-primary);
+    }
+
+    .toc-h2 {
+      padding-left: 20px;
+    }
+
+    .toc-h3 {
+      padding-left: 32px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── Content Area ── */
+    .content-pane {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 40px 60px;
+      max-width: 1000px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ── Markdown Content Styling ── */
+    .markdown-body {
+      line-height: 1.7;
+      font-size: 15.5px;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    /* Headings */
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3,
+    .markdown-body h4 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2em;
+      margin-bottom: 0.6em;
+      letter-spacing: -0.015em;
+      scroll-margin-top: calc(var(--header-height) + 20px);
+    }
+
+    .markdown-body h1 {
+      font-size: 2.2em;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.3em;
+      margin-top: 0.5em;
+    }
+
+    .markdown-body h2 {
+      font-size: 1.6em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.3em;
+    }
+
+    .markdown-body h3 {
+      font-size: 1.25em;
+      color: #e6c8ab;
+      /* Subtle gold/peach for H3 */
+    }
+
+    .markdown-body h4 {
+      font-size: 1.05em;
+      color: var(--text-secondary);
+    }
+
+    /* Paragraphs & spacing */
+    .markdown-body p,
+    .markdown-body ul,
+    .markdown-body ol,
+    .markdown-body table,
+    .markdown-body blockquote,
+    .markdown-body pre {
+      margin-bottom: 1.1em;
+    }
+
+    /* Strong & emphasis */
+    .markdown-body strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Horizontal Rule */
+    .markdown-body hr {
+      height: 1px;
+      border: none;
+      background-color: var(--border-color);
+      margin: 2.5em 0;
+    }
+
+    /* Lists */
+    .markdown-body ul,
+    .markdown-body ol {
+      padding-left: 24px;
+    }
+
+    .markdown-body li {
+      margin-bottom: 0.4em;
+    }
+
+    /* Lists checkboxes styling */
+    .markdown-body li.task-list-item {
+      list-style-type: none;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .markdown-body li.task-list-item input[type="checkbox"] {
+      position: absolute;
+      left: 0;
+      top: 3px;
+      width: 18px;
+      height: 18px;
+      opacity: 0;
+      z-index: 2;
+      cursor: default;
+    }
+
+    .markdown-body li.task-list-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 4px;
+      background: var(--bg-card);
+      transition: all 0.2s ease;
+    }
+
+    .markdown-body li.task-list-item:has(input[type="checkbox"]:checked)::before {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .markdown-body li.task-list-item:has(input[type="checkbox"]:checked)::after {
+      content: "\f00c";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      left: 3px;
+      top: 4px;
+      font-size: 10px;
+      color: var(--bg-base);
+    }
+
+    /* Inline code */
+    .markdown-body code:not(pre code) {
+      background-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e5ceb7;
+      font-family: "Fira Code", monospace;
+      font-size: 0.88em;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+
+    /* Code Blocks */
+    .markdown-body pre {
+      background-color: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      position: relative;
+      margin-top: 1.2em;
+      margin-bottom: 1.2em;
+    }
+
+    .markdown-body pre code {
+      font-family: "Fira Code", monospace;
+      font-size: 13.5px;
+      line-height: 1.5;
+      background: none;
+      padding: 0;
+      border: none;
+      color: #e0e0e0;
+    }
+
+    /* Code block header bar container added by JS */
+    .code-block-container {
+      position: relative;
+      margin-bottom: 1.2em;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .code-block-header {
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-family: "Manrope", sans-serif;
+    }
+
+    .code-block-container pre {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      background-color: var(--bg-code);
+    }
+
+    .copy-code-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: "Manrope", sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-code-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+
+    .copy-code-btn i {
+      font-size: 11px;
+    }
+
+    /* Blockquotes */
+    .markdown-body blockquote {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-bg);
+      padding: 12px 20px;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary);
+    }
+
+    .markdown-body blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Tables */
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 14px;
+      margin-top: 1.5em;
+      margin-bottom: 1.5em;
+    }
+
+    .markdown-body th,
+    .markdown-body td {
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      text-align: left;
+    }
+
+    .markdown-body th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .markdown-body tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+
+    .markdown-body tr:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Custom Completion Badges from MD text */
+    .markdown-body .completed-badge {
+      background-color: rgba(46, 204, 113, 0.15);
+      color: #2ecc71;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      display: inline-block;
+      margin-left: 6px;
+    }
+
+    /* ── Loading Overlay ── */
+    .loading-overlay {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-base);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(214, 188, 162, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-overlay p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* ── Error Container ── */
+    .error-container {
+      display: none;
+      padding: 40px;
+      background: rgba(231, 76, 60, 0.08);
+      border: 1px solid rgba(231, 76, 60, 0.2);
+      border-radius: 12px;
+      color: #e74c3c;
+      max-width: 600px;
+      margin: 80px auto;
+      text-align: center;
+    }
+
+    .error-container i {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .error-container h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    /* ── Mobile Sidebar Toggler ── */
+    .mobile-menu-btn {
+      display: none;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-menu-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 85;
+    }
+
+    /* ── Scroll to Top Button ── */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .scroll-top-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-base);
+      box-shadow: 0 4px 12px rgba(214, 188, 162, 0.3);
+    }
+
+    .scroll-top-btn.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ── Responsive Styling ── */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 300px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+
+      .content-pane {
+        margin-left: 0;
+        padding: 30px 24px;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Table of Contents">
+        <i class="fas fa-list-ul"></i>
+      </button>
+      <a href="../index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> <span>Home</span>
+      </a>
+      <h1 class="page-title">
+        <i class="fas fa-database"></i> <span>SQL Server</span>
+      </h1>
+    </div>
+
+
+  </header>
+
+  <!-- SIDEBAR OVERLAY (Mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="main-container">
+    <!-- SIDEBAR (TOC) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search-container">
+        <div class="search-wrapper">
+          <i class="fas fa-search"></i>
+          <input type="text" class="toc-search" id="tocSearch" placeholder="Search headings..."
+            aria-label="Search headings" />
+          <button class="clear-search-btn" id="clearSearchBtn" aria-label="Clear search">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="toc-container">
+        <div class="toc-title">
+          <span>Table of Contents</span>
+          <span id="tocCount" style="text-transform: none; font-weight: normal;">0 sections</span>
+        </div>
+        <nav class="toc-list" id="tocList"></nav>
+      </div>
+    </aside>
+
+    <!-- CONTENT PANE -->
+    <main class="content-pane">
+      <!-- Error message if file fails to load -->
+      <div class="error-container" id="errorContainer">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Failed to load document</h3>
+        <p id="errorMsg">The requested markdown file could not be found or fetched. Make sure it exists in the workspace
+          folder.</p>
+      </div>
+
+      <!-- Rendered markdown outputs here -->
+      <article class="markdown-body" id="markdownContent"></article>
+    </main>
+  </div>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Loading workspace notes...</p>
+  </div>
+
+  <!-- BACK TO TOP BUTTON -->
+  <button class="scroll-top-btn" id="scrollTopBtn" title="Scroll to top" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- Scripting for markdown parsing and interactive layouts -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script>
+    // Initialize Marked.js with default highlight callback
+    marked.setOptions({
+      gfm: true,
+      breaks: true,
+      headerIds: true,
+      mangle: false,
+      highlight: function (code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+        return hljs.highlight(code, { language }).value;
+      }
+    });
+
+    // App state
+    let activeFile = 'learn-sql-server2.md';
+    let headingsData = []; // Store mapping of elements for scroll sync
+    let currentActiveId = '';
+    let isSidebarHovered = false;
+
+    // Elements
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const markdownContent = document.getElementById('markdownContent');
+    const errorContainer = document.getElementById('errorContainer');
+    const errorMsg = document.getElementById('errorMsg');
+    const tocList = document.getElementById('tocList');
+    const tocCount = document.getElementById('tocCount');
+    const tocSearch = document.getElementById('tocSearch');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    // ── Event Listeners ──
+
+    // Mobile drawer open/close
+    mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
+    sidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+    // Track mouse hover state on sidebar to prevent scroll spy auto-scrolling conflicts
+    sidebar.addEventListener('mouseenter', () => { isSidebarHovered = true; });
+    sidebar.addEventListener('mouseleave', () => { isSidebarHovered = false; });
+
+    // Search functionality for TOC
+    tocSearch.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      clearSearchBtn.style.display = query ? 'block' : 'none';
+      filterTOC(query);
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      tocSearch.value = '';
+      clearSearchBtn.style.display = 'none';
+      tocSearch.focus();
+      filterTOC('');
+    });
+
+    // Scroll top button click
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Scroll listening for Scroll-to-Top and Scroll-Spy on TOC
+    window.addEventListener('scroll', () => {
+      // Toggle scroll top button
+      if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+
+      // TOC scroll tracking
+      scrollSpy();
+    });
+
+    // Load initial file on page ready
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMarkdown(activeFile);
+    });
+
+    // ── Functions ──
+
+    // Open/close mobile TOC sidebar
+    function toggleMobileSidebar() {
+      const isOpen = sidebar.classList.contains('open');
+      if (isOpen) {
+        closeMobileSidebar();
+      } else {
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden'; // Lock main scroll
+      }
+    }
+
+    function closeMobileSidebar() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('open');
+      document.body.style.overflow = ''; // Unlock main scroll
+    }
+
+    // Main function to fetch, render, and setup markdown
+    async function loadMarkdown(filename) {
+      showLoading(true);
+      currentActiveId = '';
+      errorContainer.style.display = 'none';
+      markdownContent.innerHTML = '';
+      tocList.innerHTML = '';
+      tocSearch.value = '';
+      clearSearchBtn.style.display = 'none';
+
+      try {
+        // Fetch file content
+        const response = await fetch(filename);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        let markdownText = await response.text();
+
+        // Transform checklists with checked state or custom labels for cleaner processing
+        // Replace completed markers like "*(Completed)*" with a custom HTML badge
+        markdownText = markdownText.replace(/\*\(Completed\)\*/g, '<span class="completed-badge"><i class="fas fa-check"></i> Completed</span>');
+
+        // Parse Markdown to HTML
+        const htmlContent = marked.parse(markdownText);
+        markdownContent.innerHTML = htmlContent;
+
+        // Syntax Highlight Code blocks
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightElement(block);
+        });
+
+        // Style and wrap code blocks, add copy buttons
+        wrapCodeBlocks();
+
+        // Process checklists manually to make sure they get task-list-item class
+        // Marked.js usually handles this if taskList option is enabled, but standard GFM parsing is safe to enforce.
+        processChecklists();
+
+        // Generate Table of Contents
+        generateTOC();
+
+        // Initialize scrollspy data
+        cacheHeadingsData();
+
+        // Scroll to top
+        window.scrollTo({ top: 0 });
+
+      } catch (err) {
+        console.error("Error loading markdown file:", err);
+        errorMsg.textContent = `Could not load "${filename}". Please check if the file exists and is accessible. Details: ${err.message}`;
+        errorContainer.style.display = 'block';
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // Show or hide the loading overlay
+    function showLoading(show) {
+      if (show) {
+        loadingOverlay.style.opacity = '1';
+        loadingOverlay.style.visibility = 'visible';
+      } else {
+        loadingOverlay.style.opacity = '0';
+        loadingOverlay.style.visibility = 'hidden';
+      }
+    }
+
+    // Process raw checklist list items to apply task-list-item class
+    function processChecklists() {
+      // Find all checkboxes in the parsed HTML
+      const checkboxes = markdownContent.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        const listItem = checkbox.closest('li');
+        if (listItem) {
+          listItem.classList.add('task-list-item');
+          // Disable actual checkbox interactions visually and cleanly
+          checkbox.setAttribute('disabled', 'true');
+        }
+      });
+    }
+
+    // Wrap code blocks inside container with nice header and copy button
+    function wrapCodeBlocks() {
+      const codeBlocks = markdownContent.querySelectorAll('pre');
+      codeBlocks.forEach((pre) => {
+        // Skip if already processed
+        if (pre.parentElement.classList.contains('code-block-container')) return;
+
+        // Find class for language
+        const codeEl = pre.querySelector('code');
+        let lang = 'Code';
+        if (codeEl) {
+          const classes = Array.from(codeEl.classList);
+          const langClass = classes.find(c => c.startsWith('language-'));
+          if (langClass) {
+            lang = langClass.replace('language-', '');
+            // Special clean displays
+            if (lang.toLowerCase() === 'sql') lang = 'T-SQL / SQL';
+          }
+        }
+
+        // Create container elements
+        const container = document.createElement('div');
+        container.className = 'code-block-container';
+
+        const header = document.createElement('div');
+        header.className = 'code-block-header';
+        header.innerHTML = `
+            <span><i class="fas fa-terminal"></i> ${lang}</span>
+            <button class="copy-code-btn" aria-label="Copy code block">
+              <i class="far fa-copy"></i> <span>Copy</span>
+            </button>
+          `;
+
+        // Rearrange DOM
+        pre.parentNode.insertBefore(container, pre);
+        container.appendChild(header);
+        container.appendChild(pre);
+
+        // Copy button functionality
+        const copyBtn = header.querySelector('.copy-code-btn');
+        copyBtn.addEventListener('click', () => {
+          const textToCopy = codeEl ? codeEl.textContent : pre.textContent;
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            // Show visual success
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> <span>Copied!</span>';
+            copyBtn.style.borderColor = '#2ecc71';
+            copyBtn.style.color = '#2ecc71';
+
+            // Reset after delay
+            setTimeout(() => {
+              copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copy</span>';
+              copyBtn.style.borderColor = '';
+              copyBtn.style.color = '';
+            }, 2000);
+          }).catch(err => {
+            console.error('Failed to copy text: ', err);
+          });
+        });
+      });
+    }
+
+    // Generate the Table of Contents dynamically from headings
+    function generateTOC() {
+      const headings = markdownContent.querySelectorAll('h1, h2, h3');
+      tocList.innerHTML = '';
+      headingsData = [];
+      let currentH2Id = '';
+
+      let count = 0;
+      headings.forEach((heading, index) => {
+        // Exclude document title (H1) from TOC if it's the very first heading
+        if (heading.tagName === 'H1' && index === 0) return;
+
+        // Generate unique ID
+        let baseId = heading.textContent
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '') // remove special chars
+          .replace(/\s+/g, '-') // spaces to dashes
+          .trim();
+
+        if (heading.tagName === 'H2') {
+          currentH2Id = baseId;
+          heading.id = baseId;
+        } else if (heading.tagName === 'H3' && currentH2Id) {
+          heading.id = `${currentH2Id}--${baseId}`;
+        } else {
+          heading.id = baseId;
+        }
+
+        count++;
+
+        // Create TOC list element
+        const li = document.createElement('li');
+        li.className = 'toc-item';
+
+        const a = document.createElement('a');
+        a.href = `#${heading.id}`;
+        a.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
+        // Clean text content for cleaner sidebar text (remove badge content if nested)
+        let cleanText = heading.innerText.replace(' Completed', '').trim();
+        a.textContent = cleanText;
+
+        // Click handler for mobile to automatically close drawer
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetEl = document.getElementById(heading.id);
+          if (targetEl) {
+            const headerOffset = 64;
+            const elementPosition = targetEl.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 16;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
+
+            // Push state to browser address bar without reload
+            history.pushState(null, null, `#${heading.id}`);
+
+            closeMobileSidebar();
+          }
+        });
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+
+      tocCount.textContent = `${count} sections`;
+    }
+
+    // Filter TOC links as user types in search box
+    function filterTOC(query) {
+      const tocItems = tocList.querySelectorAll('.toc-item');
+      let visibleCount = 0;
+
+      tocItems.forEach(item => {
+        const link = item.querySelector('.toc-link');
+        const text = link.textContent.toLowerCase();
+
+        if (text.includes(query)) {
+          item.style.display = 'block';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      tocCount.textContent = `${visibleCount} found`;
+    }
+
+    // Cache positions of all headings for scroll-spy highlighting
+    function cacheHeadingsData() {
+      const headings = markdownContent.querySelectorAll('h1, h2, h3');
+      headingsData = [];
+
+      headings.forEach((heading, index) => {
+        if (heading.tagName === 'H1' && index === 0) return; // Skip main doc title
+
+        if (heading.id) {
+          headingsData.push({
+            id: heading.id,
+            element: heading
+          });
+        }
+      });
+    }
+
+    // Track scrolling position and activate corresponding TOC link
+    function scrollSpy() {
+      if (!headingsData.length) return;
+
+      const headerHeight = 64;
+      const scrollPosition = window.scrollY + headerHeight + 50;
+
+      // Find the current active heading
+      let currentActive = null;
+
+      for (let i = 0; i < headingsData.length; i++) {
+        const heading = headingsData[i];
+        const top = heading.element.offsetTop;
+
+        if (scrollPosition >= top) {
+          currentActive = heading;
+        } else {
+          // Since headings are sorted by offsetTop, we can break once we exceed scroll position
+          break;
+        }
+      }
+
+      // Highlight the current TOC link only when it changes
+      if (currentActive && currentActive.id !== currentActiveId) {
+        currentActiveId = currentActive.id;
+
+        const allLinks = tocList.querySelectorAll('.toc-link');
+        allLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${currentActive.id}`) {
+            link.classList.add('active');
+
+            // Automatically scroll sidebar to keep active link in view (only if not hovered)
+            if (!isSidebarHovered) {
+              const linkTop = link.offsetTop;
+              const container = tocList.parentElement;
+              const containerHeight = container.clientHeight;
+              const currentScroll = container.scrollTop;
+
+              if (linkTop < currentScroll || linkTop > (currentScroll + containerHeight - 50)) {
+                container.scrollTo({
+                  top: linkTop - (containerHeight / 2),
+                  behavior: 'smooth'
+                });
+              }
+            }
+          }
+        });
+      }
+    }
+  </script>
+</body>
+
+</html>
