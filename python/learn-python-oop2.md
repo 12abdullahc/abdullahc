@@ -112,6 +112,28 @@ if __name__ == "__main__":
     print(martin_bike.get_telemetry())
 ```
 
+### Simpler, Bare-Bones Example
+
+```python
+# Defining the blueprint (Class)
+class SimpleMotoGPBike:
+    def __init__(self, rider, team):
+        self.rider = rider  # Attribute (State)
+        self.team = team    # Attribute (State)
+
+    def cheer(self):
+        # Method (Behavior)
+        print(f"Go {self.rider} with {self.team}!")
+
+# Instantiating objects (Instances)
+bike1 = SimpleMotoGPBike(rider="Francesco Bagnaia", team="Ducati Lenovo Team")
+bike2 = SimpleMotoGPBike(rider="Jorge Martín", team="Prima Pramac Racing")
+
+# Accessing attributes and calling methods
+print(bike1.rider)  # Output: Francesco Bagnaia
+bike2.cheer()       # Output: Go Jorge Martín with Prima Pramac Racing!
+```
+
 ---
 
 ## 4. Practical Exercise
