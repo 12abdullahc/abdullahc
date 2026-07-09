@@ -1,0 +1,1975 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Abdullah C | Card Design System</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+  <style>
+    /* ── Design System & Theme Tokens ── */
+    :root {
+      color-scheme: dark;
+      --bg-1: #000000;
+      --text-1: #ffffff;
+      --text-2: #c4c4c4;
+      --border-1: rgba(255, 255, 255, 0.15);
+      --border-2: rgba(255, 255, 255, 0.25);
+      --glow-1: rgba(214, 188, 162, 0.08);
+      --glow-2: rgba(214, 188, 162, 0.04);
+      --glow-3: rgba(214, 188, 162, 0.03);
+      --accent: rgba(214, 188, 162, 0.9);
+      --accent-glow: rgba(214, 188, 162, 0.15);
+
+      /* Component Variable Defaults (Playground Configurable) */
+      --card-bg-r: 20;
+      --card-bg-g: 20;
+      --card-bg-b: 23;
+      --card-bg-opacity: 0.7;
+      --card-blur-radius: 12px;
+      --card-border-radius: 16px;
+      --card-border-opacity: 0.25;
+      --card-shadow-scale: 1;
+
+      /* Showcase Theme Specifics */
+      --sidebar-bg: rgba(10, 10, 12, 0.6);
+      --accent-rgb: 214, 188, 162;
+    }
+
+    /* ── Reset & Typography ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-1);
+      background-image:
+        radial-gradient(1200px 800px at 10% -10%,
+          var(--glow-1) 0%,
+          transparent 60%),
+        radial-gradient(1000px 700px at 110% 10%,
+          var(--glow-2) 0%,
+          transparent 55%),
+        radial-gradient(900px 600px at 50% 110%,
+          var(--glow-3) 0%,
+          transparent 60%);
+      background-attachment: fixed;
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--text-1);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ── Scrollbars ── */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 0 40px;
+      height: 70px;
+      border-bottom: 1px solid var(--border-1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-2);
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+    }
+
+    .back-link:hover {
+      color: var(--text-1);
+      border-color: var(--border-1);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .back-link i {
+      font-size: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    .back-link:hover i {
+      transform: translateX(-4px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(214, 188, 162, 0.12);
+      border: 1px solid rgba(214, 188, 162, 0.3);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .nav-pills {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border: 1px solid var(--border-1);
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--text-2);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .nav-pill:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-1);
+      color: var(--text-1);
+    }
+
+    .nav-pill.active {
+      background-color: var(--text-1);
+      color: var(--bg-1);
+      border-color: var(--text-1);
+      font-weight: 700;
+    }
+
+    /* ── Layout Wrapper ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      flex: 1;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* ── Sidebar Controls ── */
+    .sidebar {
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--border-1);
+      padding: 32px 24px;
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      position: sticky;
+      top: 70px;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-section {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 24px;
+    }
+
+    .sidebar-section:last-child {
+      border-bottom: none;
+    }
+
+    /* Control Inputs */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .control-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-2);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .control-value {
+      font-family: monospace;
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .range-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+      transition: background 0.15s ease;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--text-1);
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      transition: transform 0.1s ease, background 0.1s ease;
+    }
+
+    .range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      background: var(--accent);
+    }
+
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .color-picker {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 44px;
+      height: 32px;
+      background: none;
+      border: 1px solid var(--border-1);
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .color-picker::-webkit-color-swatch {
+      border: none;
+      border-radius: 5px;
+    }
+
+    .color-picker-hex {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-1);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-family: monospace;
+      color: var(--text-1);
+      outline: none;
+    }
+
+    /* BG Switcher Grid */
+    .bg-switcher {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .bg-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-1);
+      border-radius: 8px;
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .bg-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-1);
+    }
+
+    .bg-btn.active {
+      background: rgba(214, 188, 162, 0.1);
+      border-color: var(--accent);
+      color: var(--text-1);
+    }
+
+    .reset-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px dashed var(--border-2);
+      background: none;
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-1);
+      background: rgba(214, 188, 162, 0.03);
+    }
+
+    /* ── Main Area ── */
+    .main {
+      padding: 40px 60px;
+      overflow-y: auto;
+      max-width: 1200px;
+    }
+
+    .hero {
+      margin-bottom: 40px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin: 0 0 6px 0;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+      max-width: 680px;
+      margin: 0;
+    }
+
+    /* ── Design Tokens Palette ── */
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .palette-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-1);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+
+    .palette-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-2);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .palette-color {
+      height: 48px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .palette-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .palette-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    .palette-hex {
+      font-size: 11px;
+      font-family: monospace;
+      color: var(--text-2);
+    }
+
+    /* ── Catalog Grid ── */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+
+    .catalog-card {
+      background: rgba(25, 25, 28, 0.6);
+      border: 1px solid var(--border-1);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .catalog-card:hover {
+      border-color: var(--border-2);
+      box-shadow: 0 15px 50px -10px rgba(0, 0, 0, 0.7);
+    }
+
+    .catalog-header {
+      padding: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .catalog-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .catalog-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-1);
+    }
+
+    .catalog-desc {
+      font-size: 13px;
+      color: var(--text-2);
+      margin: 0;
+    }
+
+    .catalog-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-2);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* Sandbox Viewport */
+    .sandbox {
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sandbox-bg-glow {
+      background-image: radial-gradient(800px 400px at center,
+          var(--accent-glow) 0%,
+          transparent 75%);
+    }
+
+    .sandbox-bg-black {
+      background-color: #050507;
+    }
+
+    .sandbox-bg-card {
+      background: rgba(20, 20, 23, 0.95);
+      border-top: 1px solid var(--border-1);
+      border-bottom: 1px solid var(--border-1);
+    }
+
+    .sandbox-bg-contrast {
+      background: #fdfdfd;
+      color: #0f0f11;
+      /* Custom adjustment variables to make dark elements readable against light bg */
+      --border-1: rgba(15, 15, 17, 0.15);
+      --border-2: rgba(15, 15, 17, 0.25);
+    }
+
+    .preview-container {
+      width: 100%;
+      max-width: 580px;
+    }
+
+    .sandbox-states {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .sandbox.sandbox-bg-contrast .state-label {
+      color: #55555c;
+    }
+
+    /* Showcase States */
+    .states-container {
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .state-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .state-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-2);
+      opacity: 0.7;
+    }
+
+    /* Copy Panel & Code Code Blocks */
+    .code-panel {
+      background: rgba(5, 5, 7, 0.6);
+    }
+
+    .tabs-nav {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0 16px;
+    }
+
+    .tab-nav-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-nav-btn:hover {
+      color: var(--text-1);
+    }
+
+    .tab-nav-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .code-container {
+      position: relative;
+      padding: 16px 24px;
+    }
+
+    .code-block {
+      display: none;
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      color: #e0e0e0;
+      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .code-block.active {
+      display: block;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-1);
+      border-radius: 6px;
+      color: var(--text-2);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+    }
+
+    .copy-btn:hover {
+      border-color: var(--text-1);
+      color: var(--text-1);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .copy-btn.copied {
+      background: rgba(46, 204, 113, 0.15);
+      border-color: #2ecc71;
+      color: #2ecc71;
+    }
+
+    /* ── Toast Notifications ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: rgba(15, 15, 18, 0.95);
+      border: 1px solid var(--accent);
+      border-left: 4px solid var(--accent);
+      color: var(--text-1);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(8px);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast i {
+      color: var(--accent);
+      font-size: 14px;
+    }
+
+    .toast-success {
+      border-color: #2ecc71;
+      border-left-color: #2ecc71;
+    }
+
+    .toast-success i {
+      color: #2ecc71;
+    }
+
+    /* ════════════════════════════════
+           PORTFOLIO CARD STYLES
+         ════════════════════════════════ */
+
+    /* 1. Base Glass Card */
+    .glass-card {
+      background: rgba(var(--card-bg-r), var(--card-bg-g), var(--card-bg-b), var(--card-bg-opacity));
+      border: 1px solid rgba(255, 255, 255, var(--card-border-opacity));
+      border-radius: var(--card-border-radius);
+      backdrop-filter: blur(var(--card-blur-radius));
+      box-shadow: 0 calc(10px * var(--card-shadow-scale)) calc(40px * var(--card-shadow-scale)) calc(-10px * var(--card-shadow-scale)) rgba(0, 0, 0, 0.5);
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    /* 2. Hero Card variant */
+    .hero-card {
+      padding: 28px;
+    }
+
+    .hero-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(var(--accent-rgb), 0.12);
+      border: 2px solid rgba(var(--accent-rgb), 0.3);
+      margin: 0 auto 20px auto;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-avatar i {
+      font-size: 36px;
+      color: var(--accent);
+    }
+
+    .hero-stat-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hero-stat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .hero-stat i {
+      width: 18px;
+      text-align: center;
+      color: var(--accent);
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .hero-stat strong {
+      color: var(--text-1);
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    /* 3. Project Card variant */
+    .project-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .project-card:hover,
+    .project-card.hover-simulate {
+      box-shadow: 0 calc(24px * var(--card-shadow-scale)) calc(56px * var(--card-shadow-scale)) calc(-16px * var(--card-shadow-scale)) rgba(0, 0, 0, 0.75);
+      transform: translateY(-4px);
+    }
+
+    .project-img {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.1) 0%, rgba(20, 20, 23, 0.9) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, var(--card-border-opacity));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: rgba(var(--accent-rgb), 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-img i {
+      transition: transform 0.4s ease;
+    }
+
+    .project-card:hover .project-img i,
+    .project-card.hover-simulate .project-img i {
+      transform: scale(1.15) rotate(5deg);
+      color: var(--accent);
+    }
+
+    .project-body {
+      padding: 20px;
+    }
+
+    .project-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      color: var(--text-1);
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin: 0 0 14px 0;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, var(--card-border-opacity));
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-2);
+    }
+
+    .project-links {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      height: 28px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, var(--card-border-opacity));
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-2);
+      text-decoration: none;
+      font-family: "Manrope", sans-serif;
+      cursor: pointer;
+    }
+
+    .btn-sm:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-1);
+      color: var(--text-1);
+    }
+
+    /* 4. Skills Card variant */
+    .skills-card {
+      padding: 24px;
+    }
+
+    .skills-card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin: 0 0 16px 0;
+    }
+
+    .skills-card-title i {
+      color: var(--accent);
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .skills-card-desc {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin: 0 0 16px 0;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    /* 5. Education/Experience Card variant */
+    .edu-card {
+      padding: 20px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .edu-icon {
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #1a1a1e;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .edu-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .edu-institution {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin: 0;
+    }
+
+    .edu-meta {
+      font-size: 12px;
+      color: var(--text-2);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .edu-period {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 3px;
+    }
+
+    /* 6. Form Card variant */
+    .contact-form-card {
+      padding: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-2);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, var(--card-border-opacity));
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--text-1);
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      font-size: 14px;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    /* ── Contrast Overrides (Specific for sandbox visual readability) ── */
+    .sandbox.sandbox-bg-contrast .glass-card {
+      background: rgba(240, 240, 243, var(--card-bg-opacity));
+      border-color: rgba(15, 15, 17, var(--card-border-opacity));
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+    }
+
+    .sandbox.sandbox-bg-contrast .project-img {
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.15) 0%, rgba(230, 230, 235, 0.9) 100%);
+      border-bottom-color: rgba(15, 15, 17, var(--card-border-opacity));
+    }
+
+    .sandbox.sandbox-bg-contrast .project-title,
+    .sandbox.sandbox-bg-contrast .skills-card-title,
+    .sandbox.sandbox-bg-contrast .edu-institution {
+      color: #0f0f11;
+    }
+
+    .sandbox.sandbox-bg-contrast .project-desc,
+    .sandbox.sandbox-bg-contrast .skills-card-desc,
+    .sandbox.sandbox-bg-contrast .edu-meta,
+    .sandbox.sandbox-bg-contrast .form-group label {
+      color: #44444a;
+    }
+
+    .sandbox.sandbox-bg-contrast .tag,
+    .sandbox.sandbox-bg-contrast .btn-sm {
+      border-color: rgba(15, 15, 17, var(--card-border-opacity));
+      background: rgba(0, 0, 0, 0.03);
+      color: #44444a;
+    }
+
+    .sandbox.sandbox-bg-contrast .btn-sm:hover {
+      background: rgba(0, 0, 0, 0.08);
+      color: #0f0f11;
+      border-color: #0f0f11;
+    }
+
+    .sandbox.sandbox-bg-contrast .edu-icon {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.1);
+      color: #1a1a1e;
+    }
+
+    .sandbox.sandbox-bg-contrast .form-group input,
+    .sandbox.sandbox-bg-contrast .form-group textarea {
+      background: #ffffff;
+      border-color: rgba(15, 15, 17, var(--card-border-opacity));
+      color: #0f0f11;
+    }
+
+    .sandbox.sandbox-bg-contrast .form-group input:focus,
+    .sandbox.sandbox-bg-contrast .form-group textarea:focus {
+      border-color: var(--accent);
+      background: #ffffff;
+    }
+
+    /* Responsive Layout */
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        height: auto;
+        position: relative;
+        top: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border-1);
+      }
+
+      .main {
+        padding: 30px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Portfolio
+      </a>
+      <div class="brand">
+        <div class="brand-title">Design System</div>
+        <span class="brand-badge">Cards Library</span>
+      </div>
+    </div>
+    <nav class="nav-pills">
+      <a href="button.html" class="nav-pill">Button Styles</a>
+      <a href="card.html" class="nav-pill active">Card Styles</a>
+    </nav>
+  </header>
+
+  <!-- Layout Wrapper -->
+  <div class="layout">
+    <!-- Sidebar Control Panel -->
+    <aside class="sidebar">
+      <!-- Section: Background Sandbox Switcher -->
+      <div class="sidebar-section">
+        <h3 class="sidebar-title"><i class="fa-solid fa-fill-drip"></i> Background Backdrop</h3>
+        <div class="bg-switcher">
+          <button class="bg-btn active" data-bg="glow">Radial Glow</button>
+          <button class="bg-btn" data-bg="black">Deep Black</button>
+          <button class="bg-btn" data-bg="card">Card Env</button>
+          <button class="bg-btn" data-bg="contrast">High Contrast</button>
+        </div>
+      </div>
+
+      <!-- Section: Dynamic Card Playground Configurator -->
+      <div class="sidebar-section">
+        <h3 class="sidebar-title"><i class="fa-solid fa-sliders"></i> Card Configurator</h3>
+
+        <!-- Slider 1: Glass Opacity -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Glass Opacity</span>
+            <span class="control-value" id="opacityVal">0.70</span>
+          </div>
+          <input type="range" class="range-slider" id="opacitySlider" min="10" max="95" value="70" />
+        </div>
+
+        <!-- Slider 2: Backdrop Blur -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Backdrop Blur</span>
+            <span class="control-value" id="blurVal">12px</span>
+          </div>
+          <input type="range" class="range-slider" id="blurSlider" min="0" max="30" value="12" />
+        </div>
+
+        <!-- Slider 3: Border Radius -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Border Radius</span>
+            <span class="control-value" id="radiusVal">16px</span>
+          </div>
+          <input type="range" class="range-slider" id="radiusSlider" min="0" max="40" value="16" />
+        </div>
+
+        <!-- Slider 4: Border Opacity -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Border Opacity</span>
+            <span class="control-value" id="borderVal">0.25</span>
+          </div>
+          <input type="range" class="range-slider" id="borderSlider" min="5" max="60" value="25" />
+        </div>
+
+        <!-- Slider 5: Accent Color Sync -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Accent Sync</span>
+          </div>
+          <div class="color-picker-wrapper">
+            <input type="color" class="color-picker" id="colorPicker" value="#d6bca2" />
+            <input type="text" class="color-picker-hex" id="colorPickerHex" value="#d6bca2" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Button -->
+      <div>
+        <button class="reset-btn" id="resetBtn">
+          <i class="fa-solid fa-rotate-left"></i> Reset Card Defaults
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Showcase Container -->
+    <main class="main">
+      <!-- Introduction -->
+      <div class="hero">
+        <p class="section-label">Interactive Components Catalog</p>
+        <h1 class="section-title">Card Layout System</h1>
+        <p class="section-desc">
+          An interactive review of all structural layouts, glass containers, and cards designed in your portfolio. Using
+          fine blur properties, delicate translucent borders, and subtle glows, these cards organize content with
+          premium aesthetics. Toggle custom variables in the sidebar to test parameters on the fly.
+        </p>
+      </div>
+
+      <!-- Color Swatches -->
+      <div class="palette">
+        <div class="palette-card">
+          <div class="palette-color" style="background-color: rgba(20, 20, 23, 0.7);" id="paletteCardColor"></div>
+          <div class="palette-info">
+            <span class="palette-name">--card-bg</span>
+            <span class="palette-hex" id="paletteCardHex">rgba(20,20,23,0.7)</span>
+          </div>
+        </div>
+        <div class="palette-card">
+          <div class="palette-color" style="background-color: rgba(255, 255, 255, 0.15);"></div>
+          <div class="palette-info">
+            <span class="palette-name">--border-1</span>
+            <span class="palette-hex">rgba(255...15)</span>
+          </div>
+        </div>
+        <div class="palette-card">
+          <div class="palette-color" style="background-color: rgba(255, 255, 255, 0.25);" id="paletteBorder2"></div>
+          <div class="palette-info">
+            <span class="palette-name">--border-2</span>
+            <span class="palette-hex" id="paletteBorder2Hex">rgba(255...25)</span>
+          </div>
+        </div>
+        <div class="palette-card">
+          <div class="palette-color" style="background-color: rgba(214, 188, 162, 0.9);" id="paletteAccent"></div>
+          <div class="palette-info">
+            <span class="palette-name">--accent</span>
+            <span class="palette-hex" id="paletteAccentHex">#d6bca2</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards Catalog Grid -->
+      <div class="catalog-grid">
+
+        <!-- Card 1: Base Glass Card -->
+        <article class="catalog-card" id="base-card-section">
+          <div class="catalog-header">
+            <div class="catalog-meta">
+              <h2 class="catalog-title">Base Glass Card</h2>
+              <p class="catalog-desc">The core glassmorphic block containing default borders, shadow, blur, and opacity.
+              </p>
+            </div>
+            <span class="catalog-badge">.glass-card</span>
+          </div>
+
+          <div class="sandbox sandbox-bg-glow">
+            <div class="preview-container">
+              <div class="glass-card" style="padding: 30px; text-align: center;">
+                <h4 style="margin: 0 0 10px 0; font-size: 16px; font-weight: 700;">Default Container</h4>
+                <p style="margin: 0; font-size: 13px; color: var(--text-2); line-height: 1.6;">
+                  This container is built with a blur filter overlaying a translucent dark background.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="code-panel">
+            <div class="tabs-nav">
+              <button class="tab-nav-btn active" data-target="base-html">HTML</button>
+              <button class="tab-nav-btn" data-target="base-css">CSS</button>
+            </div>
+            <div class="code-container">
+              <button class="copy-btn"><i class="fa-regular fa-copy"></i> Copy</button>
+              <pre class="code-block active" id="base-html"><code>&lt;div class="glass-card"&gt;
+  &lt;h4&gt;Default Container&lt;/h4&gt;
+  &lt;p&gt;This container is built with a blur filter...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+              <pre class="code-block" id="base-css"><code>.glass-card {
+  background: rgba(20, 20, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+}</code></pre>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2: Project Card -->
+        <article class="catalog-card" id="project-card-section">
+          <div class="catalog-header">
+            <div class="catalog-meta">
+              <h2 class="catalog-title">Project Card</h2>
+              <p class="catalog-desc">Complex card layout containing image header, tags, action triggers, and hover
+                actions.</p>
+            </div>
+            <span class="catalog-badge">.project-card</span>
+          </div>
+
+          <div class="sandbox sandbox-bg-glow">
+            <div class="sandbox-states">
+              <div class="state-column">
+                <span class="state-label">Normal State</span>
+                <div class="glass-card project-card">
+                  <div class="project-img">
+                    <i class="fa-solid fa-laptop-code"></i>
+                  </div>
+                  <div class="project-body">
+                    <h4 class="project-title">E-Commerce Platform</h4>
+                    <p class="project-desc">A microservices-based web app built using ASP.NET Core API.</p>
+                    <div class="project-tags">
+                      <span class="tag">C#</span>
+                      <span class="tag">SQL</span>
+                    </div>
+                    <div class="project-links">
+                      <a href="#" class="btn-sm" onclick="event.preventDefault();"><i
+                          class="fa-solid fa-arrow-up-right-from-square"></i> Demo</a>
+                      <a href="#" class="btn-sm" onclick="event.preventDefault();"><i class="fa-brands fa-github"></i>
+                        Code</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="state-column">
+                <span class="state-label">Hover (Simulated shadow & transform)</span>
+                <div class="glass-card project-card hover-simulate">
+                  <div class="project-img">
+                    <i class="fa-solid fa-laptop-code"></i>
+                  </div>
+                  <div class="project-body">
+                    <h4 class="project-title">E-Commerce Platform</h4>
+                    <p class="project-desc">A microservices-based web app built using ASP.NET Core API.</p>
+                    <div class="project-tags">
+                      <span class="tag">C#</span>
+                      <span class="tag">SQL</span>
+                    </div>
+                    <div class="project-links">
+                      <a href="#" class="btn-sm" onclick="event.preventDefault();"><i
+                          class="fa-solid fa-arrow-up-right-from-square"></i> Demo</a>
+                      <a href="#" class="btn-sm" onclick="event.preventDefault();"><i class="fa-brands fa-github"></i>
+                        Code</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="code-panel">
+            <div class="tabs-nav">
+              <button class="tab-nav-btn active" data-target="project-html">HTML</button>
+              <button class="tab-nav-btn" data-target="project-css">CSS</button>
+            </div>
+            <div class="code-container">
+              <button class="copy-btn"><i class="fa-regular fa-copy"></i> Copy</button>
+              <pre class="code-block active" id="project-html"><code>&lt;div class="glass-card project-card"&gt;
+  &lt;div class="project-img"&gt;
+    &lt;i class="fa-solid fa-laptop-code"&gt;&lt;/i&gt;
+  &lt;/div&gt;
+  &lt;div class="project-body"&gt;
+    &lt;h4 class="project-title"&gt;E-Commerce Platform&lt;/h4&gt;
+    &lt;p class="project-desc"&gt;A microservices-based web app...&lt;/p&gt;
+    &lt;div class="project-tags"&gt;
+      &lt;span class="tag"&gt;C#&lt;/span&gt;
+      &lt;span class="tag"&gt;SQL&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="project-links"&gt;
+      &lt;a href="#" class="btn-sm"&gt;&lt;i class="fa-solid fa-arrow-up-right-from-square"&gt;&lt;/i&gt; Demo&lt;/a&gt;
+      &lt;a href="#" class="btn-sm"&gt;&lt;i class="fa-brands fa-github"&gt;&lt;/i&gt; Code&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+              <pre class="code-block" id="project-css"><code>.project-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  box-shadow: 0 24px 56px -16px rgba(0, 0, 0, 0.75);
+  transform: translateY(-4px);
+}
+
+.project-img {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(135deg, rgba(214, 188, 162, 0.1) 0%, rgba(20, 20, 23, 0.9) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: rgba(214, 188, 162, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-img i {
+  transition: transform 0.4s ease;
+}
+
+.project-card:hover .project-img i {
+  transform: scale(1.15) rotate(5deg);
+  color: var(--accent);
+}
+
+.project-body {
+  padding: 20px;
+}
+
+.project-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text-1);
+}
+
+.project-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin: 0 0 14px 0;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-2);
+}</code></pre>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3: Skills Card -->
+        <article class="catalog-card" id="skills-card-section">
+          <div class="catalog-header">
+            <div class="catalog-meta">
+              <h2 class="catalog-title">Skills Card</h2>
+              <p class="catalog-desc">Compact grid display cards for technology fields containing tech pill listings.
+              </p>
+            </div>
+            <span class="catalog-badge">.skills-card</span>
+          </div>
+
+          <div class="sandbox sandbox-bg-glow">
+            <div class="preview-container">
+              <div class="glass-card skills-card">
+                <h3 class="skills-card-title">
+                  <i class="fa-solid fa-server"></i> Backend Engineering
+                </h3>
+                <p class="skills-card-desc">
+                  Deep proficiency in building robust web services, APIs, and writing clean, scalable services.
+                </p>
+                <div class="skills-list">
+                  <span class="tag">C# / .NET</span>
+                  <span class="tag">ASP.NET Core</span>
+                  <span class="tag">RESTful API</span>
+                  <span class="tag">SQL Server</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="code-panel">
+            <div class="tabs-nav">
+              <button class="tab-nav-btn active" data-target="skills-html">HTML</button>
+              <button class="tab-nav-btn" data-target="skills-css">CSS</button>
+            </div>
+            <div class="code-container">
+              <button class="copy-btn"><i class="fa-regular fa-copy"></i> Copy</button>
+              <pre class="code-block active" id="skills-html"><code>&lt;div class="glass-card skills-card"&gt;
+  &lt;h3 class="skills-card-title"&gt;
+    &lt;i class="fa-solid fa-server"&gt;&lt;/i&gt; Backend Engineering
+  &lt;/h3&gt;
+  &lt;p class="skills-card-desc"&gt;Deep proficiency in building robust web services...&lt;/p&gt;
+  &lt;div class="skills-list"&gt;
+    &lt;span class="tag"&gt;C# / .NET&lt;/span&gt;
+    &lt;span class="tag"&gt;ASP.NET Core&lt;/span&gt;
+    &lt;span class="tag"&gt;SQL Server&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+              <pre class="code-block" id="skills-css"><code>.skills-card {
+  padding: 24px;
+}
+
+.skills-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 0 0 16px 0;
+}
+
+.skills-card-title i {
+  color: var(--accent);
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.skills-card-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin: 0 0 16px 0;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}</code></pre>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 4: Education Card -->
+        <article class="catalog-card" id="edu-card-section">
+          <div class="catalog-header">
+            <div class="catalog-meta">
+              <h2 class="catalog-title">Education / Experience Card</h2>
+              <p class="catalog-desc">Flex card featuring a structural contrast icon on the left and detail points on
+                the right.</p>
+            </div>
+            <span class="catalog-badge">.edu-card</span>
+          </div>
+
+          <div class="sandbox sandbox-bg-glow">
+            <div class="preview-container">
+              <div class="glass-card edu-card">
+                <div class="edu-icon">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="edu-body">
+                  <h4 class="edu-institution">University of Computer Studies</h4>
+                  <div class="edu-meta">
+                    <span>B.S. in Software Engineering</span>
+                    <span>GPA: 3.85 / 4.0</span>
+                  </div>
+                  <span class="edu-period">2020 - 2024</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="code-panel">
+            <div class="tabs-nav">
+              <button class="tab-nav-btn active" data-target="edu-html">HTML</button>
+              <button class="tab-nav-btn" data-target="edu-css">CSS</button>
+            </div>
+            <div class="code-container">
+              <button class="copy-btn"><i class="fa-regular fa-copy"></i> Copy</button>
+              <pre class="code-block active" id="edu-html"><code>&lt;div class="glass-card edu-card"&gt;
+  &lt;div class="edu-icon"&gt;
+    &lt;i class="fa-solid fa-graduation-cap"&gt;&lt;/i&gt;
+  &lt;/div&gt;
+  &lt;div class="edu-body"&gt;
+    &lt;h4 class="edu-institution"&gt;University of Computer Studies&lt;/h4&gt;
+    &lt;div class="edu-meta"&gt;
+      &lt;span&gt;B.S. in Software Engineering&lt;/span&gt;
+      &lt;span&gt;GPA: 3.85 / 4.0&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;span class="edu-period"&gt;2020 - 2024&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+              <pre class="code-block" id="edu-css"><code>.edu-card {
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.edu-icon {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #1a1a1e;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.edu-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.edu-institution {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 0;
+}
+
+.edu-meta {
+  font-size: 12px;
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.edu-period {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 3px;
+}</code></pre>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 5: Form Card -->
+        <article class="catalog-card" id="form-card-section">
+          <div class="catalog-header">
+            <div class="catalog-meta">
+              <h2 class="catalog-title">Form Container Card</h2>
+              <p class="catalog-desc">Card containing input elements, focus border borders, and structured labels.</p>
+            </div>
+            <span class="catalog-badge">.contact-form-card</span>
+          </div>
+
+          <div class="sandbox sandbox-bg-glow">
+            <div class="preview-container">
+              <div class="glass-card contact-form-card">
+                <form onsubmit="event.preventDefault(); showToast('Form submitted successfully (Demo)', 'success');">
+                  <div class="form-group">
+                    <label for="demoName">Full Name</label>
+                    <input type="text" id="demoName" placeholder="John Doe" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="demoMessage">Message</label>
+                    <textarea id="demoMessage" placeholder="Leave a message..." required></textarea>
+                  </div>
+                  <button type="submit" class="btn-sm"
+                    style="height: 34px; padding: 0 20px; font-size: 12px; background: var(--text-1); color: var(--bg-1); border-color: var(--text-1); width: 100%; justify-content: center;">
+                    Send Message
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="code-panel">
+            <div class="tabs-nav">
+              <button class="tab-nav-btn active" data-target="form-html">HTML</button>
+              <button class="tab-nav-btn" data-target="form-css">CSS</button>
+            </div>
+            <div class="code-container">
+              <button class="copy-btn"><i class="fa-regular fa-copy"></i> Copy</button>
+              <pre class="code-block active" id="form-html"><code>&lt;div class="glass-card contact-form-card"&gt;
+  &lt;form&gt;
+    &lt;div class="form-group"&gt;
+      &lt;label for="name"&gt;Full Name&lt;/label&gt;
+      &lt;input type="text" id="name" placeholder="John Doe" /&gt;
+    &lt;/div&gt;
+    &lt;div class="form-group"&gt;
+      &lt;label for="message"&gt;Message&lt;/label&gt;
+      &lt;textarea id="message" placeholder="Leave a message..."&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+              <pre class="code-block" id="form-css"><code>.contact-form-card {
+  padding: 28px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--text-1);
+  font-family: "Manrope", sans-serif;
+  font-size: 14px;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  background: rgba(0, 0, 0, 0.6);
+}</code></pre>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Popup Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Interactive Logic Script -->
+  <script>
+    // ── Background Switches ──
+    const sandboxes = document.querySelectorAll('.sandbox');
+    const bgBtns = document.querySelectorAll('.bg-btn');
+
+    bgBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        bgBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const bgType = btn.getAttribute('data-bg');
+        sandboxes.forEach(box => {
+          box.className = 'sandbox'; // clear additional styles
+          if (bgType === 'glow') {
+            box.classList.add('sandbox-bg-glow');
+          } else if (bgType === 'black') {
+            box.classList.add('sandbox-bg-black');
+          } else if (bgType === 'card') {
+            box.classList.add('sandbox-bg-card');
+          } else if (bgType === 'contrast') {
+            box.classList.add('sandbox-bg-contrast');
+          }
+        });
+      });
+    });
+
+    // ── Sliders Configurator Playground ──
+    const root = document.documentElement;
+
+    const colorPicker = document.getElementById('colorPicker');
+    const colorPickerHex = document.getElementById('colorPickerHex');
+    const opacitySlider = document.getElementById('opacitySlider');
+    const opacityVal = document.getElementById('opacityVal');
+    const blurSlider = document.getElementById('blurSlider');
+    const blurVal = document.getElementById('blurVal');
+    const radiusSlider = document.getElementById('radiusSlider');
+    const radiusVal = document.getElementById('radiusVal');
+    const borderSlider = document.getElementById('borderSlider');
+    const borderVal = document.getElementById('borderVal');
+
+    const paletteCardColor = document.getElementById('paletteCardColor');
+    const paletteCardHex = document.getElementById('paletteCardHex');
+    const paletteBorder2 = document.getElementById('paletteBorder2');
+    const paletteBorder2Hex = document.getElementById('paletteBorder2Hex');
+    const paletteAccent = document.getElementById('paletteAccent');
+    const paletteAccentHex = document.getElementById('paletteAccentHex');
+
+    // Sync color input with text
+    function updateAccentColor(hex) {
+      root.style.setProperty('--accent', hex);
+
+      // Compute translucent glow version
+      const rgb = hexToRgb(hex);
+      if (rgb) {
+        root.style.setProperty('--accent-glow', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)`);
+        root.style.setProperty('--accent-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+      }
+
+      colorPicker.value = hex;
+      colorPickerHex.value = hex;
+      paletteAccent.style.backgroundColor = hex;
+      paletteAccentHex.textContent = hex;
+    }
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    }
+
+    colorPicker.addEventListener('input', (e) => {
+      updateAccentColor(e.target.value);
+    });
+    colorPickerHex.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (/^#[0-9A-F]{6}$/i.test(val)) {
+        updateAccentColor(val);
+      }
+    });
+
+    // Glass Opacity Slider
+    opacitySlider.addEventListener('input', (e) => {
+      const factor = (e.target.value / 100).toFixed(2);
+      opacityVal.textContent = factor;
+      root.style.setProperty('--card-bg-opacity', factor);
+
+      // Update palette preview
+      paletteCardColor.style.backgroundColor = `rgba(20, 20, 23, ${factor})`;
+      paletteCardHex.textContent = `rgba(20,20,23,${factor})`;
+    });
+
+    // Blur Slider
+    blurSlider.addEventListener('input', (e) => {
+      const val = e.target.value + 'px';
+      blurVal.textContent = val;
+      root.style.setProperty('--card-blur-radius', val);
+    });
+
+    // Radius Slider
+    radiusSlider.addEventListener('input', (e) => {
+      const val = e.target.value + 'px';
+      radiusVal.textContent = val;
+      root.style.setProperty('--card-border-radius', val);
+    });
+
+    // Border Opacity Slider
+    borderSlider.addEventListener('input', (e) => {
+      const factor = (e.target.value / 100).toFixed(2);
+      borderVal.textContent = factor;
+      root.style.setProperty('--card-border-opacity', factor);
+
+      // Update palette preview
+      paletteBorder2.style.backgroundColor = `rgba(255, 255, 255, ${factor})`;
+      paletteBorder2Hex.textContent = `rgba(255,255,255,${factor})`;
+    });
+
+    // Reset System Defaults
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      updateAccentColor('#d6bca2');
+
+      opacitySlider.value = 70;
+      opacityVal.textContent = '0.70';
+      root.style.setProperty('--card-bg-opacity', '0.7');
+      paletteCardColor.style.backgroundColor = 'rgba(20, 20, 23, 0.7)';
+      paletteCardHex.textContent = 'rgba(20,20,23,0.7)';
+
+      blurSlider.value = 12;
+      blurVal.textContent = '12px';
+      root.style.setProperty('--card-blur-radius', '12px');
+
+      radiusSlider.value = 16;
+      radiusVal.textContent = '16px';
+      root.style.setProperty('--card-border-radius', '16px');
+
+      borderSlider.value = 25;
+      borderVal.textContent = '0.25';
+      root.style.setProperty('--card-border-opacity', '0.25');
+      paletteBorder2.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
+      paletteBorder2Hex.textContent = 'rgba(255,255,255,0.25)';
+
+      showToast("Card layout properties restored to system defaults", "info");
+    });
+
+    // ── Copy Code Panels Switching ──
+    const tabNavs = document.querySelectorAll('.tabs-nav');
+    tabNavs.forEach(nav => {
+      const navBtns = nav.querySelectorAll('.tab-nav-btn');
+      const container = nav.nextElementSibling;
+
+      navBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          navBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const targetId = btn.getAttribute('data-target');
+          const codeBlocks = container.querySelectorAll('.code-block');
+
+          codeBlocks.forEach(block => {
+            if (block.id === targetId) {
+              block.classList.add('active');
+            } else {
+              block.classList.remove('active');
+            }
+          });
+        });
+      });
+    });
+
+    // ── Copy to Clipboard Logic ──
+    const copyBtns = document.querySelectorAll('.copy-btn');
+    copyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const container = btn.parentElement;
+        const activeBlock = container.querySelector('.code-block.active');
+        if (!activeBlock) return;
+
+        const text = activeBlock.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+          showToast("Copied card code snippet", "success");
+
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+          }, 2000);
+        }).catch(err => {
+          console.error("Failed to copy", err);
+          showToast("Failed to copy code to clipboard", "error");
+        });
+      });
+    });
+
+    // ── Toast Popups ──
+    const toastContainer = document.getElementById('toastContainer');
+    function showToast(message, type = "success") {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'success' ? 'toast-success' : ''}`;
+
+      const icon = type === 'success'
+        ? '<i class="fa-solid fa-circle-check"></i>'
+        : type === 'error'
+          ? '<i class="fa-solid fa-circle-xmark"></i>'
+          : '<i class="fa-solid fa-circle-info"></i>';
+
+      toast.innerHTML = `${icon} <span>${message}</span>`;
+      toastContainer.appendChild(toast);
+
+      // Animate in
+      setTimeout(() => toast.classList.add('show'), 50);
+
+      // Animate out and remove
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+  </script>
+</body>
+
+</html>
