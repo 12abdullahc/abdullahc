@@ -281,6 +281,7 @@
       font-weight: 700;
       color: var(--text-1);
       margin-bottom: 3px;
+      line-height: 1.2;
     }
 
     .word-card-pos {
@@ -289,6 +290,45 @@
       font-weight: 600;
       opacity: 0.85;
       margin-bottom: 8px;
+    }
+
+    .word-card-audio-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .word-card-audio-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-1);
+      color: var(--text-2);
+      padding: 3px 9px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .word-card-audio-btn i {
+      font-size: 10px;
+    }
+
+    .word-card-audio-btn:hover {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--text-1);
+      transform: translateY(-1px);
+    }
+
+    .word-card-audio-btn:active {
+      transform: scale(0.95);
     }
 
     .word-card-translation {
@@ -514,11 +554,17 @@
       border-top: 1px solid rgba(255, 255, 255, 0.07);
     }
 
-    /* Listen button */
+    /* Action buttons container & rows */
+    .modal-actions-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     .modal-action-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
       align-self: flex-start;
     }
@@ -697,13 +743,23 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="modal-action-row">
-          <a class="modal-listen-btn" id="modalPronounceBtn" href="#">
-            <i class="fas fa-volume-up"></i> Pronunciation
-          </a>
-          <a class="modal-listen-btn" id="modalListenBtn" href="#">
-            <i class="fas fa-book-open"></i> Meaning
-          </a>
+        <div class="modal-actions-container">
+          <div class="modal-action-row">
+            <a class="modal-listen-btn" id="modalPronounceBtn" href="#">
+              <i class="fas fa-volume-up"></i> Pronunciation
+            </a>
+            <a class="modal-listen-btn" id="modalListenBtn" href="#">
+              <i class="fas fa-book-open"></i> Meaning
+            </a>
+          </div>
+          <div class="modal-action-row">
+            <button class="modal-listen-btn" id="modalAudioUkBtn" type="button">
+              <i class="fas fa-volume-high"></i> UK Audio
+            </button>
+            <button class="modal-listen-btn" id="modalAudioUsBtn" type="button">
+              <i class="fas fa-volume-high"></i> US Audio
+            </button>
+          </div>
         </div>
 
         <div class="modal-translation">
@@ -8231,6 +8287,32 @@
       w.idExample = WORD_ID_EXAMPLES[w.word] || "";
     });
 
+    // ── Speech Synthesis Audio (UK & US) ──
+    function speakWord(text, lang = "en-US") {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const cleanText = text.split(",")[0].trim().replace(/[()]/g, "");
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = lang;
+      utterance.rate = 0.88;
+
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const matchedVoice = voices.find(
+          (v) => v.lang === lang || v.lang.replace("_", "-").startsWith(lang),
+        );
+        if (matchedVoice) utterance.voice = matchedVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+
     // ── Render cards ──
     const grid = document.getElementById("wordGrid");
     const emptyState = document.getElementById("emptyState");
@@ -8253,13 +8335,35 @@
         const card = document.createElement("div");
         card.className = "word-card";
         card.dataset.index = idx;
+
         card.innerHTML = `
             <div class="word-card-word">${item.word}</div>
             <div class="word-card-pos">${item.pos}</div>
+            <div class="word-card-audio-row">
+              <button class="word-card-audio-btn uk" title="UK Pronunciation (British)" aria-label="UK Pronunciation">
+                <i class="fas fa-volume-high"></i> UK
+              </button>
+              <button class="word-card-audio-btn us" title="US Pronunciation (American)" aria-label="US Pronunciation">
+                <i class="fas fa-volume-high"></i> US
+              </button>
+            </div>
             <div class="word-card-translation">
               <span class="flag">🇮🇩</span> ${item.id}
             </div>
           `;
+
+        const ukBtn = card.querySelector(".word-card-audio-btn.uk");
+        ukBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          speakWord(item.word, "en-GB");
+        });
+
+        const usBtn = card.querySelector(".word-card-audio-btn.us");
+        usBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          speakWord(item.word, "en-US");
+        });
+
         card.addEventListener("click", () => openModal(idx));
         grid.insertBefore(card, emptyState);
       });
@@ -8303,10 +8407,26 @@
     const modalTranslation = document.getElementById("modalTranslation");
     const modalExample = document.getElementById("modalExample");
     const modalCounter = document.getElementById("modalCounter");
+    const modalAudioUkBtn = document.getElementById("modalAudioUkBtn");
+    const modalAudioUsBtn = document.getElementById("modalAudioUsBtn");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
     let currentIndex = 0;
+
+    if (modalAudioUkBtn) {
+      modalAudioUkBtn.addEventListener("click", () => {
+        const item = filteredWords[currentIndex];
+        if (item) speakWord(item.word, "en-GB");
+      });
+    }
+
+    if (modalAudioUsBtn) {
+      modalAudioUsBtn.addEventListener("click", () => {
+        const item = filteredWords[currentIndex];
+        if (item) speakWord(item.word, "en-US");
+      });
+    }
 
     function openModal(idx) {
       currentIndex = idx;
@@ -8331,7 +8451,8 @@
         .split(",")[0]
         .trim()
         .toLowerCase()
-        .replace(/\s+/g, "-");
+        .replace(/\s+/g, "-")
+        .replace(/[()]/g, "");
       document.getElementById("modalListenBtn").href =
         "https://dictionary.cambridge.org/dictionary/english/" + slug;
       document.getElementById("modalPronounceBtn").href =
