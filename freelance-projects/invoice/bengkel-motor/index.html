@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Nota Struk Bengkel Motor A5</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Remixicon Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- APP WRAPPER FOR SCREEN DISPLAY -->
+  <div class="app-container no-print">
+    
+    <!-- HEADER APP ACTIONS -->
+    <header class="app-header">
+      <div class="header-actions">
+        <button id="btn-config-api" class="btn btn-outline" title="Pengaturan API Google Sheets">
+          <i class="ri-google-fill"></i> Hubungkan Google Sheets
+        </button>
+        <button id="btn-reset-form" class="btn btn-ghost" title="Reset Form">
+          <i class="ri-refresh-line"></i> Reset
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT LAYOUT -->
+    <main class="main-layout">
+      
+      <!-- FORM INPUT SECTION -->
+      <section class="form-section card">
+        <div class="card-header">
+          <h2><i class="ri-file-list-3-line"></i> Input Data Transaksi</h2>
+          <span class="badge badge-info" id="status-mode">Mode Standalone / Demo</span>
+        </div>
+        
+        <form id="nota-form" onsubmit="return false;">
+          
+          <!-- INFO STAF & PELANGGAN -->
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="no_struk">No. Struk</label>
+              <input type="text" id="no_struk" class="form-control" readonly>
+            </div>
+            
+            <div class="form-group">
+              <label for="tanggal">Tanggal & Waktu</label>
+              <input type="datetime-local" id="tanggal" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="pelanggan">Nama Pelanggan</label>
+              <input type="text" id="pelanggan" class="form-control" placeholder="Contoh: Bpk. Budi Santoso" required>
+            </div>
+
+            <div class="form-group">
+              <label for="no_hp">No. HP / WA</label>
+              <input type="tel" id="no_hp" class="form-control" placeholder="Contoh: 0819-8765-4321">
+            </div>
+
+            <div class="form-group">
+              <label for="nopol">No. Polisi (Plat)</label>
+              <input type="text" id="nopol" class="form-control uppercase" placeholder="Contoh: B 3456 TKG" required>
+            </div>
+
+            <div class="form-group">
+              <label for="motor">Merk / Tipe Motor</label>
+              <input type="text" id="motor" class="form-control" placeholder="Contoh: Honda Vario 125 (2021)" required>
+            </div>
+
+            <div class="form-group">
+              <label for="odometer">Odometer (Km)</label>
+              <input type="text" id="odometer" class="form-control" placeholder="Contoh: 24,150 Km">
+            </div>
+
+            <div class="form-group">
+              <label for="mekanik">Nama Mekanik</label>
+              <input type="text" id="mekanik" class="form-control" placeholder="Contoh: Mas Agus" required>
+            </div>
+          </div>
+
+          <!-- TABEL DYNAMIC ITEMS -->
+          <div class="table-container">
+            <div class="table-header-action">
+              <h3>Rincian Jasa & Sparepart</h3>
+              <button type="button" id="btn-add-item" class="btn btn-sm btn-primary">
+                <i class="ri-add-line"></i> Tambah Baris
+              </button>
+            </div>
+
+            <table class="item-table" id="table-items">
+              <thead>
+                <tr>
+                  <th style="width: 5%;">No</th>
+                  <th style="width: 45%;">Deskripsi Jasa / Sparepart</th>
+                  <th style="width: 12%;">Qty</th>
+                  <th style="width: 18%;">Harga Satuan (Rp)</th>
+                  <th style="width: 15%;">Total (Rp)</th>
+                  <th style="width: 5%;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="item-rows">
+                <!-- Dynamic rows inserted via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- RINGKASAN TOTAL & PEMBAYARAN -->
+          <div class="payment-summary-grid">
+            <div class="notes-box">
+              <label for="catatan">Catatan / Garansi Servis</label>
+              <textarea id="catatan" class="form-control" rows="3">- Garansi Servis 7 Hari / 500 km (Bawa nota ini).
+- Sparepart bekas/lama diserahkan ke konsumen.</textarea>
+            </div>
+
+            <div class="summary-box">
+              <div class="summary-row grand-total-row">
+                <span>TOTAL OVERALL</span>
+                <span id="txt-grand-total">Rp 0</span>
+              </div>
+              
+              <div class="summary-row">
+                <label for="bayar">Jumlah Bayar (Rp)</label>
+                <input type="number" id="bayar" class="form-control text-right" placeholder="0" min="0">
+              </div>
+
+              <div class="summary-row change-row">
+                <span>Kembali</span>
+                <span id="txt-kembali" class="text-success">Rp 0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTTOM ACTION BUTTONS -->
+          <div class="form-actions-bar">
+            <button type="button" id="btn-save-sheets" class="btn btn-secondary btn-lg">
+              <i class="ri-google-line"></i> Simpan ke Google Sheets
+            </button>
+            <button type="button" id="btn-print" class="btn btn-primary btn-lg">
+              <i class="ri-printer-line"></i> Cetak Struk A5
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- LIVE PREVIEW SECTION (RESPONSIVE FULL HEIGHT & FIT BOTH WIDTH + HEIGHT) -->
+      <section class="preview-section card">
+        <div class="card-header">
+          <h2><i class="ri-eye-line"></i> Preview Nota A5</h2>
+          <div class="zoom-controls">
+            <button type="button" id="btn-zoom-out" class="btn btn-sm btn-outline" title="Zoom Out (Scroll Down)"><i class="ri-zoom-out-line"></i></button>
+            <span id="txt-zoom-level" class="zoom-badge">100%</span>
+            <button type="button" id="btn-zoom-in" class="btn btn-sm btn-outline" title="Zoom In (Scroll Up)"><i class="ri-zoom-in-line"></i></button>
+            <button type="button" id="btn-zoom-reset" class="btn btn-sm btn-ghost" title="Reset Fit (Width & Height)"><i class="ri-aspect-ratio-line"></i> Fit</button>
+          </div>
+        </div>
+        <div class="preview-viewport" id="preview-viewport">
+          <div id="preview-wrapper">
+            <div id="print-area-preview">
+              <!-- Rendered Struk A5 Paper Container -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- PRINT ONLY CONTAINER (HIDDEN ON SCREEN, SHOWN ONLY WHEN PRINTING) -->
+  <div id="print-area" class="print-only">
+    <!-- Rendered Struk A5 Structure for Printer -->
+  </div>
+
+  <!-- MODAL CONFIG GOOGLE SHEETS API -->
+  <div id="modal-api" class="modal-backdrop hidden no-print">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="ri-google-line"></i> Pengaturan Google Sheets API</h3>
+        <button id="btn-close-modal" class="btn-icon"><i class="ri-close-line"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Masukkan URL Web App dari Google Apps Script untuk menghubungkan aplikasi ini ke Google Sheets Anda secara real-time.</p>
+        <div class="form-group">
+          <label for="api_url">URL Web App (Google Apps Script)</label>
+          <input type="url" id="api_url" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+        <div class="alert alert-info">
+          <i class="ri-information-line"></i> Jika belum membuat Google Apps Script, silakan lihat file <code>google-script.js</code> untuk kode copy-paste dan panduan pemasangan.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-api" class="btn btn-primary">Simpan Pengaturan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
