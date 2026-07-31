@@ -211,22 +211,29 @@ function renderStrukPreview() {
   let grandTotal = 0;
 
   rows.forEach((tr, idx) => {
-    const desc = tr.querySelector('.item-desc').value || '-';
-    const qty = parseFloat(tr.querySelector('.item-qty').value) || 0;
-    const harga = parseFloat(tr.querySelector('.item-harga').value) || 0;
-    const total = qty * harga;
-    grandTotal += total;
+    const rawDesc = (tr.querySelector('.item-desc').value || '').trim();
+    const qtyVal = tr.querySelector('.item-qty').value;
+    const hargaVal = tr.querySelector('.item-harga').value;
 
-    items.push({ no: idx + 1, desc, qty, harga, total });
+    const qty = parseFloat(qtyVal) || 0;
+    const harga = parseFloat(hargaVal) || 0;
+    const total = qty * harga;
+
+    if (rawDesc !== '' || harga > 0) {
+      grandTotal += total;
+      items.push({ no: idx + 1, desc: rawDesc, qty: qty, harga: harga, total: total, isEmpty: false });
+    } else {
+      items.push({ no: idx + 1, desc: '', qty: '', harga: '', total: '', isEmpty: true });
+    }
   });
 
   const bayar = parseFloat(document.getElementById('bayar').value) || 0;
   const kembali = Math.max(0, bayar - grandTotal);
 
-  // PAD TO MINIMUM 10 ROWS: always show at least 10 baris in preview & print
+  // PAD TO MINIMUM 9 ROWS: always show at least 9 baris in preview & print
   const MIN_ROWS = 9;
   while (items.length < MIN_ROWS) {
-    items.push({ no: items.length + 1, desc: '', qty: '', harga: '', total: '' });
+    items.push({ no: items.length + 1, desc: '', qty: '', harga: '', total: '', isEmpty: true });
   }
 
   // DYNAMIC CAPACITY CALCULATION:
@@ -270,16 +277,27 @@ function renderStrukPreview() {
 
     let rowsHtml = '';
     pageItems.forEach(item => {
-      const isEmptyRow = item.qty === '' && item.harga === '' && item.total === '';
-      rowsHtml += `
-        <tr>
-          <td style="text-align: center; width: 5%;">${item.no}</td>
-          <td style="width: 50%;">${escapeHtml(item.desc)}</td>
-          <td style="text-align: center; width: 8%;">${isEmptyRow ? '' : item.qty}</td>
-          <td style="text-align: right; width: 18%;">${isEmptyRow ? '' : formatNumber(item.harga)}</td>
-          <td style="text-align: right; width: 19%;">${isEmptyRow ? '' : formatNumber(item.total)}</td>
-        </tr>
-      `;
+      if (item.isEmpty) {
+        rowsHtml += `
+          <tr>
+            <td style="text-align: center; width: 5%;">${item.no}</td>
+            <td style="width: 50%;"></td>
+            <td style="text-align: center; width: 8%;"></td>
+            <td style="text-align: right; width: 18%;"></td>
+            <td style="text-align: right; width: 19%;"></td>
+          </tr>
+        `;
+      } else {
+        rowsHtml += `
+          <tr>
+            <td style="text-align: center; width: 5%;">${item.no}</td>
+            <td style="width: 50%;">${escapeHtml(item.desc)}</td>
+            <td style="text-align: center; width: 8%;">${item.qty}</td>
+            <td style="text-align: right; width: 18%;">${formatNumber(item.harga)}</td>
+            <td style="text-align: right; width: 19%;">${formatNumber(item.total)}</td>
+          </tr>
+        `;
+      }
     });
 
     // TOP SECTION: Page 1 has Shop Header + Info Grid. Page 2+ has minimal continuation line!
