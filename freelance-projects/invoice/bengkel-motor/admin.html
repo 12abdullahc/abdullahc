@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SP 76 Motor - Panel Admin / Pengaturan</title>
+  <!-- Favicon / Browser Tab Logo -->
+  <link rel="icon" type="image/png" href="img/image.png">
+  <link rel="shortcut icon" type="image/png" href="img/image.png">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
+  <!-- Remixicon Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    .admin-card {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 14px;
+    }
+
+    .admin-card-header h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-box {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      word-break: break-all;
+    }
+
+    .status-connected {
+      background-color: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #34d399;
+    }
+
+    .status-disconnected {
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #f87171;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="admin-container">
+
+    <!-- HEADER ADMIN -->
+    <header class="app-header" style="margin-bottom: 24px;">
+      <div class="app-brand" style="display: flex; align-items: center; gap: 12px;">
+        <img src="img/image.png" alt="SP 76 Motor Logo" style="height: 42px; width: auto; object-fit: contain;">
+        <div>
+          <h1 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0; line-height: 1.2;">SP 76 Motor -
+            Panel Admin</h1>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Pengaturan Hubungkan Google Sheets & API</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-outline" title="Kembali ke Aplikasi Utama Kasir">
+          <i class="ri-arrow-left-line"></i> Kembali ke Kasir
+        </a>
+      </div>
+    </header>
+
+    <!-- CARD PENGATURAN API GOOGLE SHEETS -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><i class="ri-google-fill" style="color: #4285F4;"></i> Hubungkan Google Sheets API</h2>
+        <span id="badge-api-status" class="badge badge-info">Memeriksa status...</span>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px;">
+        Hubungkan aplikasi nota ini dengan Google Sheets untuk menyimpan transaksi secara otomatis, memperbarui urutan No. Struk, mengambil master barang, dan meng-capture nota ke email.
+      </p>
+
+      <form id="admin-api-form" onsubmit="return false;">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="admin_api_url">URL Web App (Google Apps Script)</label>
+          <input type="url" id="admin_api_url" class="form-control"
+            placeholder="https://script.google.com/macros/s/AKfycb.../exec" style="width: 100%;">
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+          <button type="button" id="btn-save-admin-api" class="btn btn-primary" style="flex: 1;">
+            <i class="ri-save-line"></i> Simpan Pengaturan API
+          </button>
+          <button type="button" id="btn-test-admin-api" class="btn btn-outline">
+            <i class="ri-refresh-line"></i> Uji Koneksi
+          </button>
+        </div>
+      </form>
+
+      <div id="status-message-box" class="status-box status-disconnected hidden">
+        <i class="ri-information-line"></i>
+        <span id="status-message-text">Belum ada URL API yang tersimpan.</span>
+      </div>
+    </section>
+
+    <!-- CARD PANDUAN INTEGRASI -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><i class="ri-book-read-line"></i> Panduan Lembar Kerja Google Sheets</h2>
+      </div>
+
+      <div style="color: var(--text-main); font-size: 0.9rem; line-height: 1.6;">
+        <p style="margin-bottom: 12px;">Spreadsheet Google Sheets Anda harus memiliki 4 sheet tab berikut:</p>
+
+        <ul style="padding-left: 20px; color: var(--text-muted);">
+          <li style="margin-bottom: 8px;"><b style="color: #fff;">MasterBarang</b>: Baris 1 berisi <code>Kode | NamaBarang | Harga</code>. Baris 2 dst berisi daftar item/jasa.</li>
+          <li style="margin-bottom: 8px;"><b style="color: #fff;">Transaksi</b>: Baris 1 berisi <code>NoStruk | Tanggal | Pelanggan | NoHP | NoPol | Motor | Odometer | Mekanik | Total | Bayar | ItemsJSON</code>.</li>
+          <li style="margin-bottom: 8px;"><b style="color: #fff;">Catatan</b>: Baris 1 berisi header <code>Catatan</code>. Baris 2 dst berisi pesan garansi/catatan nota.</li>
+          <li style="margin-bottom: 8px;"><b style="color: #fff;">Email</b>: Baris 1 berisi header <code>Email</code>. Baris 2 dst berisi daftar alamat email penerima screenshot nota.</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODAL AUTH ADMIN PASSWORD FOR DIRECT NAVIGATION -->
+  <div id="admin-direct-auth-modal" class="modal-backdrop hidden">
+    <div class="modal-card" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3><i class="ri-lock-password-line"></i> Otentikasi Admin</h3>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px;">Masukkan kata sandi untuk mengakses Panel Admin:</p>
+        <div class="form-group">
+          <input type="password" id="admin-direct-pass-input" class="form-control" placeholder="••••" style="width: 100%; font-size: 1.2rem; text-align: center; letter-spacing: 6px;">
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 10px;">
+        <button id="btn-submit-direct-auth" class="btn btn-primary" style="flex: 1;">Masuk</button>
+        <a href="index.html" class="btn btn-outline">Batal</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // CHECK ADMIN AUTHENTICATION
+      if (sessionStorage.getItem('admin_auth') !== 'true') {
+        const directModal = document.getElementById('admin-direct-auth-modal');
+        const directInput = document.getElementById('admin-direct-pass-input');
+        const directError = document.getElementById('admin-direct-error-msg');
+        const directSubmit = document.getElementById('btn-submit-direct-auth');
+
+        if (directModal) directModal.classList.remove('hidden');
+        if (directInput) setTimeout(() => directInput.focus(), 100);
+
+        const checkPass = () => {
+          if (directInput && directInput.value.trim() === "1111") {
+            sessionStorage.setItem('admin_auth', 'true');
+            if (directModal) directModal.classList.add('hidden');
+          } else {
+            if (directInput) {
+              directInput.value = '';
+              directInput.focus();
+            }
+          }
+        };
+
+        if (directSubmit) directSubmit.addEventListener('click', checkPass);
+        if (directInput) {
+          directInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') checkPass();
+          });
+        }
+      }
+      const inputUrl = document.getElementById('admin_api_url');
+      const badgeStatus = document.getElementById('badge-api-status');
+      const statusBox = document.getElementById('status-message-box');
+      const statusText = document.getElementById('status-message-text');
+
+      const savedUrl = localStorage.getItem('google_script_api_url') || '';
+      inputUrl.value = savedUrl;
+
+      function updateUIStatus(url, isConnected = false) {
+        if (!url || url.trim() === '') {
+          badgeStatus.className = 'badge badge-danger';
+          badgeStatus.textContent = 'Belum Terhubung';
+          statusBox.className = 'status-box status-disconnected';
+          statusText.textContent = 'Belum ada URL API yang dimasukkan. Silakan masukkan URL Web App Google Apps Script Anda.';
+        } else if (isConnected) {
+          badgeStatus.className = 'badge badge-success';
+          badgeStatus.textContent = 'Terhubung & Aktif ✅';
+          statusBox.className = 'status-box status-connected';
+          statusText.textContent = 'URL Web App tersimpan & terhubung: ' + url;
+        } else {
+          badgeStatus.className = 'badge badge-danger';
+          badgeStatus.textContent = 'Koneksi Gagal ❌';
+          statusBox.className = 'status-box status-disconnected';
+          statusText.textContent = 'URL tersimpan tetapi GAGAL TERHUBUNG / URL Tidak Valid: ' + url;
+        }
+      }
+
+      function checkApiConnection(url, showAlert = false) {
+        if (!url || url.trim() === '') {
+          updateUIStatus('', false);
+          if (showAlert) alert("Masukkan URL API terlebih dahulu!");
+          return;
+        }
+
+        badgeStatus.className = 'badge badge-info';
+        badgeStatus.textContent = 'Menguji koneksi...';
+
+        fetch(url + (url.includes('?') ? '&' : '?') + 'action=getMaster&t=' + Date.now())
+          .then(res => res.json())
+          .then(data => {
+            if (data && (Array.isArray(data) || typeof data === 'object')) {
+              updateUIStatus(url, true);
+              if (showAlert) alert("✅ Koneksi ke Google Sheets API BERHASIL!\n\nStatus: Online & Terhubung.");
+            } else {
+              updateUIStatus(url, false);
+              if (showAlert) alert("❌ Gagal terhubung ke Google Sheets API.\nRespon dari URL tidak sesuai format JSON yang benar.");
+            }
+          })
+          .catch(err => {
+            updateUIStatus(url, false);
+            if (showAlert) alert("❌ Gagal terhubung ke Google Sheets API.\nPeriksa kembali URL Web App dan pastikan deployment bertipe Anyone.");
+          });
+      }
+
+      if (savedUrl) {
+        updateUIStatus(savedUrl, true);
+        checkApiConnection(savedUrl, false);
+      } else {
+        updateUIStatus('', false);
+      }
+
+      document.getElementById('btn-save-admin-api').addEventListener('click', () => {
+        const newUrl = inputUrl.value.trim();
+        localStorage.setItem('google_script_api_url', newUrl);
+        if (newUrl) {
+          alert("✅ Pengaturan URL disimpan! Menguji koneksi...");
+          checkApiConnection(newUrl, true);
+        } else {
+          updateUIStatus('', false);
+          alert("URL API telah dikosongkan.");
+        }
+      });
+
+      document.getElementById('btn-test-admin-api').addEventListener('click', () => {
+        const targetUrl = inputUrl.value.trim();
+        checkApiConnection(targetUrl, true);
+      });
+    });
+  </script>
+</body>
+
+</html>

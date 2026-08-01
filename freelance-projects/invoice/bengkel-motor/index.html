@@ -1,53 +1,66 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Nota Struk Bengkel Motor A5</title>
+  <title>SP 76 Motor - Motorcycle repairs shop</title>
+  <!-- Favicon / Browser Tab Logo -->
+  <link rel="icon" type="image/png" href="img/image.png">
+  <link rel="shortcut icon" type="image/png" href="img/image.png">
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
   <!-- Remixicon Icons -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <!-- APP WRAPPER FOR SCREEN DISPLAY -->
   <div class="app-container no-print">
-    
+
     <!-- HEADER APP ACTIONS -->
     <header class="app-header">
+      <div class="app-brand" style="display: flex; align-items: center; gap: 12px;">
+        <img src="img/image.png" alt="SP 76 Motor Logo" style="height: 42px; width: auto; object-fit: contain;">
+        <div>
+          <h1 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0; line-height: 1.2;">SP 76 Motor -
+            Motorcycle repairs shop</h1>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Jl. Raya Cimareme No.204, Cimareme, Kec. Ngamprah,
+            Kabupaten Bandung Barat, Jawa Barat 40552</span>
+        </div>
+      </div>
       <div class="header-actions">
-        <button id="btn-config-api" class="btn btn-outline" title="Pengaturan API Google Sheets">
-          <i class="ri-google-fill"></i> Hubungkan Google Sheets
-        </button>
-        <button id="btn-reset-form" class="btn btn-ghost" title="Reset Form">
-          <i class="ri-refresh-line"></i> Reset
-        </button>
+        <a href="admin.html" id="btn-admin-link" class="btn btn-outline" title="Panel Admin / Pengaturan">
+          <i class="ri-settings-3-line"></i> Admin
+        </a>
       </div>
     </header>
 
     <!-- MAIN CONTENT LAYOUT -->
     <main class="main-layout">
-      
+
       <!-- FORM INPUT SECTION -->
       <section class="form-section card">
         <div class="card-header">
           <h2><i class="ri-file-list-3-line"></i> Input Data Transaksi</h2>
           <span class="badge badge-info" id="status-mode">Mode Standalone / Demo</span>
         </div>
-        
+
         <form id="nota-form" onsubmit="return false;">
-          
+
           <!-- INFO STAF & PELANGGAN -->
           <div class="form-grid">
             <div class="form-group">
               <label for="no_struk">No. Struk</label>
               <input type="text" id="no_struk" class="form-control" readonly>
             </div>
-            
+
             <div class="form-group">
               <label for="tanggal">Tanggal & Waktu</label>
               <input type="datetime-local" id="tanggal" class="form-control" required>
@@ -75,7 +88,7 @@
 
             <div class="form-group">
               <label for="odometer">Odometer (Km)</label>
-              <input type="text" id="odometer" class="form-control" placeholder="Contoh: 24,150 Km">
+              <input type="text" id="odometer" class="form-control" placeholder="Contoh: 24.150 Km" inputmode="numeric">
             </div>
 
             <div class="form-group">
@@ -113,9 +126,9 @@
           <!-- RINGKASAN TOTAL & PEMBAYARAN -->
           <div class="payment-summary-grid">
             <div class="notes-box">
-              <label for="catatan">Catatan / Garansi Servis</label>
-              <textarea id="catatan" class="form-control" rows="3">- Garansi Servis 7 Hari / 500 km (Bawa nota ini).
-- Sparepart bekas/lama diserahkan ke konsumen.</textarea>
+              <label for="catatan">Catatan</label>
+              <textarea id="catatan" class="form-control" rows="3"
+                placeholder="Ketik catatan / garansi servis..."></textarea>
             </div>
 
             <div class="summary-box">
@@ -123,10 +136,10 @@
                 <span>TOTAL OVERALL</span>
                 <span id="txt-grand-total">Rp 0</span>
               </div>
-              
+
               <div class="summary-row">
                 <label for="bayar">Jumlah Bayar (Rp)</label>
-                <input type="number" id="bayar" class="form-control text-right" placeholder="0" min="0">
+                <input type="text" id="bayar" class="form-control text-right" placeholder="0" inputmode="numeric">
               </div>
 
               <div class="summary-row change-row">
@@ -138,10 +151,7 @@
 
           <!-- BOTTOM ACTION BUTTONS -->
           <div class="form-actions-bar">
-            <button type="button" id="btn-save-sheets" class="btn btn-secondary btn-lg">
-              <i class="ri-google-line"></i> Simpan ke Google Sheets
-            </button>
-            <button type="button" id="btn-print" class="btn btn-primary btn-lg">
+            <button type="button" id="btn-print" class="btn btn-primary btn-lg" style="width: 100%;">
               <i class="ri-printer-line"></i> Cetak Struk A5
             </button>
           </div>
@@ -154,10 +164,13 @@
         <div class="card-header">
           <h2><i class="ri-eye-line"></i> Preview Nota A5</h2>
           <div class="zoom-controls">
-            <button type="button" id="btn-zoom-out" class="btn btn-sm btn-outline" title="Zoom Out (Scroll Down)"><i class="ri-zoom-out-line"></i></button>
+            <button type="button" id="btn-zoom-out" class="btn btn-sm btn-outline" title="Zoom Out (Scroll Down)"><i
+                class="ri-zoom-out-line"></i></button>
             <span id="txt-zoom-level" class="zoom-badge">100%</span>
-            <button type="button" id="btn-zoom-in" class="btn btn-sm btn-outline" title="Zoom In (Scroll Up)"><i class="ri-zoom-in-line"></i></button>
-            <button type="button" id="btn-zoom-reset" class="btn btn-sm btn-ghost" title="Reset Fit (Width & Height)"><i class="ri-aspect-ratio-line"></i> Fit</button>
+            <button type="button" id="btn-zoom-in" class="btn btn-sm btn-outline" title="Zoom In (Scroll Up)"><i
+                class="ri-zoom-in-line"></i></button>
+            <button type="button" id="btn-zoom-reset" class="btn btn-sm btn-ghost" title="Reset Fit (Width & Height)"><i
+                class="ri-aspect-ratio-line"></i> Fit</button>
           </div>
         </div>
         <div class="preview-viewport" id="preview-viewport">
@@ -178,29 +191,28 @@
     <!-- Rendered Struk A5 Structure for Printer -->
   </div>
 
-  <!-- MODAL CONFIG GOOGLE SHEETS API -->
-  <div id="modal-api" class="modal-backdrop hidden no-print">
-    <div class="modal-card">
+  <!-- MODAL AUTH ADMIN PASSWORD -->
+  <div id="modal-auth-admin" class="modal-backdrop hidden no-print">
+    <div class="modal-card" style="max-width: 400px;">
       <div class="modal-header">
-        <h3><i class="ri-google-line"></i> Pengaturan Google Sheets API</h3>
-        <button id="btn-close-modal" class="btn-icon"><i class="ri-close-line"></i></button>
+        <h3><i class="ri-lock-password-line"></i> Otentikasi Admin</h3>
+        <button id="btn-close-auth-modal" class="btn-icon"><i class="ri-close-line"></i></button>
       </div>
       <div class="modal-body">
-        <p>Masukkan URL Web App dari Google Apps Script untuk menghubungkan aplikasi ini ke Google Sheets Anda secara real-time.</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px;">Masukkan kata sandi untuk mengakses Panel Admin:</p>
         <div class="form-group">
-          <label for="api_url">URL Web App (Google Apps Script)</label>
-          <input type="url" id="api_url" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
-        </div>
-        <div class="alert alert-info">
-          <i class="ri-information-line"></i> Jika belum membuat Google Apps Script, silakan lihat file <code>google-script.js</code> untuk kode copy-paste dan panduan pemasangan.
+          <input type="password" id="admin-password-input" class="form-control" placeholder="••••" style="width: 100%; font-size: 1.2rem; text-align: center; letter-spacing: 6px;">
         </div>
       </div>
-      <div class="modal-footer">
-        <button id="btn-save-api" class="btn btn-primary">Simpan Pengaturan</button>
+      <div class="modal-footer" style="display: flex; gap: 10px;">
+        <button id="btn-submit-auth" class="btn btn-primary" style="flex: 1;">Masuk</button>
+        <button id="btn-cancel-auth" class="btn btn-outline">Batal</button>
       </div>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

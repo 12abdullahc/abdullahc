@@ -25,7 +25,11 @@ const DEFAULT_MASTER_ITEMS = [
 
 // STATE APP
 let masterItems = JSON.parse(localStorage.getItem('master_items')) || DEFAULT_MASTER_ITEMS;
-let apiUrl = localStorage.getItem('google_script_api_url') || DEFAULT_API_URL;
+let apiUrl = localStorage.getItem('google_script_api_url');
+if (apiUrl === null) {
+  apiUrl = DEFAULT_API_URL;
+}
+let isApiConnected = (apiUrl && apiUrl.trim() !== '') ? true : false;
 
 // TRANSFORM CANVAS STATE (ZOOM & PAN)
 let zoomScale = 1.0;
@@ -41,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCalculations();
   updateApiStatusUI();
   setupDragToPan();
-  
+
   setTimeout(() => {
     calculateFitBoth();
   }, 100);
@@ -51,37 +55,66 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// SEQUENTIAL STRUK NUMBER GENERATOR (FORMAT: STR/001, STR/002, STR/009...)
+function generateSequentialStrukNo(customCount) {
+  let count;
+  if (customCount !== undefined && customCount !== null && !isNaN(customCount)) {
+    count = parseInt(customCount, 10);
+  } else {
+    count = parseInt(localStorage.getItem('struk_counter') || '1', 10);
+  }
+  localStorage.setItem('struk_counter', count);
+
+  const paddedNum = String(count).padStart(3, '0');
+  return `STR/${paddedNum}`;
+}
+
+function incrementSequentialStrukNo() {
+  let currentVal = parseInt(localStorage.getItem('struk_counter') || '1', 10);
+  localStorage.setItem('struk_counter', currentVal + 1);
+}
+
+// HELPER TO PARSE NUMERIC VALUE FROM FORMATTED BAYAR INPUT (STRIPS DOTS)
+function parseBayarValue() {
+  const bayarInput = document.getElementById('bayar');
+  if (!bayarInput) return 0;
+  const rawStr = String(bayarInput.value || '').replace(/\D/g, '');
+  return parseFloat(rawStr) || 0;
+}
+
 // SETUP FORM DEFAULTS
 function initFormValues() {
-  // Generate Struk No
-  const now = new Date();
-  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-  const randomNo = Math.floor(100 + Math.random() * 900);
-  document.getElementById('no_struk').value = `STR/${dateStr}/${randomNo}`;
-  
+  // Generate Sequential Struk No
+  document.getElementById('no_struk').value = generateSequentialStrukNo();
+
   // Set Current Date Time Local
+  const now = new Date();
   const localDatetime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
   document.getElementById('tanggal').value = localDatetime;
 
-  // Sample Customer Defaults
-  document.getElementById('pelanggan').value = "Bpk. Budi Santoso";
-  document.getElementById('no_hp').value = "0819-8765-4321";
-  document.getElementById('nopol').value = "B 3456 TKG";
-  document.getElementById('motor').value = "Honda Vario 125 (2021)";
-  document.getElementById('odometer').value = "24,150 Km";
-  document.getElementById('mekanik').value = "Mas Agus";
+  // Clear 6 fields by default so user can fill them or use placeholders
+  document.getElementById('pelanggan').value = "";
+  document.getElementById('no_hp').value = "";
+  document.getElementById('nopol').value = "";
+  document.getElementById('motor').value = "";
+  document.getElementById('odometer').value = "";
+  document.getElementById('mekanik').value = "";
+
+  // Catatan from localStorage if previously fetched from Google Sheets
+  const savedCatatan = localStorage.getItem('master_catatan');
+  document.getElementById('catatan').value = savedCatatan !== null && savedCatatan !== undefined ? savedCatatan : "";
 }
 
-// DEFAULT 9 EMPTY ROWS
+// DEFAULT 8 EMPTY ROWS
 function addSampleRows() {
   const tbody = document.getElementById('item-rows');
   tbody.innerHTML = '';
-  
-  for (let i = 1; i <= 9; i++) {
+
+  for (let i = 1; i <= 8; i++) {
     createRowItem(i, '', 1, 0);
   }
-  
-  document.getElementById('bayar').value = 0;
+
+  document.getElementById('bayar').value = '0';
 }
 
 // CREATE ROW ITEM IN TABLE
@@ -92,7 +125,7 @@ function createRowItem(no, desc = '', qty = 1, harga = 0) {
 
   const tr = document.createElement('tr');
   tr.className = 'item-row';
-  
+
   // Datalist options
   let datalistOptions = masterItems.map(m => `<option value="${m.nama}">`).join('');
 
@@ -159,6 +192,14 @@ function reindexRowNumbers() {
   });
 }
 
+// REFRESH ALL DATALISTS WITH LATEST MASTER ITEMS
+function refreshAllDataLists() {
+  const datalistOptions = masterItems.map(m => `<option value="${m.nama}">`).join('');
+  document.querySelectorAll('datalist#master-list').forEach(dl => {
+    dl.innerHTML = datalistOptions;
+  });
+}
+
 // ROW CALCULATION
 function updateRowCalculations(tr) {
   const qty = parseFloat(tr.querySelector('.item-qty').value) || 0;
@@ -180,11 +221,13 @@ function updateCalculations() {
     grandTotal += (qty * harga);
   });
 
-  const bayar = parseFloat(document.getElementById('bayar').value) || 0;
+  const bayar = parseBayarValue();
   const kembali = bayar - grandTotal;
 
   document.getElementById('txt-grand-total').innerText = `Rp ${formatNumber(grandTotal)}`;
-  document.getElementById('txt-kembali').innerText = `Rp ${formatNumber(Math.max(0, kembali))}`;
+  const kembaliEl = document.getElementById('txt-kembali');
+  kembaliEl.innerText = `Rp ${formatNumber(kembali)}`;
+  kembaliEl.style.color = kembali < 0 ? '#ef4444' : '#10b981';
 
   renderStrukPreview();
 
@@ -227,11 +270,11 @@ function renderStrukPreview() {
     }
   });
 
-  const bayar = parseFloat(document.getElementById('bayar').value) || 0;
-  const kembali = Math.max(0, bayar - grandTotal);
+  const bayar = parseBayarValue();
+  const kembali = bayar - grandTotal;
 
-  // PAD TO MINIMUM 9 ROWS: always show at least 9 baris in preview & print
-  const MIN_ROWS = 9;
+  // PAD TO MINIMUM 8 ROWS: always show at least 8 baris in preview & print
+  const MIN_ROWS = 8;
   while (items.length < MIN_ROWS) {
     items.push({ no: items.length + 1, desc: '', qty: '', harga: '', total: '', isEmpty: true });
   }
@@ -303,9 +346,11 @@ function renderStrukPreview() {
     // TOP SECTION: Page 1 has Shop Header + Info Grid. Page 2+ has minimal continuation line!
     const topSectionHtml = isFirstPage ? `
       <div class="struk-header">
-        <h2>BENGKEL MOTOR "MAJU JAYA"${totalPages > 1 ? ' <span style="font-size: 11px; font-weight: normal;">(Hal 1/' + totalPages + ')</span>' : ''}</h2>
-        <p>Jl. Raya Otomotif No. 88, Jakarta | WA: 0812-3456-7890</p>
-        <p>Spesialis Injeksi, Matic & Tune Up</p>
+        <img src="img/image.png" class="struk-logo" alt="SP 76 Motor Logo">
+        <div class="struk-header-content">
+          <h2>SP 76 Motor - Motorcycle repairs shop${totalPages > 1 ? ' <span style="font-size: 11px; font-weight: normal;">(Hal 1/' + totalPages + ')</span>' : ''}</h2>
+          <p>Jl. Raya Cimareme No.204, Cimareme, Kec. Ngamprah, Kabupaten Bandung Barat, Jawa Barat 40552</p>
+        </div>
       </div>
 
       <div class="struk-info-grid">
@@ -333,28 +378,24 @@ function renderStrukPreview() {
     // BOTTOM FOOTER SECTION
     const bottomSectionHtml = isLastPage ? `
       <div class="struk-footer-wrapper">
-        <div class="struk-footer-grid">
-          <div class="struk-notes">
-            <strong>Catatan / Garansi Servis:</strong><br>
-            ${escapeHtml(catatan).replace(/\n/g, '<br>')}
-          </div>
-          <div>
-            <table class="struk-totals-table">
-              <tr>
-                <td><strong>TOTAL</strong></td>
-                <td style="text-align: right;"><strong>: Rp ${formatNumber(grandTotal)}</strong></td>
-              </tr>
-              <tr>
-                <td>Bayar</td>
-                <td style="text-align: right;">: Rp ${formatNumber(bayar)}</td>
-              </tr>
-              <tr>
-                <td>Kembali</td>
-                <td style="text-align: right;">: Rp ${formatNumber(kembali)}</td>
-              </tr>
-            </table>
-          </div>
-        </div>
+        <table class="struk-footer-table" style="width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; padding-bottom: 6px; margin-bottom: 2px;">
+          <tr>
+            <td rowspan="3" style="width: 63%; vertical-align: top; padding-right: 12px;" class="struk-notes">
+              <strong>Catatan:</strong><br>
+              ${escapeHtml(catatan).replace(/\n/g, '<br>')}
+            </td>
+            <td style="width: 18%; vertical-align: middle; font-weight: bold; font-size: 10.5px; padding: 2px 0;">TOTAL</td>
+            <td style="width: 19%; vertical-align: middle; font-weight: bold; font-size: 10.5px; padding: 2px 4px;"><div style="display: flex; justify-content: space-between;"><span>: Rp</span><span>${formatNumber(grandTotal)}</span></div></td>
+          </tr>
+          <tr>
+            <td style="width: 18%; vertical-align: middle; font-size: 10.5px; padding: 2px 0;">Bayar</td>
+            <td style="width: 19%; vertical-align: middle; font-size: 10.5px; padding: 2px 4px;"><div style="display: flex; justify-content: space-between;"><span>: Rp</span><span>${formatNumber(bayar)}</span></div></td>
+          </tr>
+          <tr>
+            <td style="width: 18%; vertical-align: middle; font-size: 10.5px; padding: 2px 0;">Kembali</td>
+            <td style="width: 19%; vertical-align: middle; font-size: 10.5px; padding: 2px 4px;"><div style="display: flex; justify-content: space-between;"><span>: Rp</span><span>${formatNumber(kembali)}</span></div></td>
+          </tr>
+        </table>
 
         <div class="struk-signatures">
           <div class="struk-sign-box">
@@ -362,13 +403,13 @@ function renderStrukPreview() {
             <div>( Kasir / Bengkel )</div>
           </div>
           <div class="struk-sign-box">
-            <div>Pelanggan / Consignee,</div>
+            <div>Pelanggan,</div>
             <div>( ${escapeHtml(pelanggan)} )</div>
           </div>
         </div>
 
         <div class="struk-greeting">
-          "Terima Kasih Atas Kunjungan Anda - Keselamatan Anda Adalah Prioritas Kami"
+          "Terima kasih atas kunjungan Anda"
         </div>
       </div>
     ` : `
@@ -535,48 +576,159 @@ function setupEventListeners() {
     createRowItem();
   });
 
-  document.getElementById('bayar').addEventListener('input', updateCalculations);
-  
+  const bayarEl = document.getElementById('bayar');
+  bayarEl.addEventListener('input', (e) => {
+    let rawStr = e.target.value.replace(/\D/g, '');
+    if (!rawStr) {
+      e.target.value = '';
+    } else {
+      let num = parseInt(rawStr, 10);
+      e.target.value = formatNumber(num);
+    }
+    updateCalculations();
+  });
+
+  const odometerEl = document.getElementById('odometer');
+
+  odometerEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace') {
+      const selStart = odometerEl.selectionStart;
+      const selEnd = odometerEl.selectionEnd;
+
+      // If user highlighted text, let standard delete happen
+      if (selStart !== selEnd) {
+        return;
+      }
+
+      // Deleting last digit when pressing Backspace
+      e.preventDefault();
+      let rawStr = odometerEl.value.replace(/\D/g, '');
+      if (rawStr.length > 0) {
+        let newRaw = rawStr.slice(0, -1);
+        if (!newRaw) {
+          odometerEl.value = '';
+        } else {
+          let num = parseInt(newRaw, 10);
+          odometerEl.value = formatNumber(num) + ' Km';
+        }
+        updateCalculations();
+      }
+    }
+  });
+
+  odometerEl.addEventListener('input', () => {
+    let rawStr = odometerEl.value.replace(/\D/g, '');
+    if (!rawStr) {
+      odometerEl.value = '';
+    } else {
+      let num = parseInt(rawStr, 10);
+      odometerEl.value = formatNumber(num) + ' Km';
+    }
+    updateCalculations();
+  });
+
   // Input fields changes update preview
-  const inputs = ['no_struk', 'tanggal', 'pelanggan', 'no_hp', 'nopol', 'motor', 'odometer', 'mekanik', 'catatan'];
+  const inputs = ['no_struk', 'tanggal', 'pelanggan', 'no_hp', 'nopol', 'motor', 'mekanik', 'catatan'];
   inputs.forEach(id => {
     document.getElementById(id).addEventListener('input', updateCalculations);
   });
 
-  // Print button
-  document.getElementById('btn-print').addEventListener('click', () => {
-    window.print();
-  });
+  // Admin button password protection using custom password modal (password: 1111)
+  const btnAdmin = document.getElementById('btn-admin-link');
+  const modalAuth = document.getElementById('modal-auth-admin');
+  const inputAuthPass = document.getElementById('admin-password-input');
+  const errorAuthMsg = document.getElementById('auth-error-msg');
+  const btnSubmitAuth = document.getElementById('btn-submit-auth');
+  const btnCancelAuth = document.getElementById('btn-cancel-auth');
+  const btnCloseAuth = document.getElementById('btn-close-auth-modal');
 
-  // Save to Google Sheets
-  document.getElementById('btn-save-sheets').addEventListener('click', saveToGoogleSheets);
+  const closeAuthModal = () => {
+    if (modalAuth) modalAuth.classList.add('hidden');
+    if (inputAuthPass) inputAuthPass.value = '';
+  };
 
-  // Config API Modal
-  document.getElementById('btn-config-api').addEventListener('click', () => {
-    document.getElementById('api_url').value = apiUrl;
-    document.getElementById('modal-api').classList.remove('hidden');
-  });
+  const verifyAndSubmitPass = () => {
+    if (!inputAuthPass) return;
+    const pass = inputAuthPass.value.trim();
+    if (pass === "1111") {
+      sessionStorage.setItem('admin_auth', 'true');
+      closeAuthModal();
+      window.location.href = 'admin.html';
+    } else {
+      inputAuthPass.value = '';
+      inputAuthPass.focus();
+    }
+  };
 
-  document.getElementById('btn-close-modal').addEventListener('click', () => {
-    document.getElementById('modal-api').classList.add('hidden');
-  });
+  if (btnAdmin && modalAuth) {
+    btnAdmin.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeAuthModal();
+      modalAuth.classList.remove('hidden');
+      setTimeout(() => { if (inputAuthPass) inputAuthPass.focus(); }, 100);
+    });
 
-  document.getElementById('btn-save-api').addEventListener('click', () => {
-    apiUrl = document.getElementById('api_url').value.trim();
-    localStorage.setItem('google_script_api_url', apiUrl);
-    document.getElementById('modal-api').classList.add('hidden');
-    updateApiStatusUI();
-    if (apiUrl) fetchMasterDataFromSheets();
-  });
+    if (btnSubmitAuth) btnSubmitAuth.addEventListener('click', verifyAndSubmitPass);
+    if (btnCancelAuth) btnCancelAuth.addEventListener('click', closeAuthModal);
+    if (btnCloseAuth) btnCloseAuth.addEventListener('click', closeAuthModal);
+
+    if (inputAuthPass) {
+      inputAuthPass.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          verifyAndSubmitPass();
+        } else if (e.key === 'Escape') {
+          closeAuthModal();
+        }
+      });
+    }
+  }
+
+  // Print button (automatically saves to Google Sheets, alerts success, then opens print dialog)
+  document.getElementById('btn-print').addEventListener('click', saveToGoogleSheets);
+
+  // Config API Modal (if elements present)
+  const btnConfigApi = document.getElementById('btn-config-api');
+  if (btnConfigApi) {
+    btnConfigApi.addEventListener('click', () => {
+      const inputEl = document.getElementById('api_url');
+      if (inputEl) inputEl.value = apiUrl;
+      const modal = document.getElementById('modal-api');
+      if (modal) modal.classList.remove('hidden');
+    });
+  }
+
+  const btnCloseModal = document.getElementById('btn-close-modal');
+  if (btnCloseModal) {
+    btnCloseModal.addEventListener('click', () => {
+      const modal = document.getElementById('modal-api');
+      if (modal) modal.classList.add('hidden');
+    });
+  }
+
+  const btnSaveApi = document.getElementById('btn-save-api');
+  if (btnSaveApi) {
+    btnSaveApi.addEventListener('click', () => {
+      const inputEl = document.getElementById('api_url');
+      if (inputEl) apiUrl = inputEl.value.trim();
+      localStorage.setItem('google_script_api_url', apiUrl);
+      const modal = document.getElementById('modal-api');
+      if (modal) modal.classList.add('hidden');
+      updateApiStatusUI();
+      if (apiUrl) fetchMasterDataFromSheets();
+    });
+  }
 
   // Reset form
-  document.getElementById('btn-reset-form').addEventListener('click', () => {
-    if (confirm("Reset form transaksi?")) {
-      initFormValues();
-      addSampleRows();
-      updateCalculations();
-    }
-  });
+  const btnReset = document.getElementById('btn-reset-form');
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      if (confirm("Reset form transaksi?")) {
+        initFormValues();
+        addSampleRows();
+        updateCalculations();
+      }
+    });
+  }
 
   // ZOOM CONTROLS
   document.getElementById('btn-zoom-in').addEventListener('click', zoomIn);
@@ -602,60 +754,111 @@ function setupEventListeners() {
 // API STATUS BADGE
 function updateApiStatusUI() {
   const badge = document.getElementById('status-mode');
-  if (apiUrl) {
+  if (!badge) return;
+  if (apiUrl && apiUrl.trim() !== '' && isApiConnected) {
     badge.innerText = "Mode Online: Google Sheets Connected";
-    badge.className = "badge badge-info";
+    badge.className = "badge badge-success";
     badge.style.background = "rgba(16, 185, 129, 0.2)";
     badge.style.color = "#34d399";
+    badge.style.border = "1px solid #10b981";
   } else {
-    badge.innerText = "Mode Standalone / Demo";
-    badge.className = "badge badge-info";
+    badge.innerText = (apiUrl && apiUrl.trim() !== '') ? "Koneksi API Gagal / URL Tidak Valid" : "Belum Terhubung (Google Sheets)";
+    badge.className = "badge badge-danger";
+    badge.style.background = "rgba(239, 68, 68, 0.2)";
+    badge.style.color = "#f87171";
+    badge.style.border = "1px solid #ef4444";
   }
 }
 
 // FETCH MASTER DATA FROM GOOGLE SHEETS
 function fetchMasterDataFromSheets() {
-  if (!apiUrl) return;
-
-  fetch(apiUrl + '?action=getMaster')
-    .then(res => res.json())
-    .then(data => {
-      if (Array.isArray(data) && data.length > 0) {
-        masterItems = data;
-        localStorage.setItem('master_items', JSON.stringify(masterItems));
-        console.log("Master items updated from Google Sheets", masterItems);
-      }
-    })
-    .catch(err => console.warn("Fallback to local master items:", err));
-}
-
-// SAVE TRANSACTION TO GOOGLE SHEETS
-function saveToGoogleSheets() {
-  if (!apiUrl) {
-    alert("URL Google Sheets API belum diatur! Klik tombol 'Hubungkan Google Sheets' di kanan atas.");
-    document.getElementById('modal-api').classList.remove('hidden');
+  if (!apiUrl || apiUrl.trim() === '') {
+    isApiConnected = false;
+    updateApiStatusUI();
     return;
   }
 
-  const btn = document.getElementById('btn-save-sheets');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = `<i class="ri-loader-4-line ri-spin"></i> Menyimpan...`;
-  btn.disabled = true;
+  const cacheBusterUrl = apiUrl + (apiUrl.includes('?') ? '&' : '?') + 'action=getMaster&t=' + Date.now();
+
+  fetch(cacheBusterUrl)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Response from Google Sheets:", data);
+      if (data && (Array.isArray(data) || typeof data === 'object')) {
+        isApiConnected = true;
+        updateApiStatusUI();
+
+        if (Array.isArray(data) && data.length > 0) {
+          masterItems = data;
+          localStorage.setItem('master_items', JSON.stringify(masterItems));
+          refreshAllDataLists();
+        } else if (typeof data === 'object') {
+          if (Array.isArray(data.items) && data.items.length > 0) {
+            masterItems = data.items;
+            localStorage.setItem('master_items', JSON.stringify(masterItems));
+            refreshAllDataLists();
+          }
+          if (data.catatan !== undefined && data.catatan !== null) {
+            localStorage.setItem('master_catatan', data.catatan);
+            document.getElementById('catatan').value = data.catatan;
+            updateCalculations();
+          }
+          if (data.nextCounter) {
+            document.getElementById('no_struk').value = generateSequentialStrukNo(data.nextCounter);
+            updateCalculations();
+          }
+        }
+      } else {
+        isApiConnected = false;
+        updateApiStatusUI();
+      }
+    })
+    .catch(err => {
+      console.warn("Fallback to local master items:", err);
+      isApiConnected = false;
+      updateApiStatusUI();
+    });
+}
+
+// SAVE TRANSACTION TO GOOGLE SHEETS & OPEN PRINT DIALOG
+function saveToGoogleSheets() {
+  const currentStrukNo = document.getElementById('no_struk').value;
+
+  if (!apiUrl || apiUrl.trim() === '') {
+    alert("⚠️ Google Sheets API belum terhubung!\n\nSilakan atur URL Web App Google Apps Script di Halaman Admin terlebih dahulu.");
+    return;
+  }
+
+  if (!isApiConnected) {
+    alert("❌ Koneksi Google Sheets API bermasalah / URL tidak valid!\n\nSilakan periksa kembali URL Web App Anda di Halaman Admin sebelum mencetak.");
+    return;
+  }
+
+  const btnPrint = document.getElementById('btn-print');
+
+  if (btnPrint) {
+    btnPrint.disabled = true;
+  }
 
   const rowsData = [];
   document.querySelectorAll('#item-rows tr').forEach(tr => {
-    rowsData.push({
-      desc: tr.querySelector('.item-desc').value,
-      qty: parseFloat(tr.querySelector('.item-qty').value) || 0,
-      harga: parseFloat(tr.querySelector('.item-harga').value) || 0,
-      total: (parseFloat(tr.querySelector('.item-qty').value) || 0) * (parseFloat(tr.querySelector('.item-harga').value) || 0)
-    });
+    const desc = tr.querySelector('.item-desc').value.trim();
+    const qty = parseFloat(tr.querySelector('.item-qty').value) || 0;
+    const harga = parseFloat(tr.querySelector('.item-harga').value) || 0;
+    if (desc !== '' || harga > 0) {
+      rowsData.push({
+        desc: desc,
+        qty: qty,
+        harga: harga,
+        total: qty * harga
+      });
+    }
   });
 
   const grandTotalText = document.getElementById('txt-grand-total').innerText.replace(/[^\d]/g, '');
 
   const payload = {
-    noStruk: document.getElementById('no_struk').value,
+    noStruk: currentStrukNo,
     tanggal: document.getElementById('tanggal').value,
     pelanggan: document.getElementById('pelanggan').value,
     noHp: document.getElementById('no_hp').value,
@@ -663,32 +866,71 @@ function saveToGoogleSheets() {
     motor: document.getElementById('motor').value,
     odometer: document.getElementById('odometer').value,
     mekanik: document.getElementById('mekanik').value,
-    total: parseFloat(grandTotalText),
-    bayar: parseFloat(document.getElementById('bayar').value) || 0,
+    total: parseFloat(grandTotalText) || 0,
+    bayar: parseBayarValue(),
     items: JSON.stringify(rowsData)
   };
 
-  fetch(apiUrl, {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(res => {
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-    if (res.status === 'success') {
-      alert("Nota berhasil disimpan ke Google Sheets! Menampilkan cetakan...");
-      window.print();
-    } else {
-      alert("Respon Google Sheets: " + (res.message || "Gagal menyimpan"));
-    }
-  })
-  .catch(err => {
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-    alert("Terjadi kesalahan jaringan / CORS. Membuka opsi cetak offline...");
-    window.print();
-  });
+  const sendPayloadToBackend = (receiptImageData = '') => {
+    payload.receiptImage = receiptImageData;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (btnPrint) {
+          btnPrint.disabled = false;
+        }
+
+        if (res.status === 'success') {
+          isApiConnected = true;
+          updateApiStatusUI();
+          // Print first with the CURRENT struk number
+          window.print();
+          // After print dialog closes, update to next struk number for the next transaction
+          if (res.nextCounter) {
+            document.getElementById('no_struk').value = generateSequentialStrukNo(res.nextCounter);
+          } else {
+            incrementSequentialStrukNo();
+            document.getElementById('no_struk').value = generateSequentialStrukNo();
+          }
+          updateCalculations();
+        } else {
+          isApiConnected = false;
+          updateApiStatusUI();
+          alert("❌ Gagal menyimpan ke Google Sheets: " + (res.message || "Error") + "\n\nCetak struk dibatalkan.");
+        }
+      })
+      .catch(err => {
+        if (btnPrint) {
+          btnPrint.disabled = false;
+        }
+        isApiConnected = false;
+        updateApiStatusUI();
+        alert("❌ Gagal terhubung ke Google Sheets API!\n\nPeriksa kembali URL Web App di Halaman Admin. Cetak struk dibatalkan.");
+      });
+  };
+
+  const captureTarget = document.querySelector('.struk-a5-container') || document.getElementById('print-area-preview');
+
+  if (window.html2canvas && captureTarget) {
+    html2canvas(captureTarget, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff'
+    }).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      sendPayloadToBackend(imgData);
+    }).catch(err => {
+      console.warn("Capture preview error:", err);
+      sendPayloadToBackend('');
+    });
+  } else {
+    sendPayloadToBackend('');
+  }
 }
 
 // UTILITY FUNCTIONS
@@ -697,7 +939,7 @@ function formatNumber(num) {
 }
 
 function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, function(m) {
+  return String(str).replace(/[&<>"']/g, function (m) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
   });
 }

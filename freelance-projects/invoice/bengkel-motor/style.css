@@ -48,7 +48,7 @@ body {
 /* HEADER */
 .app-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 12px;
@@ -64,6 +64,7 @@ body {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 10px 18px;
   border-radius: 8px;
@@ -71,6 +72,7 @@ body {
   font-size: 0.9rem;
   cursor: pointer;
   border: none;
+  text-decoration: none;
   transition: all 0.2s ease;
 }
 
@@ -160,6 +162,7 @@ body {
   .main-layout {
     grid-template-columns: 1fr;
   }
+
   .form-section {
     width: 100%;
   }
@@ -267,6 +270,47 @@ body {
   border-color: var(--primary);
 }
 
+/* BRIGHT CALENDAR PICKER ICON FOR DARK MODE */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.2);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* CUSTOM SLEEK DARK SCROLLBAR FOR TEXTAREA & FORM CONTROLS */
+textarea::-webkit-scrollbar,
+.form-control::-webkit-scrollbar,
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+textarea::-webkit-scrollbar-track,
+.form-control::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+  background: var(--bg-input);
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb,
+.form-control::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover,
+.form-control::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
 .form-control.uppercase {
   text-transform: uppercase;
   font-weight: 600;
@@ -317,12 +361,13 @@ body {
   width: 100%;
 }
 
-/* PAYMENT SUMMARY GRID */
+/* PAYMENT SUMMARY GRID (1fr 1fr: Catatan spans NO + Deskripsi [50%], summary-box spans QTY + Harga + Total + Aksi [50%]) */
 .payment-summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
+  align-items: stretch;
 }
 
 @media (max-width: 600px) {
@@ -331,8 +376,16 @@ body {
   }
 }
 
+.notes-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .notes-box textarea {
   width: 100%;
+  flex: 1;
+  min-height: 120px;
   resize: vertical;
 }
 
@@ -443,21 +496,44 @@ body {
 }
 
 .struk-header {
-  text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid #000;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  min-height: 44px;
+}
+
+.struk-logo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 38px;
+  max-width: 100px;
+  object-fit: contain;
+}
+
+.struk-header-content {
+  width: 100%;
+  text-align: center;
+  padding-left: 105px;
+  padding-right: 105px;
 }
 
 .struk-header h2 {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   letter-spacing: 0.5px;
   color: #000;
+  margin: 0 0 2px 0;
 }
 
 .struk-header p {
-  font-size: 10px;
+  font-size: 9px;
   color: #000;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .struk-info-grid {
@@ -507,7 +583,8 @@ body {
   grid-template-columns: 1.2fr 1fr;
   gap: 10px;
   border-bottom: 1px solid #000;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
+  margin-bottom: 2px;
   color: #000;
 }
 
@@ -539,7 +616,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 42px;
+  height: 64px;
 }
 
 .struk-greeting {
@@ -619,6 +696,7 @@ body {
 }
 
 @media print {
+
   /* HIDE ALL UI ELEMENTS */
   body {
     background: #ffffff !important;
