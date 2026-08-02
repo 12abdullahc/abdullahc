@@ -869,7 +869,7 @@
         background: #fff;
         padding: 4px;
         flex-shrink: 0;
-        border: 1px solid rgba(255,255,255,0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
       }
 
       .timeline-info {
@@ -1232,6 +1232,523 @@
           justify-content: center;
         }
       }
+
+      /* ════════════════════════════════
+           VISUAL POLISH
+        ════════════════════════════════ */
+      :root {
+        --bg-1: #070707;
+        --surface-1: rgba(18, 18, 20, 0.78);
+        --surface-2: rgba(255, 255, 255, 0.055);
+        --text-2: #b9b6b2;
+        --border-1: rgba(255, 255, 255, 0.1);
+        --border-2: rgba(255, 255, 255, 0.17);
+        --accent: #e8b98b;
+        --accent-bright: #ffd4aa;
+      }
+
+      body {
+        background-color: var(--bg-1);
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.018) 1px,
+            transparent 1px
+          ),
+          radial-gradient(
+            900px 650px at 8% 8%,
+            rgba(232, 185, 139, 0.12),
+            transparent 62%
+          ),
+          radial-gradient(
+            750px 550px at 94% 24%,
+            rgba(109, 129, 155, 0.08),
+            transparent 64%
+          );
+        background-size:
+          64px 64px,
+          64px 64px,
+          auto,
+          auto;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+      }
+
+      ::selection {
+        color: #090909;
+        background: var(--accent);
+      }
+
+      .header {
+        height: 68px;
+        padding: 0 clamp(20px, 4vw, 64px);
+        background: rgba(7, 7, 7, 0.72);
+        border-color: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px) saturate(140%);
+      }
+
+      .brand-avatar {
+        border-color: rgba(232, 185, 139, 0.55);
+        box-shadow: 0 0 0 4px rgba(232, 185, 139, 0.07);
+      }
+
+      .title {
+        letter-spacing: -0.3px;
+      }
+
+      .tab-bar {
+        padding: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.025);
+      }
+
+      .tab-btn {
+        border-color: transparent;
+        background: transparent;
+      }
+
+      .tab-btn:hover {
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      section,
+      #hero {
+        max-width: 1160px;
+      }
+
+      section {
+        position: relative;
+        padding-top: 108px;
+        padding-bottom: 108px;
+      }
+
+      section:not(#hero)::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 20px;
+        right: 20px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.13),
+          transparent
+        );
+      }
+
+      .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .section-label::before {
+        content: "";
+        width: 20px;
+        height: 1px;
+        background: currentColor;
+      }
+
+      .section-title {
+        font-size: clamp(32px, 4vw, 44px);
+        letter-spacing: -1.4px;
+      }
+
+      .section-desc {
+        font-size: 16px;
+      }
+
+      .glass-card {
+        position: relative;
+        background: linear-gradient(
+          145deg,
+          rgba(24, 24, 27, 0.86),
+          rgba(13, 13, 15, 0.76)
+        );
+        border-color: rgba(255, 255, 255, 0.12);
+        box-shadow:
+          0 24px 60px -30px rgba(0, 0, 0, 0.9),
+          inset 0 1px 0 rgba(255, 255, 255, 0.045);
+      }
+
+      #hero {
+        min-height: calc(100vh - 68px);
+        padding-top: 72px;
+        padding-bottom: 72px;
+      }
+
+      #hero::before {
+        content: "";
+        position: absolute;
+        width: 440px;
+        height: 440px;
+        right: -80px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 1px solid rgba(232, 185, 139, 0.08);
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 70px rgba(232, 185, 139, 0.018),
+          0 0 0 140px rgba(232, 185, 139, 0.012);
+        pointer-events: none;
+      }
+
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: clamp(56px, 8vw, 110px);
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-badge {
+        padding: 6px 13px;
+        background: rgba(232, 185, 139, 0.08);
+        border-color: rgba(232, 185, 139, 0.28);
+        box-shadow: 0 0 24px rgba(232, 185, 139, 0.06);
+      }
+
+      .hero-badge i {
+        color: #71d49b;
+        filter: drop-shadow(0 0 5px rgba(113, 212, 155, 0.6));
+      }
+
+      .hero-name {
+        font-size: clamp(48px, 7vw, 76px);
+        letter-spacing: -3px;
+        background: linear-gradient(
+          110deg,
+          #fff 10%,
+          #fff 48%,
+          var(--accent-bright) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero-role {
+        color: var(--accent);
+        letter-spacing: -0.3px;
+      }
+
+      .hero-desc {
+        font-size: 16px;
+        max-width: 570px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        min-height: 44px;
+        padding-inline: 24px;
+        box-shadow: 0 12px 30px -18px rgba(255, 255, 255, 0.7);
+      }
+
+      .btn-primary:hover,
+      .btn-secondary:hover,
+      .social-btn:hover,
+      .btn-sm:hover {
+        transform: translateY(-2px);
+      }
+
+      .hero-card {
+        padding: 32px;
+        border-radius: 24px;
+        transform: rotate(1deg);
+        transition:
+          transform 0.35s ease,
+          border-color 0.35s ease;
+      }
+
+      .hero-card:hover {
+        transform: rotate(0deg) translateY(-5px);
+        border-color: rgba(232, 185, 139, 0.3);
+      }
+
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        z-index: -1;
+        border-radius: inherit;
+        background: linear-gradient(
+          145deg,
+          rgba(232, 185, 139, 0.18),
+          transparent 42%
+        );
+      }
+
+      .hero-avatar {
+        width: 104px;
+        height: 104px;
+        box-shadow: 0 12px 35px -12px rgba(232, 185, 139, 0.45);
+      }
+
+      .social-btn {
+        transition: all 0.2s ease;
+      }
+
+      .projects-grid {
+        gap: 24px;
+      }
+
+      .project-card {
+        border-radius: 20px;
+        transition:
+          transform 0.3s ease,
+          border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .project-card:hover {
+        transform: translateY(-7px);
+        border-color: rgba(232, 185, 139, 0.28);
+      }
+
+      .project-img {
+        height: 205px;
+        isolation: isolate;
+      }
+
+      .project-img i {
+        position: relative;
+        z-index: 1;
+        font-size: 50px;
+        color: rgba(255, 255, 255, 0.68);
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        transition: transform 0.35s ease;
+      }
+
+      .project-card:hover .project-img i {
+        transform: scale(1.12) rotate(-3deg);
+      }
+
+      .project-card:nth-child(1) .project-img {
+        background: linear-gradient(135deg, #17242b, #253c3a);
+      }
+
+      .project-card:nth-child(2) .project-img {
+        background: linear-gradient(135deg, #271c31, #463044);
+      }
+
+      .project-card:nth-child(3) .project-img {
+        background: linear-gradient(135deg, #2d2418, #4a3823);
+      }
+
+      .project-card:nth-child(4) .project-img {
+        background: linear-gradient(135deg, #1c2232, #303b55);
+      }
+
+      .project-img::before {
+        background:
+          linear-gradient(
+            120deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.07),
+            transparent 70%
+          ),
+          radial-gradient(
+            circle at 50% 45%,
+            rgba(255, 255, 255, 0.08),
+            transparent 48%
+          );
+      }
+
+      .project-body {
+        padding: 24px;
+      }
+
+      .project-title {
+        font-size: 18px;
+      }
+
+      .tag,
+      .skill-pill {
+        border-color: rgba(255, 255, 255, 0.11);
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(12, 1fr);
+        gap: 20px;
+      }
+
+      .skills-card {
+        grid-column: span 4;
+        border-radius: 18px;
+        transition:
+          transform 0.25s ease,
+          border-color 0.25s ease;
+      }
+
+      .skills-card:nth-child(n + 4) {
+        grid-column: span 6;
+      }
+
+      .skills-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(232, 185, 139, 0.24);
+      }
+
+      .skills-card-title i {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: rgba(232, 185, 139, 0.09);
+      }
+
+      .timeline {
+        padding: 32px 32px 32px 54px;
+        border: 1px solid var(--border-1);
+        border-radius: 20px;
+        background: linear-gradient(
+          145deg,
+          rgba(21, 21, 24, 0.7),
+          rgba(12, 12, 14, 0.55)
+        );
+      }
+
+      .timeline-logo,
+      .edu-icon {
+        box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+      }
+
+      .education-grid {
+        gap: 24px;
+      }
+
+      .edu-card {
+        padding: 26px;
+        border-radius: 20px;
+        transition:
+          transform 0.25s ease,
+          border-color 0.25s ease;
+      }
+
+      .edu-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(232, 185, 139, 0.24);
+      }
+
+      .contact-form-card {
+        border-radius: 20px;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        background: rgba(255, 255, 255, 0.035);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .form-submit {
+        min-height: 46px;
+      }
+
+      .footer {
+        padding: 28px 16px;
+        background: rgba(0, 0, 0, 0.25);
+      }
+
+      @media (max-width: 1000px) {
+        body {
+          padding-top: 68px;
+        }
+
+        .mobile-menu-overlay {
+          top: 68px;
+          height: calc(100% - 68px);
+        }
+
+        .hero-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .skills-card,
+        .skills-card:nth-child(n + 4) {
+          grid-column: span 12;
+        }
+
+        section {
+          padding-top: 80px;
+          padding-bottom: 80px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        body {
+          background-size:
+            40px 40px,
+            40px 40px,
+            auto,
+            auto;
+        }
+
+        .header {
+          padding-inline: 16px;
+        }
+
+        #hero {
+          min-height: calc(100svh - 68px);
+          padding-top: 52px;
+          padding-bottom: 52px;
+        }
+
+        #hero::before {
+          display: none;
+        }
+
+        .hero-name {
+          font-size: clamp(44px, 15vw, 62px);
+          letter-spacing: -2px;
+        }
+
+        .timeline {
+          padding: 24px 18px 24px 36px;
+        }
+
+        .timeline-item {
+          padding-left: 16px;
+        }
+
+        .timeline-body {
+          padding-left: 0;
+        }
+
+        .edu-card {
+          padding: 20px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1563,7 +2080,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-server"></i> Core Backend &amp; Architecture
           </h3>
-          <p class="skills-card-desc">Deep proficiency in writing clean, scalable C# code and building robust web services using architectural patterns.</p>
+          <p class="skills-card-desc">
+            Deep proficiency in writing clean, scalable C# code and building
+            robust web services using architectural patterns.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">C#</span>
             <span class="skill-pill">ASP.NET Core</span>
@@ -1582,7 +2102,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-code"></i> Full-Stack Capabilities
           </h3>
-          <p class="skills-card-desc">End-to-end feature ownership integrating backend APIs with modern user interfaces.</p>
+          <p class="skills-card-desc">
+            End-to-end feature ownership integrating backend APIs with modern
+            user interfaces.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">JavaScript</span>
             <span class="skill-pill">TypeScript</span>
@@ -1597,7 +2120,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-cloud"></i> Cloud Infra &amp; DevOps
           </h3>
-          <p class="skills-card-desc">Hands-on experience with cloud platforms, containerization, and automated CI/CD pipelines.</p>
+          <p class="skills-card-desc">
+            Hands-on experience with cloud platforms, containerization, and
+            automated CI/CD pipelines.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">Microsoft Azure</span>
             <span class="skill-pill">AWS</span>
@@ -1613,7 +2139,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-brain"></i> AI Integration
           </h3>
-          <p class="skills-card-desc">Utilizing Generative AI tools to accelerate coding, eliminate technical debt, and architect features.</p>
+          <p class="skills-card-desc">
+            Utilizing Generative AI tools to accelerate coding, eliminate
+            technical debt, and architect features.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">Generative AI</span>
             <span class="skill-pill">Prompt Engineering</span>
@@ -1625,7 +2154,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-globe"></i> Async &amp; Autonomy
           </h3>
-          <p class="skills-card-desc">High English fluency for collaboration, with the autonomy to unblock and document architectural decisions.</p>
+          <p class="skills-card-desc">
+            High English fluency for collaboration, with the autonomy to unblock
+            and document architectural decisions.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">English Fluency</span>
             <span class="skill-pill">Async Execution</span>
@@ -1647,15 +2179,27 @@
       <div class="timeline">
         <div class="timeline-item reveal">
           <div class="timeline-header">
-            <img src="img/mattel-logo.png" alt="PT Mattel Indonesia" class="timeline-logo" />
+            <img
+              src="img/mattel-logo.png"
+              alt="PT Mattel Indonesia"
+              class="timeline-logo"
+            />
             <div class="timeline-info">
               <h3 class="timeline-role">Digital Transformation Development</h3>
-              <p class="timeline-company">PT Mattel Indonesia &middot; Full-time</p>
+              <p class="timeline-company">
+                PT Mattel Indonesia &middot; Full-time
+              </p>
               <p class="timeline-date">
                 May 2024 &ndash; Present &middot;
-                <span class="work-duration" data-start="2024-05" data-end="present"></span>
+                <span
+                  class="work-duration"
+                  data-start="2024-05"
+                  data-end="present"
+                ></span>
               </p>
-              <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
+              <p class="timeline-location">
+                West Java, Indonesia &middot; On-site
+              </p>
             </div>
           </div>
           <!-- <div class="timeline-body">
@@ -1678,15 +2222,27 @@
 
         <div class="timeline-item reveal">
           <div class="timeline-header">
-            <img src="img/bmt-logo.png" alt="PT Bumiputra Manufaktur Teknologi" class="timeline-logo" />
+            <img
+              src="img/bmt-logo.png"
+              alt="PT Bumiputra Manufaktur Teknologi"
+              class="timeline-logo"
+            />
             <div class="timeline-info">
               <h3 class="timeline-role">OEE System Development</h3>
-              <p class="timeline-company">PT Bumiputra Manufaktur Teknologi &middot; Full-time</p>
+              <p class="timeline-company">
+                PT Bumiputra Manufaktur Teknologi &middot; Full-time
+              </p>
               <p class="timeline-date">
                 Aug 2022 &ndash; May 2024 &middot;
-                <span class="work-duration" data-start="2022-08" data-end="2024-05"></span>
+                <span
+                  class="work-duration"
+                  data-start="2022-08"
+                  data-end="2024-05"
+                ></span>
               </p>
-              <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
+              <p class="timeline-location">
+                West Java, Indonesia &middot; On-site
+              </p>
             </div>
           </div>
           <!-- <div class="timeline-body">
@@ -1732,7 +2288,10 @@
               <p>&ndash; Highest Achievement on Employability</p>
             </div>
             <div class="edu-project">
-              <p>Final project: Development of Smart Quality Control System with Claude 3.5 Sonnet Artificial Intelligence for Coin Inspection</p>
+              <p>
+                Final project: Development of Smart Quality Control System with
+                Claude 3.5 Sonnet Artificial Intelligence for Coin Inspection
+              </p>
             </div>
           </div>
         </div>
@@ -1743,14 +2302,19 @@
           </div>
           <div class="edu-body">
             <p class="edu-institution">Astra Polytechnic</p>
-            <h3 class="edu-degree">Associate's degree, Mechatronics Engineering</h3>
+            <h3 class="edu-degree">
+              Associate's degree, Mechatronics Engineering
+            </h3>
             <p class="edu-date">Aug 2019 &mdash; Aug 2022</p>
             <div class="edu-achievements">
               <p>&ndash; Full scholarship from Astra International</p>
               <p>&ndash; Third highest final grade on Mechatronics major</p>
             </div>
             <div class="edu-project">
-              <p>Final project: Creation of Shift Schedule Control Application and Automatic Report Analysis Method for Monitoring</p>
+              <p>
+                Final project: Creation of Shift Schedule Control Application
+                and Automatic Report Analysis Method for Monitoring
+              </p>
             </div>
           </div>
         </div>
