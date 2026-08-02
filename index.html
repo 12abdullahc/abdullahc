@@ -23,10 +23,12 @@
         --text-2: #c4c4c4;
         --border-1: rgba(255, 255, 255, 0.15);
         --border-2: rgba(255, 255, 255, 0.25);
-        --glow-1: rgba(214, 188, 162, 0.08);
-        --glow-2: rgba(214, 188, 162, 0.04);
-        --glow-3: rgba(214, 188, 162, 0.03);
-        --accent: rgba(214, 188, 162, 0.9);
+        --glow-1: rgba(245, 158, 11, 0.13);
+        --glow-2: rgba(99, 102, 241, 0.1);
+        --glow-3: rgba(16, 185, 129, 0.06);
+        --accent: #f2c278;
+        --accent-strong: #f59e0b;
+        --surface: rgba(22, 23, 29, 0.72);
       }
 
       /* ── Reset & Base ── */
@@ -49,7 +51,7 @@
         background-color: var(--bg-1);
         background-image:
           radial-gradient(
-            1200px 800px at 10% -10%,
+            900px 650px at 8% 5%,
             var(--glow-1) 0%,
             transparent 60%
           ),
@@ -62,7 +64,8 @@
             900px 600px at 50% 110%,
             var(--glow-3) 0%,
             transparent 60%
-          );
+          ),
+          linear-gradient(125deg, #030303 0%, #080707 48%, #050508 100%);
         background-attachment: fixed;
         font-family: "Manrope", "Segoe UI", sans-serif;
         color: var(--text-1);
@@ -72,12 +75,12 @@
       .header {
         padding: 0 20px;
         height: 60px;
-        border-bottom: 1px solid var(--border-1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background-color: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(8px);
+        background-color: rgba(4, 4, 6, 0.72);
+        backdrop-filter: blur(16px) saturate(140%);
         position: fixed;
         top: 0;
         width: 100%;
@@ -118,7 +121,8 @@
         height: 34px;
         border-radius: 50%;
         object-fit: cover;
-        border: 1.5px solid var(--border-2);
+        border: 1.5px solid var(--accent);
+        box-shadow: 0 0 0 3px rgba(242, 194, 120, 0.12);
         flex-shrink: 0;
         margin-right: 2px;
       }
@@ -151,6 +155,7 @@
       }
 
       .tab-btn:hover {
+        transform: translateY(-1px);
         background-color: rgba(255, 255, 255, 0.12);
         border-color: var(--text-1);
         color: var(--text-1);
@@ -399,6 +404,7 @@
         padding: 88px 20px;
         max-width: 1060px;
         margin: 0 auto;
+        position: relative;
       }
 
       .section-label {
@@ -427,11 +433,15 @@
 
       /* ── Glass Card ── */
       .glass-card {
-        background: rgba(20, 20, 23, 0.7);
-        border: 1px solid var(--border-2);
+        background: linear-gradient(
+          135deg,
+          rgba(35, 36, 43, 0.78),
+          var(--surface)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.17);
         border-radius: 16px;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px) saturate(125%);
+        box-shadow: 0 16px 45px -20px rgba(0, 0, 0, 0.8);
       }
 
       /* ════════════════════════════════
@@ -444,6 +454,40 @@
         padding: 60px 20px;
         max-width: 1060px;
         margin: 0 auto;
+        overflow: hidden;
+      }
+
+      #hero::before,
+      #hero::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        border-radius: 50%;
+        filter: blur(1px);
+      }
+
+      #hero::before {
+        width: 440px;
+        height: 440px;
+        right: -110px;
+        top: 5%;
+        background: radial-gradient(
+          circle,
+          rgba(245, 158, 11, 0.1),
+          transparent 68%
+        );
+      }
+
+      #hero::after {
+        width: 360px;
+        height: 360px;
+        left: -180px;
+        bottom: -170px;
+        background: radial-gradient(
+          circle,
+          rgba(99, 102, 241, 0.1),
+          transparent 68%
+        );
       }
 
       .hero-inner {
@@ -452,6 +496,8 @@
         gap: 48px;
         align-items: center;
         width: 100%;
+        position: relative;
+        z-index: 1;
       }
 
       .hero-badge {
@@ -459,8 +505,8 @@
         align-items: center;
         gap: 6px;
         padding: 4px 12px;
-        background: rgba(214, 188, 162, 0.1);
-        border: 1px solid rgba(214, 188, 162, 0.25);
+        background: rgba(242, 194, 120, 0.1);
+        border: 1px solid rgba(242, 194, 120, 0.28);
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
@@ -477,7 +523,8 @@
         font-weight: 700;
         line-height: 1.1;
         margin: 0 0 10px 0;
-        letter-spacing: -0.5px;
+        letter-spacing: -1.6px;
+        text-wrap: balance;
       }
 
       .hero-role {
@@ -506,7 +553,7 @@
         align-items: center;
         gap: 8px;
         padding: 10px 22px;
-        background: var(--text-1);
+        background: linear-gradient(135deg, #ffffff, #e9e9e9);
         color: var(--bg-1);
         border: 1px solid var(--text-1);
         border-radius: 20px;
@@ -515,14 +562,16 @@
         cursor: pointer;
         text-decoration: none;
         transition: all 0.2s ease;
+        box-shadow: 0 8px 24px -10px rgba(255, 255, 255, 0.75);
         font-family: "Manrope", "Segoe UI", sans-serif;
       }
 
       .btn-primary:hover {
-        background: #e0e0e0;
+        background: #ffffff;
         border-color: #e0e0e0;
         text-decoration: none;
         color: var(--bg-1);
+        transform: translateY(-2px);
       }
 
       .btn-secondary {
@@ -547,10 +596,25 @@
         border-color: var(--text-1);
         color: var(--text-1);
         text-decoration: none;
+        transform: translateY(-2px);
       }
 
       .hero-card {
         padding: 28px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08),
+          transparent 38%
+        );
+        pointer-events: none;
       }
 
       .hero-avatar {
@@ -558,10 +622,13 @@
         height: 90px;
         border-radius: 50%;
         background: rgba(214, 188, 162, 0.12);
-        border: 2px solid rgba(214, 188, 162, 0.3);
+        border: 2px solid var(--accent);
         margin: 0 auto 20px auto;
         overflow: hidden;
         flex-shrink: 0;
+        box-shadow:
+          0 0 0 6px rgba(242, 194, 120, 0.09),
+          0 12px 30px -12px rgba(0, 0, 0, 0.8);
       }
 
       .hero-avatar img {
@@ -649,23 +716,34 @@
       .project-card {
         padding: 0;
         overflow: hidden;
-        transition: box-shadow 0.25s ease;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          border-color 0.25s ease;
       }
 
       .project-card:hover {
         box-shadow: 0 24px 56px -16px rgba(0, 0, 0, 0.75);
+        transform: translateY(-6px);
+        border-color: rgba(242, 194, 120, 0.42);
       }
 
       .project-img {
         width: 100%;
         height: 172px;
-        background: rgba(255, 255, 255, 0.03);
+        background:
+          linear-gradient(
+            135deg,
+            rgba(242, 194, 120, 0.14),
+            rgba(99, 102, 241, 0.08)
+          ),
+          rgba(255, 255, 255, 0.03);
         border-bottom: 1px solid var(--border-1);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 44px;
-        color: rgba(255, 255, 255, 0.12);
+        color: rgba(242, 194, 120, 0.72);
         position: relative;
         overflow: hidden;
       }
@@ -679,6 +757,24 @@
           rgba(214, 188, 162, 0.06) 0%,
           transparent 70%
         );
+      }
+
+      .project-card:nth-child(2) .project-img {
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.2),
+          rgba(14, 165, 233, 0.06)
+        );
+        color: rgba(165, 180, 252, 0.8);
+      }
+
+      .project-card:nth-child(3) .project-img {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.18),
+          rgba(242, 194, 120, 0.05)
+        );
+        color: rgba(110, 231, 183, 0.8);
       }
 
       .project-body {
@@ -751,12 +847,32 @@
         ════════════════════════════════ */
       .skills-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 20px;
       }
 
       .skills-card {
         padding: 24px;
+        grid-column: span 2;
+        transition:
+          transform 0.25s ease,
+          border-color 0.25s ease,
+          background 0.25s ease;
+      }
+
+      .skills-card:nth-child(4),
+      .skills-card:nth-child(5) {
+        grid-column: span 3;
+      }
+
+      .skills-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(242, 194, 120, 0.38);
+        background: linear-gradient(
+          135deg,
+          rgba(46, 43, 40, 0.82),
+          var(--surface)
+        );
       }
 
       .skills-card-title {
@@ -807,6 +923,7 @@
         background: rgba(255, 255, 255, 0.1);
         border-color: var(--border-2);
         color: var(--text-1);
+        border-color: rgba(242, 194, 120, 0.45);
       }
 
       /* ════════════════════════════════
@@ -848,7 +965,7 @@
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: var(--accent);
+        background: var(--accent-strong);
         opacity: 0.75;
         box-shadow: 0 0 8px rgba(214, 188, 162, 0.5);
         z-index: 1;
@@ -869,7 +986,7 @@
         background: #fff;
         padding: 4px;
         flex-shrink: 0;
-        border: 1px solid rgba(255,255,255,0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
       }
 
       .timeline-info {
@@ -938,6 +1055,14 @@
         display: flex;
         align-items: flex-start;
         gap: 16px;
+        transition:
+          transform 0.25s ease,
+          border-color 0.25s ease;
+      }
+
+      .edu-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(242, 194, 120, 0.4);
       }
 
       .edu-icon {
@@ -1057,8 +1182,9 @@
       }
 
       .contact-info-item:hover {
-        opacity: 0.75;
+        opacity: 1;
         text-decoration: none;
+        transform: translateX(4px);
       }
 
       .contact-info-icon {
@@ -1073,6 +1199,14 @@
         justify-content: center;
         font-size: 14px;
         color: var(--accent);
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .contact-info-item:hover .contact-info-icon {
+        transform: scale(1.08);
+        background: rgba(242, 194, 120, 0.16);
       }
 
       .contact-info-text h4 {
@@ -1210,6 +1344,11 @@
         }
         .skills-grid {
           grid-template-columns: 1fr;
+        }
+        .skills-card,
+        .skills-card:nth-child(4),
+        .skills-card:nth-child(5) {
+          grid-column: auto;
         }
         .education-grid {
           grid-template-columns: 1fr;
@@ -1563,7 +1702,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-server"></i> Core Backend &amp; Architecture
           </h3>
-          <p class="skills-card-desc">Deep proficiency in writing clean, scalable C# code and building robust web services using architectural patterns.</p>
+          <p class="skills-card-desc">
+            Deep proficiency in writing clean, scalable C# code and building
+            robust web services using architectural patterns.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">C#</span>
             <span class="skill-pill">ASP.NET Core</span>
@@ -1582,7 +1724,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-code"></i> Full-Stack Capabilities
           </h3>
-          <p class="skills-card-desc">End-to-end feature ownership integrating backend APIs with modern user interfaces.</p>
+          <p class="skills-card-desc">
+            End-to-end feature ownership integrating backend APIs with modern
+            user interfaces.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">JavaScript</span>
             <span class="skill-pill">TypeScript</span>
@@ -1597,7 +1742,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-cloud"></i> Cloud Infra &amp; DevOps
           </h3>
-          <p class="skills-card-desc">Hands-on experience with cloud platforms, containerization, and automated CI/CD pipelines.</p>
+          <p class="skills-card-desc">
+            Hands-on experience with cloud platforms, containerization, and
+            automated CI/CD pipelines.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">Microsoft Azure</span>
             <span class="skill-pill">AWS</span>
@@ -1613,7 +1761,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-brain"></i> AI Integration
           </h3>
-          <p class="skills-card-desc">Utilizing Generative AI tools to accelerate coding, eliminate technical debt, and architect features.</p>
+          <p class="skills-card-desc">
+            Utilizing Generative AI tools to accelerate coding, eliminate
+            technical debt, and architect features.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">Generative AI</span>
             <span class="skill-pill">Prompt Engineering</span>
@@ -1625,7 +1776,10 @@
           <h3 class="skills-card-title">
             <i class="fas fa-globe"></i> Async &amp; Autonomy
           </h3>
-          <p class="skills-card-desc">High English fluency for collaboration, with the autonomy to unblock and document architectural decisions.</p>
+          <p class="skills-card-desc">
+            High English fluency for collaboration, with the autonomy to unblock
+            and document architectural decisions.
+          </p>
           <div class="skills-list">
             <span class="skill-pill">English Fluency</span>
             <span class="skill-pill">Async Execution</span>
@@ -1647,15 +1801,27 @@
       <div class="timeline">
         <div class="timeline-item reveal">
           <div class="timeline-header">
-            <img src="img/mattel-logo.png" alt="PT Mattel Indonesia" class="timeline-logo" />
+            <img
+              src="img/mattel-logo.png"
+              alt="PT Mattel Indonesia"
+              class="timeline-logo"
+            />
             <div class="timeline-info">
               <h3 class="timeline-role">Digital Transformation Development</h3>
-              <p class="timeline-company">PT Mattel Indonesia &middot; Full-time</p>
+              <p class="timeline-company">
+                PT Mattel Indonesia &middot; Full-time
+              </p>
               <p class="timeline-date">
                 May 2024 &ndash; Present &middot;
-                <span class="work-duration" data-start="2024-05" data-end="present"></span>
+                <span
+                  class="work-duration"
+                  data-start="2024-05"
+                  data-end="present"
+                ></span>
               </p>
-              <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
+              <p class="timeline-location">
+                West Java, Indonesia &middot; On-site
+              </p>
             </div>
           </div>
           <!-- <div class="timeline-body">
@@ -1678,15 +1844,27 @@
 
         <div class="timeline-item reveal">
           <div class="timeline-header">
-            <img src="img/bmt-logo.png" alt="PT Bumiputra Manufaktur Teknologi" class="timeline-logo" />
+            <img
+              src="img/bmt-logo.png"
+              alt="PT Bumiputra Manufaktur Teknologi"
+              class="timeline-logo"
+            />
             <div class="timeline-info">
               <h3 class="timeline-role">OEE System Development</h3>
-              <p class="timeline-company">PT Bumiputra Manufaktur Teknologi &middot; Full-time</p>
+              <p class="timeline-company">
+                PT Bumiputra Manufaktur Teknologi &middot; Full-time
+              </p>
               <p class="timeline-date">
                 Aug 2022 &ndash; May 2024 &middot;
-                <span class="work-duration" data-start="2022-08" data-end="2024-05"></span>
+                <span
+                  class="work-duration"
+                  data-start="2022-08"
+                  data-end="2024-05"
+                ></span>
               </p>
-              <p class="timeline-location">West Java, Indonesia &middot; On-site</p>
+              <p class="timeline-location">
+                West Java, Indonesia &middot; On-site
+              </p>
             </div>
           </div>
           <!-- <div class="timeline-body">
@@ -1732,7 +1910,10 @@
               <p>&ndash; Highest Achievement on Employability</p>
             </div>
             <div class="edu-project">
-              <p>Final project: Development of Smart Quality Control System with Claude 3.5 Sonnet Artificial Intelligence for Coin Inspection</p>
+              <p>
+                Final project: Development of Smart Quality Control System with
+                Claude 3.5 Sonnet Artificial Intelligence for Coin Inspection
+              </p>
             </div>
           </div>
         </div>
@@ -1743,14 +1924,19 @@
           </div>
           <div class="edu-body">
             <p class="edu-institution">Astra Polytechnic</p>
-            <h3 class="edu-degree">Associate's degree, Mechatronics Engineering</h3>
+            <h3 class="edu-degree">
+              Associate's degree, Mechatronics Engineering
+            </h3>
             <p class="edu-date">Aug 2019 &mdash; Aug 2022</p>
             <div class="edu-achievements">
               <p>&ndash; Full scholarship from Astra International</p>
               <p>&ndash; Third highest final grade on Mechatronics major</p>
             </div>
             <div class="edu-project">
-              <p>Final project: Creation of Shift Schedule Control Application and Automatic Report Analysis Method for Monitoring</p>
+              <p>
+                Final project: Creation of Shift Schedule Control Application
+                and Automatic Report Analysis Method for Monitoring
+              </p>
             </div>
           </div>
         </div>
