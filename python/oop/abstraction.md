@@ -171,6 +171,116 @@ Canine
 - `@property` converts `species` into a read-only attribute access (accessed via `dog.species` without `()`).
 - Combining `@property` and `@abstractmethod` guarantees every child subclass provides this attribute.
 
+<details>
+<summary>🏁 MotoGP Case Study Example: Abstract Property (Click to expand/collapse)</summary>
+
+> **Prompt History:** `add example in motogp study cases (hide/accordion) and make it broken code and the solution to understanding it step-by-step`
+
+### 🏍️ Scenario: FIM Technical Regulations
+In MotoGP, the **FIM (Fédération Internationale de Motocyclisme)** enforces strict technical regulations. Every prototype race bike must define mandatory specifications like **`minimum_weight`** (157 kg) and **`max_engine_capacity`** (1000 cc) as abstract properties.
+
+---
+
+### ❌ Broken Code (The Problem)
+
+In this example, the team created a `DucatiDesmosedici` child class but forgot to implement the abstract `@property minimum_weight`:
+
+```python
+from abc import ABC, abstractmethod
+
+# Abstract Base Class (FIM Standard Blueprint)
+class MotoGPBike(ABC):
+    @property
+    @abstractmethod
+    def minimum_weight(self) -> float:
+        """Abstract property: Must return bike minimum weight in kg."""
+        pass
+
+    @property
+    @abstractmethod
+    def max_engine_capacity(self) -> int:
+        """Abstract property: Must return max engine capacity in cc."""
+        pass
+
+# Derived Concrete Class
+class DucatiDesmosedici(MotoGPBike):
+    def __init__(self, rider: str):
+        self.rider = rider
+
+    # Developer implemented max_engine_capacity, BUT forgot minimum_weight!
+    @property
+    def max_engine_capacity(self) -> int:
+        return 1000
+
+# ❌ Attempting to instantiate the Ducati bike
+pecco_bike = DucatiDesmosedici("Francesco Bagnaia")
+```
+
+#### 💥 Error Output:
+```text
+TypeError: Can't instantiate abstract class DucatiDesmosedici without an implementation for abstract method 'minimum_weight'
+```
+
+---
+
+### 🔍 Step-by-Step Breakdown: Understanding the Issue
+
+1. **Contract Definition:** `MotoGPBike` inherits from `ABC` and defines **two** abstract properties (`minimum_weight` and `max_engine_capacity`).
+2. **Incomplete Implementation:** `DucatiDesmosedici` only implements `@property def max_engine_capacity(self)`. It omits `minimum_weight`.
+3. **Python Rule:** Python strictly prevents instantiation of any class that leaves abstract methods/properties unimplemented.
+
+---
+
+### ✅ Fixed Code (The Solution)
+
+To resolve the error, implement all mandatory `@property` decorators in `DucatiDesmosedici`:
+
+```python
+from abc import ABC, abstractmethod
+
+# Abstract Base Class (FIM Standard Blueprint)
+class MotoGPBike(ABC):
+    @property
+    @abstractmethod
+    def minimum_weight(self) -> float:
+        """Abstract property: Must return bike minimum weight in kg."""
+        pass
+
+    @property
+    @abstractmethod
+    def max_engine_capacity(self) -> int:
+        """Abstract property: Must return max engine capacity in cc."""
+        pass
+
+# Derived Concrete Class (Fully Compliant)
+class DucatiDesmosedici(MotoGPBike):
+    def __init__(self, rider: str):
+        self.rider = rider
+
+    @property
+    def minimum_weight(self) -> float:
+        return 157.0  # FIM Minimum Weight in Kg
+
+    @property
+    def max_engine_capacity(self) -> int:
+        return 1000  # 1000cc limit
+
+# ✅ Successfully instantiating the Ducati bike
+pecco_bike = DucatiDesmosedici("Francesco Bagnaia")
+print(f"Rider: {pecco_bike.rider}")
+print(f"Minimum Weight: {pecco_bike.minimum_weight} kg")
+print(f"Max Engine Capacity: {pecco_bike.max_engine_capacity} cc")
+```
+
+#### 🎉 Output:
+```text
+Rider: Francesco Bagnaia
+Minimum Weight: 157.0 kg
+Max Engine Capacity: 1000 cc
+```
+
+</details>
+
 ---
 
 ### 4. Abstract Class Instantiation (Strict Rule)
