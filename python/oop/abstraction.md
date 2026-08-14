@@ -138,6 +138,121 @@ Moving forward...
 - `move()` already has working logic defined in `Animal`.
 - `Dog` automatically inherits `move()` without writing any extra code, promoting **code reuse**.
 
+<details>
+<summary>🏁 MotoGP Case Study Example: Concrete Method (Click to expand/collapse)</summary>
+
+> **Prompt History:** `add example in motogp study cases (hide/accordion) and make it broken code and the solution to understanding it step-by-step`
+
+### 🏍️ Scenario: FIM Pit Lane Speed Governor
+In MotoGP, the **FIM** requires all teams to use a standardized **Pit Lane Speed Limiter** (maximum 60 km/h) for pit lane safety. Since this rule and calculation are identical for every bike on the grid, the `MotoGPBike` abstract class provides `pit_lane_limiter()` as a **concrete method** to share working logic across all teams (Yamaha, Ducati, KTM).
+
+---
+
+### ❌ Broken Code (The Problem)
+
+In this example, a developer building the `YamahaYZFM1` class unnecessarily redefined `pit_lane_limiter()`, but mistakenly forgot to include the `speed` parameter in the method signature:
+
+```python
+from abc import ABC, abstractmethod
+
+# Abstract Base Class (FIM Standard Blueprint)
+class MotoGPBike(ABC):
+    @abstractmethod
+    def get_rider_name(self) -> str:
+        """Abstract Method: Every team must return their rider's name."""
+        pass
+
+    # Concrete Method: Standard FIM Pit Lane Speed Governor (Shared Logic)
+    def pit_lane_limiter(self, speed: float) -> str:
+        """Concrete Method: Inherited directly by all child classes."""
+        if speed > 60.0:
+            return f"⚠️ VIOLATION! Speed {speed} km/h exceeds 60 km/h limit!"
+        return f"✅ SPEED OK: {speed} km/h. Pit limiter active."
+
+# Derived Concrete Class
+class YamahaYZFM1(MotoGPBike):
+    def __init__(self, rider: str):
+        self.rider = rider
+
+    def get_rider_name(self) -> str:
+        return self.rider
+
+    # ❌ BROKEN: Redefined the concrete method, but forgot the `speed` parameter!
+    def pit_lane_limiter(self):
+        return "Pit limiter engaged"
+
+# Race pit telemetry system tests pit limiter with current speed argument
+yamaha = YamahaYZFM1("Fabio Quartararo")
+
+# ❌ Calling pit_lane_limiter with speed parameter causes a runtime crash!
+print(yamaha.pit_lane_limiter(58.5))
+```
+
+#### 💥 Error Output:
+```text
+TypeError: YamahaYZFM1.pit_lane_limiter() takes 1 positional argument but 2 were given
+```
+
+---
+
+### 🔍 Step-by-Step Breakdown: Understanding the Issue
+
+1. **Concrete Method Availability:** `MotoGPBike` provides a fully implemented `pit_lane_limiter(self, speed: float)` method. Subclasses inherit this method automatically without needing to re-write it.
+2. **Broken Signature:** `YamahaYZFM1` redefined `pit_lane_limiter(self)` without `speed`. This broke the expected call signature (`yamaha.pit_lane_limiter(58.5)`).
+3. **The Lesson:** Concrete methods exist for **code reuse**. Unless a child class specifically needs to extend or override behavior, **do not redefine concrete methods**—let the child class inherit them directly from the Abstract Base Class!
+
+---
+
+### ✅ Fixed Code (The Solution)
+
+Remove the broken method override in `YamahaYZFM1`. The child class inherits `pit_lane_limiter()` directly from `MotoGPBike`:
+
+```python
+from abc import ABC, abstractmethod
+
+# Abstract Base Class (FIM Standard Blueprint)
+class MotoGPBike(ABC):
+    @abstractmethod
+    def get_rider_name(self) -> str:
+        """Abstract Method: Every team must return their rider's name."""
+        pass
+
+    # Concrete Method: Standard FIM Pit Lane Speed Governor (Shared Logic)
+    def pit_lane_limiter(self, speed: float) -> str:
+        """Concrete Method: Inherited directly by all child classes."""
+        if speed > 60.0:
+            return f"⚠️ VIOLATION! Speed {speed} km/h exceeds 60 km/h limit!"
+        return f"✅ SPEED OK: {speed} km/h. Pit limiter active."
+
+# Derived Concrete Class (Clean & Compliant)
+class YamahaYZFM1(MotoGPBike):
+    def __init__(self, rider: str):
+        self.rider = rider
+
+    # Implementing the required abstract method
+    def get_rider_name(self) -> str:
+        return self.rider
+
+    # Note: NO need to rewrite pit_lane_limiter()!
+    # Yamaha automatically inherits the concrete method from MotoGPBike.
+
+# Instantiate Yamaha bike
+yamaha = YamahaYZFM1("Fabio Quartararo")
+
+print(f"Rider: {yamaha.get_rider_name()}")
+print(yamaha.pit_lane_limiter(58.5))
+print(yamaha.pit_lane_limiter(64.2))
+```
+
+#### 🎉 Output:
+```text
+Rider: Fabio Quartararo
+✅ SPEED OK: 58.5 km/h. Pit limiter active.
+⚠️ VIOLATION! Speed 64.2 km/h exceeds 60 km/h limit!
+```
+
+</details>
+
 ---
 
 ### 3. Abstract Property
