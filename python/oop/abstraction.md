@@ -99,6 +99,103 @@ class Animal(ABC):
 - `make_sound()` inside `Animal` has no code.
 - It acts as an obligatory contract: any specific animal (like `Dog`, `Cat`, `Lion`) derived from `Animal` **must** write its own `make_sound()` code.
 
+<details>
+<summary>🏁 MotoGP Case Study Example: Abstract Method (Click to expand/collapse)</summary>
+
+> **Prompt History:** `add example in motogp study cases (hide/accordion) and make it broken code and the solution to understanding it step-by-step`
+
+### 🏍️ Scenario: Holeshot & Ride-Height Device Contract
+In MotoGP, starting a race requires an **active holeshot/ride-height device** to lower the bike's center of gravity and prevent wheelies off the line. Because each manufacturer (KTM, Ducati, Aprilia, Yamaha, Honda) designs its own proprietary hydraulic or mechanical lowering mechanism, the base blueprint `MotoGPBike` declares `activate_holeshot()` as an **abstract method**. Every team subclass **must** provide its own unique activation implementation.
+
+---
+
+### ❌ Broken Code (The Problem)
+
+In this example, the developer defined the `KTMRC16` class inheriting from `MotoGPBike`, but **forgot to implement** the mandatory `activate_holeshot()` abstract method:
+
+```python
+from abc import ABC, abstractmethod
+
+# Abstract Base Class (FIM Standard Blueprint)
+class MotoGPBike(ABC):
+    def __init__(self, rider: str, team: str):
+        self.rider = rider
+        self.team = team
+
+    @abstractmethod
+    def activate_holeshot(self) -> str:
+        """Abstract Method: Every team MUST implement their proprietary holeshot logic."""
+        pass
+
+# Derived Concrete Class
+class KTMRC16(MotoGPBike):
+    def __init__(self, rider: str):
+        super().__init__(rider=rider, team="Red Bull KTM Factory Racing")
+
+    # ❌ BROKEN: Developer forgot to implement activate_holeshot()!
+
+# ❌ Attempting to instantiate the KTM bike
+ktm = KTMRC16("Brad Binder")
+```
+
+#### 💥 Error Output:
+```text
+TypeError: Can't instantiate abstract class KTMRC16 without an implementation for abstract method 'activate_holeshot'
+```
+
+---
+
+### 🔍 Step-by-Step Breakdown: Understanding the Issue
+
+1. **Blueprint Contract:** `MotoGPBike` defines `@abstractmethod def activate_holeshot(self)`. By marking it with `@abstractmethod`, Python treats this method as an uncompromisable rule for all derived classes.
+2. **Missing Implementation:** `KTMRC16` subclasses `MotoGPBike` but never provides code for `activate_holeshot()`.
+3. **Instantiation Blocked:** Python detects that `KTMRC16` still contains an unimplemented abstract method, refusing to create the object and raising a `TypeError`.
+
+---
+
+### ✅ Fixed Code (The Solution)
+
+To fix the error, implement `activate_holeshot()` in `KTMRC16` to fulfill the contract:
+
+```python
+from abc import ABC, abstractmethod
+
+# Abstract Base Class (FIM Standard Blueprint)
+class MotoGPBike(ABC):
+    def __init__(self, rider: str, team: str):
+        self.rider = rider
+        self.team = team
+
+    @abstractmethod
+    def activate_holeshot(self) -> str:
+        """Abstract Method: Every team MUST implement their proprietary holeshot logic."""
+        pass
+
+# Derived Concrete Class (Fully Compliant)
+class KTMRC16(MotoGPBike):
+    def __init__(self, rider: str):
+        super().__init__(rider=rider, team="Red Bull KTM Factory Racing")
+
+    # ✅ Implementing the mandatory abstract method
+    def activate_holeshot(self) -> str:
+        return f"[{self.rider} - {self.team}] Front & rear ride-height lowered! Ready for launch."
+
+# ✅ Successfully instantiating and executing the KTM bike
+ktm = KTMRC16("Brad Binder")
+print(f"Rider: {ktm.rider}")
+print(f"Team: {ktm.team}")
+print(ktm.activate_holeshot())
+```
+
+#### 🎉 Output:
+```text
+Rider: Brad Binder
+Team: Red Bull KTM Factory Racing
+[Brad Binder - Red Bull KTM Factory Racing] Front & rear ride-height lowered! Ready for launch.
+```
+
+</details>
+
 ---
 
 ### 2. Concrete Method
