@@ -29,6 +29,10 @@
       box-sizing: border-box;
     }
 
+    html {
+      scrollbar-gutter: stable;
+    }
+
     body {
       margin: 0;
       padding-top: 60px;
@@ -407,7 +411,8 @@
       padding: 16px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.22s ease;
+      visibility: hidden;
+      transition: opacity 0.22s ease, visibility 0.22s ease;
       overflow-y: auto;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
@@ -416,6 +421,14 @@
     .modal-backdrop.open {
       opacity: 1;
       pointer-events: all;
+      visibility: visible;
+    }
+
+    .modal-backdrop:not(.open) {
+      visibility: hidden !important;
+      pointer-events: none !important;
+      overflow: hidden !important;
+      overscroll-behavior: auto !important;
     }
 
     /* ── Modal ── */
@@ -9888,6 +9901,12 @@
     function closeModal() {
       backdrop.classList.remove("open");
       document.body.style.overflow = "";
+      if (document.activeElement && typeof document.activeElement.blur === "function") {
+        document.activeElement.blur();
+      }
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
     }
 
     function updateModal() {
