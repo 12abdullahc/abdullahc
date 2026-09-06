@@ -265,6 +265,96 @@
       background: #e0e0e0;
     }
 
+    /* ── All Levels Hero Card ── */
+    .all-levels-hero-card {
+      padding: 30px 28px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .all-levels-hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background: radial-gradient(ellipse at top left,
+          rgba(214, 188, 162, 0.12) 0%,
+          transparent 70%);
+      pointer-events: none;
+    }
+
+    .all-levels-hero-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .all-levels-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    .all-levels-title {
+      font-size: clamp(20px, 3.5vw, 26px);
+      font-weight: 700;
+      color: var(--text-1);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .all-levels-desc {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin: 0 0 16px 0;
+      max-width: 680px;
+    }
+
+    .all-levels-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .all-level-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-1);
+      color: var(--text-2);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .all-level-pill.a1 { color: #4ade80; border-color: rgba(74, 222, 128, 0.28); background: rgba(74, 222, 128, 0.08); }
+    .all-level-pill.a2 { color: #2dd4bf; border-color: rgba(45, 212, 191, 0.28); background: rgba(45, 212, 191, 0.08); }
+    .all-level-pill.b1 { color: #38bdf8; border-color: rgba(56, 189, 248, 0.28); background: rgba(56, 189, 248, 0.08); }
+    .all-level-pill.b2 { color: #a78bfa; border-color: rgba(167, 139, 250, 0.28); background: rgba(167, 139, 250, 0.08); }
+    .all-level-pill.c1 { color: #fbbf24; border-color: rgba(251, 191, 36, 0.28); background: rgba(251, 191, 36, 0.08); }
+    .all-level-pill.c2 { color: #fb7185; border-color: rgba(251, 113, 133, 0.28); background: rgba(251, 113, 133, 0.08); }
+
+    .all-levels-action {
+      flex-shrink: 0;
+    }
+
     /* ── Level Cards ── */
     .level-grid {
       display: grid;
@@ -404,6 +494,20 @@
 
     /* ── Responsive ── */
     @media (max-width: 700px) {
+      .all-levels-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .all-levels-action {
+        width: 100%;
+      }
+
+      .all-levels-action .wordlist-open-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
       .wordlist-grid {
         grid-template-columns: 1fr;
       }
@@ -505,8 +609,34 @@
       <h2 class="section-title">Browse by Level</h2>
       <p class="section-desc">
         Open the vocabulary list filtered to a specific Common European
-        Framework of Reference (CEFR) level.
+        Framework of Reference (CEFR) level, or explore the complete collection.
       </p>
+
+      <!-- All Levels Combined Featured Card -->
+      <a href="all-level.html" class="glass-card all-levels-hero-card reveal">
+        <div class="all-levels-hero-content">
+          <div class="all-levels-badge">
+            <i class="fas fa-layer-group"></i> All Levels Combined &middot; 5,323 Words
+          </div>
+          <h3 class="all-levels-title">The Complete Oxford Vocabulary (A1 &ndash; C2)</h3>
+          <p class="all-levels-desc">
+            Explore all 5,323 words from Oxford 3000 and Oxford 5000 in one interactive dictionary. Features instant search, level filter tabs, UK/US pronunciations, and Indonesian translations.
+          </p>
+          <div class="all-levels-pills">
+            <span class="all-level-pill a1">A1 Beginner &middot; 900</span>
+            <span class="all-level-pill a2">A2 Elementary &middot; 872</span>
+            <span class="all-level-pill b1">B1 Intermediate &middot; 809</span>
+            <span class="all-level-pill b2">B2 Upper Int. &middot; 727</span>
+            <span class="all-level-pill c1">C1 Advanced &middot; 700</span>
+            <span class="all-level-pill c2">C2 Proficient &middot; 1,315</span>
+          </div>
+        </div>
+        <div class="all-levels-action">
+          <span class="wordlist-open-btn">
+            Explore All Words <i class="fas fa-arrow-right" style="font-size: 11px"></i>
+          </span>
+        </div>
+      </a>
 
       <div class="level-grid">
         <!-- A1 -->
