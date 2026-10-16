@@ -1,33 +1,33 @@
 <span id="top"></span>
 
-# Python OOP Concepts — Comprehensive Chunk-by-Chunk Guide
+# Python OOP Concepts — Comprehensive Guide
 
 > **Source Article:** [GeeksforGeeks — Python OOP Concepts](https://www.geeksforgeeks.org/python/python-oops-concepts/)  
 > **Topic:** Object-Oriented Programming (OOP) in Python — Classes, Objects, and the Four Pillars (Inheritance, Polymorphism, Encapsulation, Data Abstraction)  
 > **Domain Focus:** Mathematical Geometry, Cartesian Coordinate Systems & 2D Vector CAD Simple Study Cases  
-> **User Prompt:** "reexplain the following article chunk by chunk, easy to understand and coherence example in math geometry simple study cases with the background: https://www.geeksforgeeks.org/python/python-oops-concepts/"  
+> **User Prompt:** "reexplain the following article part by part, easy to understand and coherence example in math geometry simple study cases with the background: https://www.geeksforgeeks.org/python/python-oops-concepts/"  
 
 ---
 
-## 📚 Table of Contents
-1. [📐 Background & Conceptual Intuition: The 2D Geometry Engine](#background-intuition)
+## Table of Contents
+1. [Background & Conceptual Intuition: The 2D Geometry Engine](#background-intuition)
    - [1. Real-World Context: Why Geometry is the Perfect OOP Model](#geometry-context)
    - [2. The Analytical Blueprint vs. Concrete Spatial Figures](#blueprint-vs-figures)
    - [3. System Architecture Diagram](#system-architecture)
-2. [📌 Chunk 1: What is Object-Oriented Programming (OOP)?](#chunk-1)
-   - [1. Core Definition & Paradigm Shift](#chunk-1-definition)
-   - [2. Procedural vs. Object-Oriented Geometry](#chunk-1-procedural-vs-oop)
-   - [3. Key Architectural Advantages](#chunk-1-advantages)
-3. [🏛️ Chunk 2: Classes — The Blueprints of Geometric Figures](#chunk-2)
-   - [1. Definition & Syntax](#chunk-2-definition)
-   - [2. Class Attributes vs. Instance Attributes](#chunk-2-class-vs-instance)
-   - [3. The Constructor `__init__()` and `self`](#chunk-2-constructor-self)
-   - [4. Geometry Case Study: Shared Canvas Space vs. Independent Shape Dimensions](#chunk-2-case-study)
-4. [📦 Chunk 3: Objects — Instances, State, Behavior & Identity](#chunk-3)
-   - [1. The Anatomy of an Object: State, Behavior, Identity](#chunk-3-anatomy)
-   - [2. Instantiation & Dot Notation Access](#chunk-3-instantiation)
-   - [3. Geometry Case Study: Memory Identity (`is`) vs. Coordinate Equality (`==`)](#chunk-3-case-study)
-5. [🏛️ Chunk 4: The Four Pillars of OOP](#chunk-4)
+2. [Part 1: What is Object-Oriented Programming (OOP)?](#part-1)
+   - [1. Core Definition & Paradigm Shift](#part-1-definition)
+   - [2. Procedural vs. Object-Oriented Geometry](#part-1-procedural-vs-oop)
+   - [3. Key Architectural Advantages](#part-1-advantages)
+3. [Part 2: Classes — The Blueprints of Geometric Figures](#part-2)
+   - [1. Definition & Syntax](#part-2-definition)
+   - [2. Class Attributes vs. Instance Attributes](#part-2-class-vs-instance)
+   - [3. The Constructor `__init__()` and `self`](#part-2-constructor-self)
+   - [4. Geometry Case Study: Shared Canvas Space vs. Independent Shape Dimensions](#part-2-case-study)
+4. [Part 3: Objects — Instances, State, Behavior & Identity](#part-3)
+   - [1. The Anatomy of an Object: State, Behavior, Identity](#part-3-anatomy)
+   - [2. Instantiation & Dot Notation Access](#part-3-instantiation)
+   - [3. Geometry Case Study: Memory Identity (`is`) vs. Coordinate Equality (`==`)](#part-3-case-study)
+5. [Part 4: The Four Pillars of OOP](#part-4)
    - [4.1 Pillar 1: Inheritance (Hierarchical Shape Derivation)](#pillar-1-inheritance)
      - [1. Concept, "is-a" Relationship & Reusability](#inheritance-concept)
      - [2. Syntax, `super()`, and Method Overriding](#inheritance-syntax)
@@ -45,17 +45,17 @@
      - [1. Concept: "WHAT an Entity Does" vs. "HOW It Does It"](#abstraction-concept)
      - [2. Abstract Base Classes (`abc.ABC` and `@abstractmethod`)](#abstraction-syntax)
      - [3. Geometry Case Study: Enforcing Strict Blueprint Compliance on CAD Shapes](#abstraction-case-study)
-6. [🏆 Chunk 5: Complete Coherent Math Geometry CAD Engine Architecture](#chunk-5)
+6. [Part 5: Complete Coherent Math Geometry CAD Engine Architecture](#part-5)
    - [1. Complete Runnable Python CAD Engine](#cad-engine-code)
    - [2. Execution Output & Verification](#cad-engine-output)
-7. [📊 Chunk 6: Summary Comparison & Key Takeaways](#chunk-6)
+7. [Part 6: Summary Comparison & Key Takeaways](#part-6)
    - [1. Cross-Concept Comparative Matrix](#summary-table)
    - [2. Core Engineering Mental Models](#key-takeaways)
 
 ---
 
 <span id="background-intuition"></span>
-## 📐 Background & Conceptual Intuition: The 2D Geometry Engine
+## Background & Conceptual Intuition: The 2D Geometry Engine
 
 <span id="geometry-context"></span>
 ### 1. Real-World Context: Why Geometry is the Perfect OOP Model
@@ -116,23 +116,23 @@ Notice the natural division in mathematics:
 
 ---
 
-<span id="chunk-1"></span>
-## 📌 Chunk 1: What is Object-Oriented Programming (OOP)?
+<span id="part-1"></span>
+## Part 1: What is Object-Oriented Programming (OOP)?
 
-<span id="chunk-1-definition"></span>
+<span id="part-1-definition"></span>
 ### 1. Core Definition & Paradigm Shift
-As defined in the GeeksforGeeks article:
+Core definition:
 > **Object-Oriented Programming (OOP)** is a paradigm that organizes software design around **objects** and **classes** to represent real-world entities and their behavior. In OOP, an object has **attributes** (specific data) and can perform certain actions using **methods**.
 
 In classical **Procedural Programming**, code is structured as a sequence of procedures or functions executing transformations on loose, passive data structures. In **OOP**, data and the functions that manipulate that data are packaged together into autonomous, cohesive units.
 
-Key highlights from the article:
+Key characteristics of the paradigm:
 - **Organizes code** into classes and objects.
 - **Supports encapsulation** to group data and methods together securely.
 - **Enables inheritance** for code reuse, hierarchy, and specialization.
 - **Allows polymorphism** for dynamic, flexible method dispatch.
 
-<span id="chunk-1-procedural-vs-oop"></span>
+<span id="part-1-procedural-vs-oop"></span>
 ### 2. Procedural vs. Object-Oriented Geometry
 
 Consider how a CAD program calculates areas for mixed shapes.
@@ -188,7 +188,7 @@ class Rectangle:
 2. **Self-Validation:** An invalid circle cannot be instantiated in memory.
 3. **Extensibility:** Adding an `Ellipse` class requires zero modifications to existing `Circle` or `Rectangle` code.
 
-<span id="chunk-1-advantages"></span>
+<span id="part-1-advantages"></span>
 ### 3. Key Architectural Advantages
 
 | Advantage | Software Engineering Meaning | Math & Geometry Study Case |
@@ -202,12 +202,12 @@ class Rectangle:
 
 ---
 
-<span id="chunk-2"></span>
-## 🏛️ Chunk 2: Classes — The Blueprints of Geometric Figures
+<span id="part-2"></span>
+## Part 2: Classes — The Blueprints of Geometric Figures
 
-<span id="chunk-2-definition"></span>
+<span id="part-2-definition"></span>
 ### 1. Definition & Syntax
-As the GeeksforGeeks article states:
+Core definition:
 > A **Class** is a collection of objects. Classes are blueprints for creating objects. A class defines a set of attributes and methods that the created objects (instances) can have.
 
 - Classes are created using the `class` keyword.
@@ -221,10 +221,10 @@ class Circle:
     pass
 ```
 
-<span id="chunk-2-class-vs-instance"></span>
+<span id="part-2-class-vs-instance"></span>
 ### 2. Class Attributes vs. Instance Attributes
 
-A fundamental distinction highlighted in the GfG article is the difference between attributes shared across an entire class versus attributes unique to an individual object:
+A fundamental distinction in Python OOP is the difference between attributes shared across an entire class versus attributes unique to an individual object:
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -247,7 +247,7 @@ A fundamental distinction highlighted in the GfG article is the difference betwe
 - **Class Attributes:** Variables declared directly inside the class body, outside any method. They are shared collectively by all instances of the class. They represent universal constants, default configurations, or shared counters.
 - **Instance Attributes:** Variables defined inside methods (primarily the `__init__()` constructor) and prefixed with `self.`. They are private to each concrete instance in memory.
 
-<span id="chunk-2-constructor-self"></span>
+<span id="part-2-constructor-self"></span>
 ### 3. The Constructor `__init__()` and `self`
 
 - **`__init__(self, ...)`:** Python's built-in initialization method (dunder method). It is automatically invoked by Python the instant memory has been allocated for a new object. It configures the starting state of the object.
@@ -288,7 +288,7 @@ print(f"[{c2.label}] Radius: {c2.radius} cm | Area: {c2.calculate_area():.2f} cm
 
 ---
 
-<span id="chunk-2-case-study"></span>
+<span id="part-2-case-study"></span>
 <details>
 <summary>📐 <b>Geometry Case Study: Shared Canvas Space vs. Independent Shape Dimensions</b> (Click to expand)</summary>
 
@@ -368,13 +368,13 @@ print(f"✅ {r2.tag}: {r2.width}x{r2.height} {r2.DEFAULT_UNIT} | Log: {r2.dimens
 
 ---
 
-<span id="chunk-3"></span>
-## 📦 Chunk 3: Objects — Instances, State, Behavior & Identity
+<span id="part-3"></span>
+## Part 3: Objects — Instances, State, Behavior & Identity
 
-<span id="chunk-3-anatomy"></span>
+<span id="part-3-anatomy"></span>
 ### 1. The Anatomy of an Object: State, Behavior, Identity
 
-According to the GeeksforGeeks article, an **Object** is a concrete instance of a class. When Python executes `point = CartesianPoint(3.0, 4.0)`, it allocates a block of memory representing that specific geometric entity.
+An **Object** is a concrete instance of a class. When Python executes `point = CartesianPoint(3.0, 4.0)`, it allocates a block of memory representing that specific geometric entity.
 
 Every object is characterized by three fundamental pillars:
 
@@ -397,7 +397,7 @@ Every object is characterized by three fundamental pillars:
 └────────────────────┴─────────────────────────┴─────────────────────────┘
 ```
 
-<span id="chunk-3-instantiation"></span>
+<span id="part-3-instantiation"></span>
 ### 2. Instantiation & Dot Notation Access
 
 Creating an object is known as **instantiation**. We instantiate a class by calling its name like a function, passing arguments to its `__init__()` constructor.
@@ -464,7 +464,7 @@ Point 1 after translation: Point(x=5.0, y=5.0)
 
 ---
 
-<span id="chunk-3-case-study"></span>
+<span id="part-3-case-study"></span>
 <details>
 <summary>📐 <b>Geometry Case Study: Memory Identity (`is`) vs. Coordinate Equality (`==`)</b> (Click to expand)</summary>
 
@@ -551,8 +551,8 @@ Identity Check (pt1 is pt3) : True  (✅ Same memory address)
 
 ---
 
-<span id="chunk-4"></span>
-## 🏛️ Chunk 4: The Four Pillars of OOP
+<span id="part-4"></span>
+## Part 4: The Four Pillars of OOP
 
 The four foundational pillars of Object-Oriented software engineering are:
 1. **Inheritance**
@@ -560,7 +560,7 @@ The four foundational pillars of Object-Oriented software engineering are:
 3. **Encapsulation**
 4. **Data Abstraction**
 
-Let us dissect each pillar chunk by chunk using intuitive 2D geometry study cases.
+Let us dissect each pillar systematically using intuitive 2D geometry study cases.
 
 ---
 
@@ -569,7 +569,7 @@ Let us dissect each pillar chunk by chunk using intuitive 2D geometry study case
 
 <span id="inheritance-concept"></span>
 #### 1. Concept, "is-a" Relationship & Reusability
-As defined in the GeeksforGeeks article:
+Core definition:
 > **Inheritance** allows a class (child class) to acquire properties and methods of another class (parent class). It supports hierarchical classification and promotes code reuse.
 
 Inheritance establishes an **"is-a"** taxonomy:
@@ -738,7 +738,7 @@ print(f"✅ Square Perimeter: {sq.calculate_perimeter()} cm (Calculated flawless
 
 <span id="polymorphism-concept"></span>
 #### 1. Concept, Duck Typing & Dynamic Dispatch
-As defined in the GeeksforGeeks article:
+Core definition:
 > **Polymorphism** means **"same operation, different behavior."** It allows functions or methods with the same name to work differently depending on the type of object they are acting upon.
 
 In Python, polymorphism is driven by **Duck Typing**:
@@ -890,7 +890,7 @@ print(f"✅ Total Laser Travel Time: {total_time:.2f} seconds across {len(job_qu
 
 <span id="encapsulation-concept"></span>
 #### 1. Concept & Domain Invariant Protection
-As defined in the GeeksforGeeks article:
+Core definition:
 > **Encapsulation** is the bundling of data (attributes) and methods within a class, **restricting direct access** to some components to control interactions and protect internal integrity.
 
 In geometry, physical dimensions are bound by strict mathematical **invariants**:
@@ -1048,7 +1048,7 @@ except ValueError as e:
 
 <span id="abstraction-concept"></span>
 #### 1. Concept: "WHAT an Entity Does" vs. "HOW It Does It"
-As defined in the GeeksforGeeks article:
+Core definition:
 > **Data Abstraction** hides the internal implementation details while exposing only the necessary functionality. It helps focus on **"what to do"** rather than **"how to do it."**
 
 Consider driving a car: You press the accelerator pedal (**interface**), and the car accelerates (**outcome**). You do not need to know the fuel injection timing or valve angles (**internal implementation details**).
@@ -1209,13 +1209,13 @@ print(f"🔺 Complete Triangle Area: {tri.calculate_area():.2f} cm² | Perimeter
 
 ---
 
-<span id="chunk-5"></span>
-## 🏆 Chunk 5: Complete Coherent Math Geometry CAD Engine Architecture
+<span id="part-5"></span>
+## Part 5: Complete Coherent Math Geometry CAD Engine Architecture
 
 <span id="cad-engine-code"></span>
 ### 1. Complete Runnable Python CAD Engine
 
-The following cohesive Python implementation unifies all concepts discussed in the GeeksforGeeks article:
+The following cohesive Python implementation unifies all concepts discussed across each pillar:
 - **Classes & Objects**
 - **Class vs. Instance Attributes**
 - **Object State, Behavior & Identity**
@@ -1556,8 +1556,8 @@ if __name__ == "__main__":
 
 ---
 
-<span id="chunk-6"></span>
-## 📊 Chunk 6: Summary Comparison & Key Takeaways
+<span id="part-6"></span>
+## Part 6: Summary Comparison & Key Takeaways
 
 <span id="summary-table"></span>
 ### 1. Cross-Concept Comparative Matrix
