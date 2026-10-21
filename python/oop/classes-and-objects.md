@@ -5,7 +5,7 @@
 > **Source Article:** [GeeksforGeeks — Python Classes and Objects](https://www.geeksforgeeks.org/python/python-classes-and-objects/)  
 > **Topic:** Python Classes, Objects, Instantiation, `__init__()`, `self`, `__str__()` vs `__repr__()`, Class vs. Instance Attributes, and Methods  
 > **Domain Focus:** Mathematical Geometry, 2D Cartesian Coordinate Systems & CAD Vector Engine Simple Study Cases  
-> **User Prompt:** "reexplain the following article part by part, easy to understand and coherence example in math geometry simple study cases with the background: https://www.geeksforgeeks.org/python/python-classes-and-objects/"  
+> **User Prompt:** "reexplain the following article part by part, easy to understand and coherence example in math geometry simple study cases with the background: https://www.geeksforgeeks.org/python/python-classes-and-objects/"
 
 ---
 
