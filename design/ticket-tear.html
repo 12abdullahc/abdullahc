@@ -1,0 +1,3403 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ADMIT ONE // HOLOGRAPHIC PASS — 3D Verlet Ticket Tear Checkout</title>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Three.js Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      /* Warm Gallery Alabaster Theme (Default) */
+      --bg-primary: #F4F2ED;
+      --bg-radial-inner: #FAF9F5;
+      --bg-radial-outer: #EAE6DD;
+      --dot-grid-color: rgba(24, 24, 27, 0.085);
+      --hairline-color: rgba(24, 24, 27, 0.1);
+      --hairline-strong: rgba(24, 24, 27, 0.18);
+
+      --card-bg: rgba(255, 255, 255, 0.78);
+      --card-surface: rgba(247, 245, 240, 0.85);
+      --card-border: rgba(24, 24, 27, 0.11);
+      --card-shadow: 0 24px 60px -15px rgba(20, 20, 18, 0.08), 0 4px 16px -2px rgba(20, 20, 18, 0.04);
+
+      --text-primary: #141416;
+      --text-secondary: #52525B;
+      --text-muted: #868580;
+
+      --accent-primary: #141416;
+      --accent-fg: #FAF9F5;
+      --accent-highlight: #4F46E5;
+      --verified-green: #0D9488;
+      --verified-bg: rgba(13, 148, 136, 0.1);
+      --amber-warn: #D97706;
+
+      --pill-bg: rgba(24, 24, 27, 0.045);
+      --pill-hover: rgba(24, 24, 27, 0.08);
+      --pill-active-bg: #141416;
+      --pill-active-text: #FAF9F5;
+    }
+
+    [data-theme="dark"] {
+      /* Dark Concert Hall Theme */
+      --bg-primary: #0B0C10;
+      --bg-radial-inner: #161821;
+      --bg-radial-outer: #08090C;
+      --dot-grid-color: rgba(255, 255, 255, 0.075);
+      --hairline-color: rgba(255, 255, 255, 0.09);
+      --hairline-strong: rgba(255, 255, 255, 0.18);
+
+      --card-bg: rgba(18, 20, 26, 0.82);
+      --card-surface: rgba(26, 29, 38, 0.78);
+      --card-border: rgba(255, 255, 255, 0.11);
+      --card-shadow: 0 28px 70px -15px rgba(0, 0, 0, 0.65), 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+
+      --text-primary: #F4F4F6;
+      --text-secondary: #A1A1AA;
+      --text-muted: #686873;
+
+      --accent-primary: #F4F4F6;
+      --accent-fg: #0B0C10;
+      --accent-highlight: #818CF8;
+      --verified-green: #14B8A6;
+      --verified-bg: rgba(20, 184, 166, 0.14);
+      --amber-warn: #F59E0B;
+
+      --pill-bg: rgba(255, 255, 255, 0.05);
+      --pill-hover: rgba(255, 255, 255, 0.1);
+      --pill-active-bg: #F4F4F6;
+      --pill-active-text: #0B0C10;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s ease;
+    }
+
+    /* Studio Background with Radial Lighting & Hairline Dot Grid */
+    .studio-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 68% 46%, var(--bg-radial-inner) 0%, var(--bg-primary) 58%, var(--bg-radial-outer) 100%);
+      transition: background 0.35s ease;
+    }
+
+    .studio-dot-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background-image: radial-gradient(var(--dot-grid-color) 1px, transparent 1px);
+      background-size: 22px 22px;
+      background-position: center center;
+      pointer-events: none;
+    }
+
+    .studio-crosshairs {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      border: 1px solid var(--hairline-color);
+      margin: 14px;
+      border-radius: 18px;
+    }
+
+    /* Top Header Bar */
+    .top-header {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      height: 54px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--hairline-color);
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: conic-gradient(from 45deg, #38bdf8, #a855f7, #ec4899, #eab308, #38bdf8);
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.45);
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .brand-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--pill-bg);
+      border: 1px solid var(--hairline-color);
+      letter-spacing: 0.04em;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hdr-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--pill-bg);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.71rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .hdr-btn:hover {
+      background: var(--pill-hover);
+      border-color: var(--hairline-strong);
+      transform: translateY(-1px);
+    }
+
+    .hdr-btn.active {
+      background: var(--pill-active-bg);
+      color: var(--pill-active-text);
+      border-color: var(--pill-active-bg);
+    }
+
+    .hdr-btn kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.63rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(128, 128, 128, 0.18);
+      color: inherit;
+    }
+
+    /* Main Studio Grid Layout */
+    .studio-workspace {
+      position: fixed;
+      top: 68px;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: clamp(320px, 29vw, 425px) 1fr;
+      pointer-events: none;
+    }
+
+    /* Left Column: Checkout Card */
+    .checkout-column {
+      padding: 14px 0 14px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 20;
+      pointer-events: auto;
+      max-height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .checkout-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: clamp(14px, 1.8vh, 22px) clamp(15px, 1.5vw, 22px);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.4vh, 16px);
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .event-eyebrow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.66rem;
+      background: var(--pill-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--hairline-color);
+      transition: all 0.25s ease;
+    }
+
+    .status-pill.verified {
+      background: var(--verified-bg);
+      color: var(--verified-green);
+      border-color: rgba(20, 184, 166, 0.35);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .event-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.42rem;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+    }
+
+    .event-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--card-surface);
+      border: 1px solid var(--hairline-color);
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.61rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .meta-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Section Headers inside Checkout Card */
+    .section-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.67rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-secondary);
+    }
+
+    /* 3-Way Holographic Foil Edition Selector */
+    .foil-selector {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .foil-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--hairline-color);
+      background: var(--card-surface);
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.18s ease;
+    }
+
+    .foil-option:hover {
+      border-color: var(--hairline-strong);
+      transform: translateX(2px);
+    }
+
+    .foil-option.active {
+      border-color: var(--text-primary);
+      background: var(--pill-bg);
+      box-shadow: inset 0 0 0 1px var(--text-primary);
+    }
+
+    .foil-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .foil-swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+    }
+
+    .swatch-silver {
+      background: linear-gradient(135deg, #e2e8f0 0%, #38bdf8 30%, #f472b6 62%, #fef08a 85%, #cbd5e1 100%);
+    }
+
+    .swatch-gold {
+      background: linear-gradient(135deg, #fef08a 0%, #f59e0b 35%, #10b981 70%, #fb7185 100%);
+    }
+
+    .swatch-uv {
+      background: linear-gradient(135deg, #4f46e5 0%, #c026d3 42%, #06b6d4 78%, #a855f7 100%);
+    }
+
+    .foil-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .foil-desc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.63rem;
+      color: var(--text-muted);
+    }
+
+    /* Seat / Zone Selector */
+    .zone-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+
+    .zone-btn {
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--hairline-color);
+      background: var(--card-surface);
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.16s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .zone-btn:hover {
+      border-color: var(--hairline-strong);
+    }
+
+    .zone-btn.active {
+      background: var(--pill-active-bg);
+      color: var(--pill-active-text);
+      border-color: var(--pill-active-bg);
+    }
+
+    .zone-btn.active .zone-sub {
+      color: rgba(160, 160, 170, 0.9);
+    }
+
+    .zone-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.71rem;
+      font-weight: 600;
+    }
+
+    .zone-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    /* Live Perforation Fiber Tear Meter (25/25 fibers) */
+    .fiber-meter-box {
+      padding: 12px;
+      border-radius: 11px;
+      background: var(--card-surface);
+      border: 1px solid var(--hairline-color);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fiber-meter-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+    }
+
+    .fiber-count-badge {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .fiber-bars {
+      display: grid;
+      grid-template-columns: repeat(25, 1fr);
+      gap: 3px;
+      height: 18px;
+      align-items: stretch;
+    }
+
+    .fiber-cell {
+      border-radius: 2px;
+      background: var(--text-primary);
+      opacity: 0.85;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease, opacity 0.2s ease;
+      transform-origin: bottom center;
+    }
+
+    .fiber-cell.strained {
+      background: #F59E0B;
+      opacity: 1;
+      transform: scaleY(1.15);
+    }
+
+    .fiber-cell.severed {
+      background: #EF4444;
+      opacity: 0.22;
+      transform: scaleY(0.28);
+    }
+
+    .fiber-caption {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+    }
+
+    /* Primary Action Button */
+    .action-btn {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 11px;
+      border: none;
+      background: var(--accent-primary);
+      color: var(--accent-fg);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.18);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    .action-btn.verified-state {
+      background: var(--verified-green);
+      color: #ffffff;
+    }
+
+    .action-sub-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+    }
+
+    /* Right / Center Stage 3D Canvas Container */
+    .stage-container {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .stage-container.dragging {
+      cursor: grabbing;
+    }
+
+    .stage-container.slicing {
+      cursor: crosshair;
+    }
+
+    /* Stage Floating HUD Overlays */
+    .stage-hud {
+      position: fixed;
+      left: calc(clamp(320px, 29vw, 425px) + 48px);
+      right: 30px;
+      bottom: 24px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .hud-chip {
+      padding: 7px 12px;
+      border-radius: 9px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      max-width: 100%;
+    }
+
+    .hud-legend {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hud-legend.visible {
+      display: flex;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    /* Mobile Bottom Sheet Handle (Hidden on Desktop) */
+    .mobile-sheet-toggle {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 4px 2px 8px 2px;
+      border: none;
+      border-bottom: 1px solid var(--hairline-color);
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .sheet-pill-bar {
+      width: 34px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--hairline-strong);
+      margin: 0 auto 5px auto;
+    }
+
+    /* 2D Slice Trail Canvas Overlay */
+    #sliceTrailCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    /* Compact Desktop / Laptop Height Responsiveness (e.g. 1366x768, 1440x900, 1080p @ 125% scale) */
+    @media (min-width: 841px) and (max-height: 830px) {
+      .checkout-column {
+        padding: 8px 0 8px 16px;
+      }
+
+      .checkout-card {
+        padding: 14px 16px;
+        gap: 10px;
+      }
+
+      .event-title {
+        font-size: 1.18rem;
+      }
+
+      .event-meta-grid {
+        padding: 7px 10px;
+      }
+
+      .foil-option {
+        padding: 7px 10px;
+      }
+
+      .zone-btn {
+        padding: 6px 9px;
+      }
+
+      .fiber-meter-box {
+        padding: 9px 10px;
+        gap: 5px;
+      }
+
+      .fiber-bars {
+        height: 14px;
+      }
+
+      .action-btn {
+        padding: 10px 14px;
+        font-size: 0.78rem;
+      }
+    }
+
+    @media (min-width: 841px) and (max-height: 700px) {
+      .checkout-card {
+        padding: 11px 14px;
+        gap: 7px;
+      }
+
+      .event-title {
+        font-size: 1.04rem;
+      }
+
+      .foil-selector {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+      }
+
+      .foil-option {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 6px 8px;
+        gap: 4px;
+      }
+
+      .foil-desc {
+        display: none;
+      }
+
+      .foil-name {
+        font-size: 0.71rem;
+      }
+
+      .fiber-caption {
+        display: none;
+      }
+    }
+
+    /* Medium Desktop & Tablet Width Breakpoint */
+    @media (max-width: 1140px) {
+      .brand-tag {
+        display: none;
+      }
+
+      .top-header {
+        padding: 0 16px;
+      }
+
+      .hdr-btn {
+        padding: 0 9px;
+        font-size: 0.67rem;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .studio-workspace {
+        grid-template-columns: clamp(300px, 34vw, 350px) 1fr;
+      }
+
+      .checkout-card {
+        padding: 15px;
+        gap: 11px;
+      }
+
+      .event-title {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Mobile & Compact Tablet Layout (Bottom Sheet + Upper 3D Stage) */
+    @media (max-width: 840px) {
+      .studio-crosshairs {
+        margin: 8px;
+        border-radius: 14px;
+      }
+
+      .top-header {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        height: 46px;
+        padding: 0 12px;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+        gap: 8px;
+      }
+
+      .brand-cluster {
+        gap: 8px;
+        min-width: 0;
+        flex-shrink: 1;
+      }
+
+      .brand-title {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .header-controls {
+        gap: 5px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .header-controls::-webkit-scrollbar {
+        display: none;
+      }
+
+      .hdr-btn {
+        height: 28px;
+        padding: 0 8px;
+        font-size: 0.64rem;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      .hdr-btn kbd {
+        display: none;
+      }
+
+      .studio-workspace {
+        top: 54px;
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+
+      .checkout-column {
+        padding: 0;
+        width: 100%;
+        max-height: 54vh;
+        justify-content: flex-end;
+        transition: max-height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .checkout-card {
+        padding: 12px 14px 14px 14px;
+        gap: 10px;
+        border-radius: 14px;
+        max-height: 52vh;
+        overflow-y: auto;
+      }
+
+      .mobile-sheet-toggle {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mobile-sheet-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      /* Compact 3-column Foil Selector on Mobile */
+      .foil-selector {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+      }
+
+      .foil-option {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .foil-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+
+      .foil-desc {
+        display: none;
+      }
+
+      .foil-name {
+        font-size: 0.72rem;
+        line-height: 1.15;
+      }
+
+      /* When mobile sheet is collapsed, hide secondary details so 3D Pass has maximum space */
+      .checkout-card.mobile-collapsed .event-meta-grid,
+      .checkout-card.mobile-collapsed .zone-section-block,
+      .checkout-card.mobile-collapsed .action-sub-row {
+        display: none;
+      }
+
+      .event-title {
+        font-size: 1.08rem;
+      }
+
+      .fiber-meter-box {
+        padding: 9px 10px;
+        gap: 5px;
+      }
+
+      .fiber-bars {
+        height: 13px;
+        gap: 2px;
+      }
+
+      .fiber-caption {
+        display: none;
+      }
+
+      .action-btn {
+        padding: 11px 14px;
+        font-size: 0.76rem;
+      }
+
+      /* Reposition HUD to top-center below header on mobile so it never overlaps bottom sheet */
+      .stage-hud {
+        top: 62px;
+        bottom: auto;
+        left: 14px;
+        right: 14px;
+        align-items: center;
+      }
+
+      .hud-chip.desktop-hint {
+        font-size: 0.61rem;
+        padding: 5px 10px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-title {
+        max-width: 115px;
+      }
+
+      .hud-chip.desktop-hint {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Studio Ambient Backdrop & Hairline Grid -->
+  <div class="studio-backdrop"></div>
+  <div class="studio-dot-grid"></div>
+  <div class="studio-crosshairs"></div>
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="brand-cluster">
+      <span class="brand-dot"></span>
+      <span class="brand-title">ADMIT ONE // HOLOGRAPHIC PASS</span>
+      <span class="brand-tag">350GSM VERLET · 25×36 SPLIT-SEAM</span>
+    </div>
+
+    <div class="header-controls">
+      <button class="hdr-btn" id="btnFlip" title="Flip pass 180° (Double-click or press F)">
+        <span>Flip Pass</span>
+        <kbd>F</kbd>
+      </button>
+      <button class="hdr-btn" id="btnXray" title="Toggle Physics & Shader X-Ray Lattice (Press X)">
+        <span>Physics X-Ray</span>
+        <kbd>X</kbd>
+      </button>
+      <button class="hdr-btn" id="btnReset" title="Issue Fresh Untorn Pass (Press R)">
+        <span>Issue Fresh Pass</span>
+        <kbd>R</kbd>
+      </button>
+      <button class="hdr-btn" id="btnAudio" title="Toggle Web Audio Synthesizer">
+        <span id="audioLabel">Audio: ON</span>
+      </button>
+      <button class="hdr-btn" id="btnTheme" title="Toggle Warm Gallery Alabaster / Dark Concert Hall">
+        <span id="themeLabel">Dark Concert Hall</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="studio-workspace">
+    <!-- Left Column: Event Checkout Card -->
+    <aside class="checkout-column">
+      <div class="checkout-card mobile-collapsed" id="checkoutCard">
+        <!-- Mobile Collapsible Bottom-Sheet Handle -->
+        <button class="mobile-sheet-toggle" id="mobileSheetToggle" type="button">
+          <div class="sheet-pill-bar"></div>
+          <div class="mobile-sheet-row">
+            <span>PASS CONFIG & TEAR METER</span>
+            <span id="mobileSheetToggleLabel">▲ MORE OPTIONS</span>
+          </div>
+        </button>
+
+        <div class="event-eyebrow">
+          <span>EDITION 04 // AUDIOVISUAL ARCHIVE</span>
+          <span class="status-pill" id="passStatusPill">
+            <span class="status-dot"></span>
+            <span id="passStatusText">SEAM INTACT</span>
+          </span>
+        </div>
+
+        <h1 class="event-title">KINETIC LIGHTS SYMPOSIUM</h1>
+
+        <div class="event-meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">DATE / DOORS</span>
+            <span class="meta-value">NOV 14 · 20:00</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">VENUE</span>
+            <span class="meta-value">HALL 04 · KRAFTWERK</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">SERIAL</span>
+            <span class="meta-value" id="metaSerial">#KL-8849-A</span>
+          </div>
+        </div>
+
+        <!-- 3-Way Holographic Foil Edition Selector -->
+        <div class="section-block">
+          <div class="section-header">
+            <span>Holographic Foil Edition</span>
+            <span id="foilPriceDisplay">$185.00</span>
+          </div>
+          <div class="foil-selector" role="radiogroup" aria-label="Holographic Foil Edition">
+            <button class="foil-option active" data-foil="0">
+              <div class="foil-left">
+                <span class="foil-swatch swatch-silver"></span>
+                <div>
+                  <div class="foil-name">01 Silver Holo</div>
+                  <div class="foil-desc">Prismatic thin-film spectrum · 350gsm Alabaster</div>
+                </div>
+              </div>
+              <span class="foil-desc">$185</span>
+            </button>
+
+            <button class="foil-option" data-foil="1">
+              <div class="foil-left">
+                <span class="foil-swatch swatch-gold"></span>
+                <div>
+                  <div class="foil-name">02 Founders Gold Leaf</div>
+                  <div class="foil-desc">24k champagne dispersion · micro-embossed crest</div>
+                </div>
+              </div>
+              <span class="foil-desc">$260</span>
+            </button>
+
+            <button class="foil-option" data-foil="2">
+              <div class="foil-left">
+                <span class="foil-swatch swatch-uv"></span>
+                <div>
+                  <div class="foil-name">03 Ultraviolet Prism</div>
+                  <div class="foil-desc">Deep obsidian-violet interference · Voronoi flake</div>
+                </div>
+              </div>
+              <span class="foil-desc">$320</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Seat / Zone Selector -->
+        <div class="section-block zone-section-block">
+          <div class="section-header">
+            <span>Acoustic Zone & Seat Assignment</span>
+            <span id="zoneGateDisplay">GATE 01 · NORTH</span>
+          </div>
+          <div class="zone-grid">
+            <button class="zone-btn active" data-zone="0" data-sec="FLOOR A" data-row="ROW 02" data-seat="SEAT 14"
+              data-gate="GATE 01 · NORTH">
+              <span class="zone-title">FLOOR A · R02 · S14</span>
+              <span class="zone-sub">Immersion Array Center</span>
+            </button>
+            <button class="zone-btn" data-zone="1" data-sec="MEZZANINE" data-row="BOX 04" data-seat="VIP 01"
+              data-gate="GATE 02 · LOUNGE">
+              <span class="zone-title">MEZZANINE · BOX 04</span>
+              <span class="zone-sub">Elevated Acoustic Balcony</span>
+            </button>
+            <button class="zone-btn" data-zone="2" data-sec="SOUND PIT" data-row="ROW 01" data-seat="SYNTH 07"
+              data-gate="GATE 03 · STAGE">
+              <span class="zone-title">SOUND PIT · R01 · S07</span>
+              <span class="zone-sub">Sub-Bass Monolith Front</span>
+            </button>
+            <button class="zone-btn" data-zone="3" data-sec="GALLERY" data-row="ROW 06" data-seat="SEAT 22"
+              data-gate="GATE 04 · WEST">
+              <span class="zone-title">GALLERY · R06 · S22</span>
+              <span class="zone-sub">Panoramic Laser Projection</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Perforation Fiber Tear Meter -->
+        <div class="fiber-meter-box">
+          <div class="fiber-meter-top">
+            <span>PERFORATION SEAM INTEGRITY</span>
+            <span class="fiber-count-badge" id="fiberCounterText">25 / 25 FIBERS (0% TORN)</span>
+          </div>
+          <div class="fiber-bars" id="fiberBarsContainer"></div>
+          <div class="fiber-caption">
+            <span>COL 00 [LEFT NOTCH]</span>
+            <span>ROW 24↔25 SEAM</span>
+            <span>COL 24 [RIGHT NOTCH]</span>
+          </div>
+        </div>
+
+        <!-- Primary Action Button -->
+        <button class="action-btn" id="primaryActionBtn">
+          <span id="primaryActionText">SLICE SEAM OR CLICK TO TEAR STUB</span>
+          <span id="primaryActionIcon">✂ →</span>
+        </button>
+
+        <div class="action-sub-row">
+          <span>DRAG ACROSS SEAM OR PULL QR STUB DOWN</span>
+          <span id="verificationHash">SHA-256: PENDING TEAR</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- 3D WebGL Stage -->
+  <div class="stage-container" id="stageContainer"></div>
+  <canvas id="sliceTrailCanvas"></canvas>
+
+  <!-- Bottom-Right Floating HUD Hints -->
+  <div class="stage-hud">
+    <div class="hud-chip hud-legend" id="xrayLegend">
+      <span><i class="legend-dot" style="background:#00E5FF"></i>Structural (0.94)</span>
+      <span><i class="legend-dot" style="background:#818CF8"></i>Shear/Bend (0.82/0.76)</span>
+      <span><i class="legend-dot" style="background:#F59E0B"></i>Seam Fibers (25)</span>
+    </div>
+    <div class="hud-chip desktop-hint">
+      <span><strong>TACTILE CONTROLS:</strong> Drag upper pass to flex · Slice across perforation or pull stub down to
+        tear · Double-click [<kbd>F</kbd>] flip · [<kbd>X</kbd>] X-Ray · [<kbd>R</kbd>] Fresh Pass</span>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+
+    // ============================================================================
+    // 1. CONFIGURATION & EDITION DATA
+    // ============================================================================
+    const COLS = 25;
+    const ROWS = 36;
+    const TOTAL_VERTS = COLS * ROWS; // 900 vertices
+    const UPPER_SEAM_ROW = 24;       // 72% down the card
+    const LOWER_SEAM_ROW = 25;       // Detached from row 24 in triangle topology
+    const CARD_WIDTH = 2.15;
+    const CARD_HEIGHT = CARD_WIDTH * 1.7; // 2 : 3.4 vertical proportions (2.15 x 3.655)
+    const SEAM_V = 0.72;             // 72% from top (v=0 at top, v=1 at bottom in canvas space)
+
+    const FOIL_EDITIONS = [
+      {
+        id: 0,
+        code: '01 // SILVER HOLO',
+        name: '01 Silver Holo',
+        price: '$185.00',
+        paperBgFront: '#F7F5F0',
+        paperBgBack: '#EFECE4',
+        inkPrimary: '#121316',
+        inkSecondary: '#4A4B53',
+        accentHex: '#3B82F6',
+        baseTint: new THREE.Vector3(0.88, 0.91, 0.96),
+        iridescenceShift: 0.0,
+        saturation: 1.05
+      },
+      {
+        id: 1,
+        code: '02 // FOUNDERS GOLD LEAF',
+        name: '02 Founders Gold Leaf',
+        price: '$260.00',
+        paperBgFront: '#FAF6EC',
+        paperBgBack: '#F2ECE0',
+        inkPrimary: '#1C1610',
+        inkSecondary: '#69563A',
+        accentHex: '#D97706',
+        baseTint: new THREE.Vector3(1.0, 0.84, 0.46),
+        iridescenceShift: 0.24,
+        saturation: 0.95
+      },
+      {
+        id: 2,
+        code: '03 // ULTRAVIOLET PRISM',
+        name: '03 Ultraviolet Prism',
+        price: '#320.00'.replace('#', '$'),
+        paperBgFront: '#15141D',
+        paperBgBack: '#100F17',
+        inkPrimary: '#F5F3FF',
+        inkSecondary: '#A78BFA',
+        accentHex: '#C026D3',
+        baseTint: new THREE.Vector3(0.58, 0.38, 0.98),
+        iridescenceShift: 0.62,
+        saturation: 1.32
+      }
+    ];
+
+    const ZONES = [
+      { sec: 'FLOOR A', row: 'ROW 02', seat: 'SEAT 14', gate: 'GATE 01 · NORTH' },
+      { sec: 'MEZZANINE', row: 'BOX 04', seat: 'VIP 01', gate: 'GATE 02 · LOUNGE' },
+      { sec: 'SOUND PIT', row: 'ROW 01', seat: 'SYNTH 07', gate: 'GATE 03 · STAGE' },
+      { sec: 'GALLERY', row: 'ROW 06', seat: 'SEAT 22', gate: 'GATE 04 · WEST' }
+    ];
+
+    const state = {
+      foilIndex: 0,
+      zoneIndex: 0,
+      serialNumber: 'KL-8849-A',
+      flipped: false,
+      xrayMode: false,
+      darkMode: false,
+      audioEnabled: true,
+      autoTearing: false,
+      autoTearCol: 0,
+      autoTearTimer: 0,
+      passSlideOffset: 0
+    };
+
+    // ============================================================================
+    // 2. PROCEDURAL WEB AUDIO SYNTHESIZER (Paper Fibers + Fmaj9 Verification Chord)
+    // ============================================================================
+    class PaperAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.noiseBuffer = null;
+        this.lastRustleTime = 0;
+      }
+
+      ensureContext() {
+        if (!state.audioEnabled) return false;
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return false;
+          this.ctx = new AudioCtx();
+          // Pre-build 1.5s white/pink noise buffer for crisp paper fiber snaps
+          const sampleRate = this.ctx.sampleRate;
+          const length = Math.floor(sampleRate * 1.5);
+          this.noiseBuffer = this.ctx.createBuffer(1, length, sampleRate);
+          const data = this.noiseBuffer.getChannelData(0);
+          let b0 = 0, b1 = 0, b2 = 0;
+          for (let i = 0; i < length; i++) {
+            const white = Math.random() * 2 - 1;
+            b0 = 0.997 * b0 + white * 0.029;
+            b1 = 0.985 * b1 + white * 0.032;
+            b2 = 0.950 * b2 + white * 0.048;
+            data[i] = (white * 0.65 + (b0 + b1 + b2) * 0.35);
+          }
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+        return true;
+      }
+
+      // Band-passed noise burst (1.35kHz to 2.8kHz) pitched up across columns 0..24
+      playFiberSnap(colIndex, severedCount) {
+        if (!this.ensureContext()) return;
+        const now = this.ctx.currentTime;
+        const progress = Math.max(0, Math.min(1, severedCount / 25));
+        const colNorm = colIndex / 24;
+
+        // Center frequency sweeps from 1350 Hz to 2800 Hz
+        const centerFreq = 1350 + (progress * 0.75 + colNorm * 0.25) * (2800 - 1350);
+
+        const src = this.ctx.createBufferSource();
+        src.buffer = this.noiseBuffer;
+
+        const bandpass = this.ctx.createBiquadFilter();
+        bandpass.type = 'bandpass';
+        bandpass.frequency.setValueAtTime(centerFreq, now);
+        bandpass.Q.setValueAtTime(4.2, now);
+
+        const highpass = this.ctx.createBiquadFilter();
+        highpass.type = 'highpass';
+        highpass.frequency.setValueAtTime(900, now);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.28, now + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.048);
+
+        // Short mechanical transient pop
+        const osc = this.ctx.createOscillator();
+        const oscGain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(centerFreq * 0.55, now);
+        osc.frequency.exponentialRampToValueAtTime(190, now + 0.022);
+        oscGain.gain.setValueAtTime(0.08, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.024);
+
+        src.connect(bandpass);
+        bandpass.connect(highpass);
+        highpass.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.connect(oscGain);
+        oscGain.connect(this.ctx.destination);
+
+        const randomOffset = Math.random() * 1.1;
+        src.start(now, randomOffset, 0.055);
+        osc.start(now);
+        osc.stop(now + 0.026);
+      }
+
+      // Warm Fmaj9 verification chord (F3, A3, C4, E4, G4, C5) on full detachment
+      playVerificationChord() {
+        if (!this.ensureContext()) return;
+        const now = this.ctx.currentTime;
+        // Fmaj9 frequencies: F3 (174.61), A3 (220.00), C4 (261.63), E4 (329.63), G4 (392.00), A4 (440.00)
+        const freqs = [174.61, 220.00, 261.63, 329.63, 392.00, 523.25];
+
+        const masterFilter = this.ctx.createBiquadFilter();
+        masterFilter.type = 'lowpass';
+        masterFilter.frequency.setValueAtTime(420, now);
+        masterFilter.frequency.exponentialRampToValueAtTime(3400, now + 0.18);
+        masterFilter.frequency.exponentialRampToValueAtTime(950, now + 2.4);
+
+        const masterGain = this.ctx.createGain();
+        masterGain.gain.setValueAtTime(0.001, now);
+        masterGain.gain.linearRampToValueAtTime(0.24, now + 0.06);
+        masterGain.gain.exponentialRampToValueAtTime(0.0005, now + 2.6);
+
+        masterFilter.connect(masterGain);
+        masterGain.connect(this.ctx.destination);
+
+        freqs.forEach((f, idx) => {
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const voiceGain = this.ctx.createGain();
+
+          osc1.type = idx < 2 ? 'triangle' : 'sine';
+          osc2.type = 'sawtooth';
+
+          osc1.frequency.setValueAtTime(f, now);
+          osc2.frequency.setValueAtTime(f * 1.0035, now); // subtle warm chorus detune
+
+          voiceGain.gain.setValueAtTime(0.16 / Math.sqrt(idx + 1), now);
+
+          const startDelay = idx * 0.022;
+          osc1.connect(voiceGain);
+          osc2.connect(voiceGain);
+          voiceGain.connect(masterFilter);
+
+          osc1.start(now + startDelay);
+          osc2.start(now + startDelay);
+          osc1.stop(now + 2.65);
+          osc2.stop(now + 2.65);
+        });
+      }
+
+      playUiClick(pitch = 680) {
+        if (!this.ensureContext()) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(pitch, now);
+        osc.frequency.exponentialRampToValueAtTime(pitch * 1.45, now + 0.028);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.032);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.035);
+      }
+
+      playSlideFreshPass() {
+        if (!this.ensureContext()) return;
+        const now = this.ctx.currentTime;
+        const src = this.ctx.createBufferSource();
+        src.buffer = this.noiseBuffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(420, now);
+        filter.frequency.exponentialRampToValueAtTime(1450, now + 0.16);
+        filter.Q.setValueAtTime(2.5, now);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.11, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.22);
+
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        src.start(now, 0, 0.24);
+      }
+    }
+
+    const audio = new PaperAudioEngine();
+
+    // ============================================================================
+    // 3. HIGH-DPI (1024 x 1740) PROCEDURAL CANVAS TEXTURES (Front, Back & RGB Mask)
+    // ============================================================================
+    const TEX_W = 1024;
+    const TEX_H = 1740;
+
+    function drawRoundedTicketPath(ctx, w, h, radius, seamY, notchRadius) {
+      ctx.beginPath();
+      ctx.moveTo(radius, 0);
+      ctx.lineTo(w - radius, 0);
+      ctx.quadraticCurveTo(w, 0, w, radius);
+      // Right edge down to seam notch
+      ctx.lineTo(w, seamY - notchRadius);
+      ctx.arc(w, seamY, notchRadius, -Math.PI / 2, Math.PI / 2, true);
+      // Right edge down to bottom corner
+      ctx.lineTo(w, h - radius);
+      ctx.quadraticCurveTo(w, h, w - radius, h);
+      ctx.lineTo(radius, h);
+      ctx.quadraticCurveTo(0, h, 0, h - radius);
+      // Left edge up to seam notch
+      ctx.lineTo(0, seamY + notchRadius);
+      ctx.arc(0, seamY, notchRadius, Math.PI / 2, -Math.PI / 2, true);
+      ctx.lineTo(0, radius);
+      ctx.quadraticCurveTo(0, 0, radius, 0);
+      ctx.closePath();
+    }
+
+    function drawGuillocheRosette(ctx, cx, cy, outerR, innerR, loops, strokeStyle, lineWidth) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.strokeStyle = strokeStyle;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      const steps = 900;
+      const R = (outerR + innerR) * 0.5;
+      const r = (outerR - innerR) * 0.5;
+      for (let i = 0; i <= steps; i++) {
+        const t = (i / steps) * Math.PI * 2;
+        const x = R * Math.cos(t) + r * Math.cos(loops * t);
+        const y = R * Math.sin(t) - r * Math.sin(loops * t);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawProceduralQR(ctx, x, y, size, seedStr, color) {
+      ctx.save();
+      const cells = 25;
+      const cellSize = size / cells;
+      ctx.fillStyle = color;
+
+      // Deterministic hash from seedStr
+      let h = 2166136261;
+      for (let i = 0; i < seedStr.length; i++) {
+        h ^= seedStr.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+
+      const isFinder = (r, c) => {
+        if (r < 7 && c < 7) return true;
+        if (r < 7 && c >= cells - 7) return true;
+        if (r >= cells - 7 && c < 7) return true;
+        return false;
+      };
+
+      const drawFinderBox = (ox, oy) => {
+        ctx.fillRect(ox, oy, 7 * cellSize, cellSize);
+        ctx.fillRect(ox, oy + 6 * cellSize, 7 * cellSize, cellSize);
+        ctx.fillRect(ox, oy, cellSize, 7 * cellSize);
+        ctx.fillRect(ox + 6 * cellSize, oy, cellSize, 7 * cellSize);
+        ctx.fillRect(ox + 2 * cellSize, oy + 2 * cellSize, 3 * cellSize, 3 * cellSize);
+      };
+
+      drawFinderBox(x, y);
+      drawFinderBox(x + (cells - 7) * cellSize, y);
+      drawFinderBox(x, y + (cells - 7) * cellSize);
+
+      for (let r = 0; r < cells; r++) {
+        for (let c = 0; c < cells; c++) {
+          if (isFinder(r, c)) continue;
+          h ^= (r * 31 + c * 17) & 0xff;
+          h = Math.imul(h, 16777619);
+          if ((Math.abs(h) % 10) < 5) {
+            ctx.fillRect(x + c * cellSize, y + r * cellSize, cellSize + 0.4, cellSize + 0.4);
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    function punchPerforationHoles(ctx, seamY, notchRadius) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = '#000000';
+      // 24 punched circular perforation holes between the 25 fiber columns (col 0..24)
+      // Placed between left notch and right notch so each of the 25 Verlet seam springs sits on a bridge
+      const leftMargin = notchRadius + 22;
+      const rightMargin = TEX_W - notchRadius - 22;
+      const span = rightMargin - leftMargin;
+      const holeRadius = 10.5;
+      for (let i = 0; i < 24; i++) {
+        const hx = leftMargin + ((i + 0.5) / 24) * span;
+        ctx.beginPath();
+        ctx.arc(hx, seamY, holeRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function generateTicketTextures() {
+      const edition = FOIL_EDITIONS[state.foilIndex];
+      const zone = ZONES[state.zoneIndex];
+      const seamY = TEX_H * SEAM_V; // 1252.8 px (72% down the card)
+      const cornerRadius = 54;
+      const notchRadius = 32;
+      const isDarkCard = edition.id === 2;
+
+      // ------------------------------------------------------------------------
+      // A. FRONT DIFFUSE + ALPHA MAP (1024 x 1740)
+      // ------------------------------------------------------------------------
+      const frontDiffCanvas = document.createElement('canvas');
+      frontDiffCanvas.width = TEX_W;
+      frontDiffCanvas.height = TEX_H;
+      const fctx = frontDiffCanvas.getContext('2d');
+
+      fctx.clearRect(0, 0, TEX_W, TEX_H);
+      fctx.save();
+      drawRoundedTicketPath(fctx, TEX_W, TEX_H, cornerRadius, seamY, notchRadius);
+      fctx.clip();
+
+      // Base heavy 350gsm card-stock paper tone
+      fctx.fillStyle = edition.paperBgFront;
+      fctx.fillRect(0, 0, TEX_W, TEX_H);
+
+      // Subtle architectural micro-grid on card face
+      fctx.strokeStyle = isDarkCard ? 'rgba(255,255,255,0.045)' : 'rgba(20,20,24,0.045)';
+      fctx.lineWidth = 1;
+      for (let x = 64; x < TEX_W; x += 64) {
+        fctx.beginPath();
+        fctx.moveTo(x, 0);
+        fctx.lineTo(x, TEX_H);
+        fctx.stroke();
+      }
+      for (let y = 64; y < TEX_H; y += 64) {
+        fctx.beginPath();
+        fctx.moveTo(0, y);
+        fctx.lineTo(TEX_W, y);
+        fctx.stroke();
+      }
+
+      // Outer framing border
+      fctx.strokeStyle = isDarkCard ? 'rgba(255,255,255,0.22)' : 'rgba(20,20,24,0.2)';
+      fctx.lineWidth = 3;
+      fctx.strokeRect(42, 42, TEX_W - 84, seamY - 76);
+      fctx.strokeRect(42, seamY + 34, TEX_W - 84, TEX_H - seamY - 76);
+
+      // Left vertical holographic security strip
+      const stripGrad = fctx.createLinearGradient(68, 68, 136, seamY - 68);
+      stripGrad.addColorStop(0, isDarkCard ? '#312e81' : '#e2e8f0');
+      stripGrad.addColorStop(0.5, isDarkCard ? '#4c1d95' : '#cbd5e1');
+      stripGrad.addColorStop(1, isDarkCard ? '#1e1b4b' : '#e2e8f0');
+      fctx.fillStyle = stripGrad;
+      fctx.fillRect(68, 68, 62, seamY - 128);
+
+      // Vertical micro-type inside holographic security strip
+      fctx.save();
+      fctx.translate(107, seamY - 100);
+      fctx.rotate(-Math.PI / 2);
+      fctx.fillStyle = isDarkCard ? '#e0e7ff' : '#1e293b';
+      fctx.font = '700 18px "JetBrains Mono", monospace';
+      fctx.letterSpacing = '4px';
+      fctx.fillText('AUTHENTICATED HOLOGRAPHIC PASS // 350GSM VERLET STOCK // ', 0, 0);
+      fctx.restore();
+
+      // Top Header Eyebrow & Edition Pill
+      fctx.fillStyle = edition.inkPrimary;
+      fctx.font = '700 22px "JetBrains Mono", monospace';
+      fctx.fillText('ADMIT ONE // HOLOGRAPHIC PASS', 164, 108);
+
+      fctx.fillStyle = edition.inkSecondary;
+      fctx.font = '500 18px "JetBrains Mono", monospace';
+      fctx.fillText(`EDITION: ${edition.code}`, 164, 140);
+
+      // Top-Right Serial Badge
+      fctx.fillStyle = edition.inkPrimary;
+      fctx.fillRect(TEX_W - 310, 74, 240, 54);
+      fctx.fillStyle = edition.paperBgFront;
+      fctx.font = '700 23px "JetBrains Mono", monospace';
+      fctx.textAlign = 'center';
+      fctx.fillText(`#${state.serialNumber}`, TEX_W - 190, 109);
+      fctx.textAlign = 'left';
+
+      // Fine Guilloche Security Rosette Centerpiece (y = 515)
+      const rosX = 540;
+      const rosY = 520;
+      drawGuillocheRosette(
+        fctx,
+        rosX,
+        rosY,
+        215,
+        70,
+        18,
+        isDarkCard ? 'rgba(196, 181, 253, 0.35)' : 'rgba(20, 20, 24, 0.22)',
+        2.0
+      );
+      drawGuillocheRosette(
+        fctx,
+        rosX,
+        rosY,
+        175,
+        42,
+        12,
+        isDarkCard ? 'rgba(244, 114, 182, 0.32)' : 'rgba(59, 130, 246, 0.24)',
+        1.6
+      );
+      drawGuillocheRosette(
+        fctx,
+        rosX,
+        rosY,
+        118,
+        24,
+        24,
+        isDarkCard ? 'rgba(255, 255, 255, 0.45)' : 'rgba(20, 20, 24, 0.35)',
+        1.5
+      );
+
+      // Center Geometric Star Crest inside Rosette
+      fctx.save();
+      fctx.translate(rosX, rosY);
+      fctx.strokeStyle = edition.inkPrimary;
+      fctx.lineWidth = 3;
+      fctx.beginPath();
+      for (let i = 0; i < 8; i++) {
+        const a = (i * Math.PI) / 4;
+        fctx.moveTo(0, 0);
+        fctx.lineTo(Math.cos(a) * 90, Math.sin(a) * 90);
+      }
+      fctx.stroke();
+      fctx.beginPath();
+      fctx.arc(0, 0, 34, 0, Math.PI * 2);
+      fctx.fillStyle = edition.paperBgFront;
+      fctx.fill();
+      fctx.stroke();
+      fctx.restore();
+
+      // Main Event Headline Typography
+      fctx.fillStyle = edition.inkPrimary;
+      fctx.font = '700 72px "Space Grotesk", sans-serif';
+      fctx.fillText('KINETIC LIGHTS', 164, 248);
+      fctx.fillText('SYMPOSIUM', 164, 324);
+
+      fctx.fillStyle = edition.inkSecondary;
+      fctx.font = '600 22px "JetBrains Mono", monospace';
+      fctx.fillText('INTERNATIONAL SOUND, LASER & SHADER ARCHITECTURE BIENNALE', 164, 368);
+
+      // Metadata Table above the Perforation Seam
+      const tableTop = 790;
+      fctx.strokeStyle = isDarkCard ? 'rgba(255,255,255,0.22)' : 'rgba(20,20,24,0.22)';
+      fctx.lineWidth = 2;
+      fctx.beginPath();
+      fctx.moveTo(164, tableTop);
+      fctx.lineTo(TEX_W - 68, tableTop);
+      fctx.moveTo(164, tableTop + 145);
+      fctx.lineTo(TEX_W - 68, tableTop + 145);
+      fctx.moveTo(164, tableTop + 290);
+      fctx.lineTo(TEX_W - 68, tableTop + 290);
+      fctx.stroke();
+
+      // Column Labels & Values
+      fctx.fillStyle = edition.inkSecondary;
+      fctx.font = '600 18px "JetBrains Mono", monospace';
+      fctx.fillText('ACOUSTIC SECTOR', 164, tableTop + 40);
+      fctx.fillText('ROW / BOX', 500, tableTop + 40);
+      fctx.fillText('ASSIGNED SEAT', 740, tableTop + 40);
+
+      fctx.fillStyle = edition.inkPrimary;
+      fctx.font = '700 44px "Space Grotesk", sans-serif';
+      fctx.fillText(zone.sec, 164, tableTop + 105);
+      fctx.fillText(zone.row, 500, tableTop + 105);
+      fctx.fillText(zone.seat, 740, tableTop + 105);
+
+      fctx.fillStyle = edition.inkSecondary;
+      fctx.font = '600 18px "JetBrains Mono", monospace';
+      fctx.fillText('DATE & DOORS', 164, tableTop + 185);
+      fctx.fillText('ENTRY PORTAL', 500, tableTop + 185);
+      fctx.fillText('PASS VALUATION', 780, tableTop + 185);
+
+      fctx.fillStyle = edition.inkPrimary;
+      fctx.font = '700 36px "Space Grotesk", sans-serif';
+      fctx.fillText('NOV 14 · 20:00', 164, tableTop + 248);
+      fctx.fillText(zone.gate.split(' · ')[0], 500, tableTop + 248);
+      fctx.fillText(edition.price, 780, tableTop + 248);
+
+      // Seam Line Micro-Caption ("SLICE OR TEAR ALONG 25-FIBER PERFORATION SEAM")
+      fctx.fillStyle = edition.inkSecondary;
+      fctx.font = '600 17px "JetBrains Mono", monospace';
+      fctx.textAlign = 'center';
+      fctx.fillText('✂  PERFORATION SEAM · 25 STRUCTURAL FIBERS · TEAR TO VERIFY ADMISSION  ✂', TEX_W * 0.5, seamY - 26);
+      fctx.textAlign = 'left';
+
+      // Dashed guide line along the seam
+      fctx.save();
+      fctx.strokeStyle = isDarkCard ? 'rgba(255,255,255,0.35)' : 'rgba(20,20,24,0.35)';
+      fctx.lineWidth = 2;
+      fctx.setLineDash([8, 12]);
+      fctx.beginPath();
+      fctx.moveTo(notchRadius + 10, seamY);
+      fctx.lineTo(TEX_W - notchRadius - 10, seamY);
+      fctx.stroke();
+      fctx.restore();
+
+      // ------------------------------------------------------------------------
+      // LOWER DETACHABLE QR STUB (y = seamY .. 1740)
+      // ------------------------------------------------------------------------
+      const stubTop = seamY + 58;
+      // QR Code on Left of Stub
+      fctx.fillStyle = isDarkCard ? '#FFFFFF' : '#FFFFFF';
+      fctx.fillRect(68, stubTop, 330, 330);
+      fctx.strokeStyle = edition.inkPrimary;
+      fctx.lineWidth = 3;
+      fctx.strokeRect(68, stubTop, 330, 330);
+      drawProceduralQR(
+        fctx,
+        88,
+        stubTop + 20,
+        290,
+        `${state.serialNumber}-${edition.code}-${zone.sec}-${zone.seat}`,
+        '#111115'
+      );
+
+      // Right Side of Stub: Verification Typography & High-Density Barcode
+      fctx.fillStyle = edition.inkPrimary;
+      fctx.font = '700 34px "Space Grotesk", sans-serif';
+      fctx.fillText('DETACHABLE ADMISSION STUB', 432, stubTop + 42);
+
+      fctx.fillStyle = edition.inkSecondary;
+      fctx.font = '600 20px "JetBrains Mono", monospace';
+      fctx.fillText(`${zone.sec} // ${zone.row} // ${zone.seat} // ${zone.gate}`, 432, stubTop + 82);
+      fctx.fillText(`SERIAL: #${state.serialNumber} · ${edition.code}`, 432, stubTop + 114);
+
+      // High-Density 1D Barcode Bars
+      const barY = stubTop + 148;
+      const barH = 128;
+      fctx.fillStyle = edition.inkPrimary;
+      let bx = 432;
+      let bSeed = 928371;
+      while (bx < TEX_W - 76) {
+        bSeed = (bSeed * 1664525 + 1013904223) >>> 0;
+        const w = 2 + (bSeed % 7);
+        const gap = 2 + ((bSeed >>> 4) % 5);
+        if (bx + w < TEX_W - 76) {
+          fctx.fillRect(bx, barY, w, barH);
+        }
+        bx += w + gap;
+      }
+
+      fctx.fillStyle = edition.inkSecondary;
+      fctx.font = '600 18px "JetBrains Mono", monospace';
+      fctx.fillText('04  8849201948  29104  99182  ADMIT-ONE', 432, stubTop + 312);
+
+      fctx.restore();
+
+      // Punch the 24 see-through circular perforation holes along the seam!
+      punchPerforationHoles(fctx, seamY, notchRadius);
+
+      // ------------------------------------------------------------------------
+      // B. FRONT RGB FOIL / EMBOSS / PHASE MASK (1024 x 1740)
+      // Red = Foil Reflectivity Mask
+      // Green = Embossed Heightfield (0.5 neutral, >0.5 raised, <0.5 debossed)
+      // Blue = Local Iridescent Phase Offset
+      // ------------------------------------------------------------------------
+      const frontMaskCanvas = document.createElement('canvas');
+      frontMaskCanvas.width = TEX_W;
+      frontMaskCanvas.height = TEX_H;
+      const mctx = frontMaskCanvas.getContext('2d');
+
+      // Neutral base: R=0 (no foil on bare paper), G=128 (flat height), B=0
+      mctx.fillStyle = 'rgb(14, 128, 30)';
+      mctx.fillRect(0, 0, TEX_W, TEX_H);
+
+      // Outer foil border frame
+      mctx.strokeStyle = 'rgb(235, 220, 140)';
+      mctx.lineWidth = 6;
+      mctx.strokeRect(42, 42, TEX_W - 84, seamY - 76);
+      mctx.strokeRect(42, seamY + 34, TEX_W - 84, TEX_H - seamY - 76);
+
+      // Left holographic security strip: 100% foil (R=255), ribbed emboss pattern (G), varying phase (B)
+      for (let y = 68; y < seamY - 60; y += 8) {
+        const phaseB = Math.floor(128 + 120 * Math.sin(y * 0.035));
+        const heightG = (y % 16 === 0) ? 245 : 80;
+        mctx.fillStyle = `rgb(255, ${heightG}, ${phaseB})`;
+        mctx.fillRect(68, y, 62, 6);
+      }
+
+      // Guilloche Rosette in full prismatic foil + raised emboss
+      drawGuillocheRosette(mctx, rosX, rosY, 215, 70, 18, 'rgb(255, 245, 210)', 4.2);
+      drawGuillocheRosette(mctx, rosX, rosY, 175, 42, 12, 'rgb(245, 230, 120)', 3.2);
+      drawGuillocheRosette(mctx, rosX, rosY, 118, 24, 24, 'rgb(255, 255, 255)', 3.0);
+
+      // Center crest foil badge
+      mctx.beginPath();
+      mctx.arc(rosX, rosY, 46, 0, Math.PI * 2);
+      mctx.fillStyle = 'rgb(255, 240, 195)';
+      mctx.fill();
+
+      // Embossed Foil Headline Typography
+      mctx.fillStyle = 'rgb(230, 245, 160)';
+      mctx.font = '700 72px "Space Grotesk", sans-serif';
+      mctx.fillText('KINETIC LIGHTS', 164, 248);
+      mctx.fillStyle = 'rgb(255, 250, 220)';
+      mctx.fillText('SYMPOSIUM', 164, 324);
+
+      mctx.fillStyle = 'rgb(200, 215, 95)';
+      mctx.font = '700 22px "JetBrains Mono", monospace';
+      mctx.fillText('ADMIT ONE // HOLOGRAPHIC PASS', 164, 108);
+
+      // Foil Seat / Zone Value Highlights
+      mctx.fillStyle = 'rgb(215, 235, 180)';
+      mctx.font = '700 44px "Space Grotesk", sans-serif';
+      mctx.fillText(zone.sec, 164, tableTop + 105);
+      mctx.fillText(zone.row, 500, tableTop + 105);
+      mctx.fillText(zone.seat, 740, tableTop + 105);
+
+      // Foil framing around QR Stub & Holographic Seal on Stub
+      mctx.strokeStyle = 'rgb(255, 240, 200)';
+      mctx.lineWidth = 8;
+      mctx.strokeRect(68, stubTop, 330, 330);
+
+      mctx.fillStyle = 'rgb(240, 235, 175)';
+      mctx.font = '700 34px "Space Grotesk", sans-serif';
+      mctx.fillText('DETACHABLE ADMISSION STUB', 432, stubTop + 42);
+
+      // ------------------------------------------------------------------------
+      // C. BACK DIFFUSE + ALPHA MAP (1024 x 1740)
+      // ------------------------------------------------------------------------
+      const backDiffCanvas = document.createElement('canvas');
+      backDiffCanvas.width = TEX_W;
+      backDiffCanvas.height = TEX_H;
+      const bctx = backDiffCanvas.getContext('2d');
+
+      bctx.clearRect(0, 0, TEX_W, TEX_H);
+      bctx.save();
+      drawRoundedTicketPath(bctx, TEX_W, TEX_H, cornerRadius, seamY, notchRadius);
+      bctx.clip();
+
+      bctx.fillStyle = edition.paperBgBack;
+      bctx.fillRect(0, 0, TEX_W, TEX_H);
+
+      // Back Outer Frame
+      bctx.strokeStyle = isDarkCard ? 'rgba(255,255,255,0.2)' : 'rgba(20,20,24,0.2)';
+      bctx.lineWidth = 3;
+      bctx.strokeRect(48, 48, TEX_W - 96, seamY - 82);
+      bctx.strokeRect(48, seamY + 34, TEX_W - 96, TEX_H - seamY - 82);
+
+      // Back Header
+      bctx.fillStyle = edition.inkPrimary;
+      bctx.font = '700 28px "Space Grotesk", sans-serif';
+      bctx.fillText('VERIFICATION LEDGER & ACOUSTIC STAGE ARCHITECTURE', 92, 118);
+
+      bctx.fillStyle = edition.inkSecondary;
+      bctx.font = '500 18px "JetBrains Mono", monospace';
+      bctx.fillText('CRYPTOGRAPHIC HOLOGRAPHIC CREDENTIAL · DO NOT BEND OR DETACH PRIOR TO GATE', 92, 152);
+
+      // Architectural Stage Diagram on Back Face
+      const diagX = 92;
+      const diagY = 195;
+      const diagW = TEX_W - 184;
+      const diagH = 490;
+      bctx.strokeStyle = edition.inkPrimary;
+      bctx.lineWidth = 2.5;
+      bctx.strokeRect(diagX, diagY, diagW, diagH);
+
+      // Concentric acoustic wave rings inside stage diagram
+      bctx.save();
+      bctx.beginPath();
+      bctx.rect(diagX, diagY, diagW, diagH);
+      bctx.clip();
+      const stageCx = TEX_W * 0.5;
+      const stageCy = diagY + 130;
+      for (let r = 60; r <= 420; r += 48) {
+        bctx.beginPath();
+        bctx.arc(stageCx, stageCy, r, 0.12 * Math.PI, 0.88 * Math.PI);
+        bctx.strokeStyle = isDarkCard ? 'rgba(167,139,250,0.32)' : 'rgba(20,20,24,0.2)';
+        bctx.lineWidth = 2;
+        bctx.stroke();
+      }
+      bctx.restore();
+
+      bctx.fillStyle = edition.inkPrimary;
+      bctx.font = '700 22px "JetBrains Mono", monospace';
+      bctx.textAlign = 'center';
+      bctx.fillText('[ KINETIC LASER & TRANSDUCER ARRAY — MAIN STAGE ]', stageCx, diagY + 62);
+      bctx.fillText(`ACTIVE SECTOR: ${zone.sec} · ${zone.row} · ${zone.seat}`, stageCx, diagY + 440);
+      bctx.textAlign = 'left';
+
+      // Terms & Conditions / Technical Specs on Back
+      const termsY = 745;
+      bctx.fillStyle = edition.inkPrimary;
+      bctx.font = '700 22px "Space Grotesk", sans-serif';
+      bctx.fillText('CONDITIONS OF PHYSICAL & CRYPTOGRAPHIC ADMISSION', 92, termsY);
+
+      const rules = [
+        '01. This credential is simulated on 350gsm card stock using a 900-vertex (25×36) 3D Verlet solver.',
+        '02. The perforation seam at Row 24↔25 comprises 25 calibrated structural paper fibers.',
+        '03. Slicing across the seam or pulling the lower stub severs fibers sequentially with acoustic feedback.',
+        '04. Full detachment triggers cryptographic admission verification and releases the stub under gravity.',
+        '05. Tilt under studio illumination to inspect thin-film rainbow dispersion and Voronoi micro-glitter.'
+      ];
+      bctx.fillStyle = edition.inkSecondary;
+      bctx.font = '500 19px "Inter", sans-serif';
+      rules.forEach((line, idx) => {
+        bctx.fillText(line, 92, termsY + 46 + idx * 42);
+      });
+
+      // Back Perforation Seam Line
+      bctx.save();
+      bctx.strokeStyle = isDarkCard ? 'rgba(255,255,255,0.35)' : 'rgba(20,20,24,0.35)';
+      bctx.lineWidth = 2;
+      bctx.setLineDash([8, 12]);
+      bctx.beginPath();
+      bctx.moveTo(notchRadius + 10, seamY);
+      bctx.lineTo(TEX_W - notchRadius - 10, seamY);
+      bctx.stroke();
+      bctx.restore();
+
+      // Back Lower Stub: Holographic Rosette Seal & Bearer Signature Strip
+      drawGuillocheRosette(bctx, 240, seamY + 225, 135, 35, 16, edition.inkPrimary, 1.8);
+      bctx.fillStyle = edition.inkPrimary;
+      bctx.font = '700 24px "Space Grotesk", sans-serif';
+      bctx.fillText('SECURITY SEAL // VERIFIED PASS', 420, seamY + 145);
+      bctx.fillStyle = edition.inkSecondary;
+      bctx.font = '500 19px "JetBrains Mono", monospace';
+      bctx.fillText(`PASS ID: ${state.serialNumber} // ${edition.name.toUpperCase()}`, 420, seamY + 188);
+      bctx.fillText('SHA-256: 8F94C2E1A04B7D63E91205C8B741E92A', 420, seamY + 224);
+
+      // Authorized Signature Strip
+      bctx.fillStyle = isDarkCard ? 'rgba(255,255,255,0.08)' : 'rgba(20,20,24,0.06)';
+      bctx.fillRect(420, seamY + 260, 510, 95);
+      bctx.strokeStyle = edition.inkPrimary;
+      bctx.lineWidth = 2;
+      bctx.strokeRect(420, seamY + 260, 510, 95);
+      bctx.fillStyle = edition.inkSecondary;
+      bctx.font = '600 16px "JetBrains Mono", monospace';
+      bctx.fillText('CURATORIAL SIGNATURE // KINETIC LIGHTS LAB ZÜRICH', 442, seamY + 315);
+
+      bctx.restore();
+      punchPerforationHoles(bctx, seamY, notchRadius);
+
+      // ------------------------------------------------------------------------
+      // D. BACK RGB FOIL / EMBOSS / PHASE MASK (1024 x 1740)
+      // ------------------------------------------------------------------------
+      const backMaskCanvas = document.createElement('canvas');
+      backMaskCanvas.width = TEX_W;
+      backMaskCanvas.height = TEX_H;
+      const bmctx = backMaskCanvas.getContext('2d');
+
+      bmctx.fillStyle = 'rgb(14, 128, 30)';
+      bmctx.fillRect(0, 0, TEX_W, TEX_H);
+
+      bmctx.strokeStyle = 'rgb(230, 225, 150)';
+      bmctx.lineWidth = 6;
+      bmctx.strokeRect(48, 48, TEX_W - 96, seamY - 82);
+      bmctx.strokeRect(48, seamY + 34, TEX_W - 96, TEX_H - seamY - 82);
+
+      bmctx.strokeStyle = 'rgb(220, 235, 180)';
+      bmctx.lineWidth = 4;
+      bmctx.strokeRect(diagX, diagY, diagW, diagH);
+      for (let r = 60; r <= 420; r += 48) {
+        bmctx.beginPath();
+        bmctx.arc(stageCx, stageCy, r, 0.12 * Math.PI, 0.88 * Math.PI);
+        bmctx.strokeStyle = `rgb(235, 220, ${(r * 3) % 255})`;
+        bmctx.lineWidth = 3;
+        bmctx.stroke();
+      }
+
+      drawGuillocheRosette(bmctx, 240, seamY + 225, 135, 35, 16, 'rgb(255, 250, 220)', 3.8);
+
+      return {
+        frontDiffuse: new THREE.CanvasTexture(frontDiffCanvas),
+        frontMask: new THREE.CanvasTexture(frontMaskCanvas),
+        backDiffuse: new THREE.CanvasTexture(backDiffCanvas),
+        backMask: new THREE.CanvasTexture(backMaskCanvas)
+      };
+    }
+
+    // ============================================================================
+    // 4. REAL-TIME 3D VERLET CARD-STOCK PHYSICS & SPLIT-SEAM TOPOLOGY
+    // ============================================================================
+    const SPRING_STRUCTURAL = 0;
+    const SPRING_SHEAR = 1;
+    const SPRING_BEND2 = 2;
+    const SPRING_BEND4 = 3;
+    const SPRING_SEAM = 4;
+
+    class VerletPaperEngine {
+      constructor() {
+        this.cols = COLS; // 25
+        this.rows = ROWS; // 36
+        this.numVerts = TOTAL_VERTS; // 900
+        this.iterations = 10;
+
+        // Current, Previous, and Rest positions (Float32Arrays of size 900 * 3)
+        this.pos = new Float32Array(this.numVerts * 3);
+        this.prevPos = new Float32Array(this.numVerts * 3);
+        this.restPos = new Float32Array(this.numVerts * 3);
+        this.uvs = new Float32Array(this.numVerts * 2);
+
+        // Springs array
+        this.springs = [];
+        // 25 perforation seam fiber states (one per column 0..24)
+        this.seamFibers = new Array(this.cols).fill(null).map((_, c) => ({
+          col: c,
+          intact: true,
+          strain: 0,
+          springIndex: -1
+        }));
+
+        this.severedCount = 0;
+        this.fullyDetached = false;
+        this.stubFreeTime = 0;
+
+        // Tilt & flip targets driven by pointer + keyboard [F]
+        this.tiltX = 0;
+        this.tiltY = 0;
+        this.targetTiltX = 0;
+        this.targetTiltY = 0;
+        this.flipAngle = 0;
+        this.targetFlipAngle = 0;
+
+        // Interactive vertex grab state
+        this.grabbedVertex = -1;
+        this.grabTarget = new THREE.Vector3();
+        this.isDraggingStub = false;
+
+        this.initTopology();
+      }
+
+      idx(r, c) {
+        return r * this.cols + c;
+      }
+
+      initTopology() {
+        this.springs = [];
+        this.severedCount = 0;
+        this.fullyDetached = false;
+        this.stubFreeTime = 0;
+
+        for (let r = 0; r < this.rows; r++) {
+          // Split-Seam UV & vertical coordinate calculation:
+          // Rows 0..24 span v = 0.0 to v = 0.72 (upper pass body)
+          // Rows 25..35 span v = 0.72 to v = 1.00 (lower detachable QR stub)
+          // Notice row 24 (UPPER_SEAM_ROW) and row 25 (LOWER_SEAM_ROW) share the seam line v = 0.72!
+          let vFrac;
+          if (r <= UPPER_SEAM_ROW) {
+            vFrac = (r / UPPER_SEAM_ROW) * SEAM_V;
+          } else {
+            vFrac = SEAM_V + ((r - LOWER_SEAM_ROW) / (this.rows - 1 - LOWER_SEAM_ROW)) * (1.0 - SEAM_V);
+          }
+
+          const y = (0.5 - vFrac) * CARD_HEIGHT;
+
+          for (let c = 0; c < this.cols; c++) {
+            const uFrac = c / (this.cols - 1);
+            const x = (uFrac - 0.5) * CARD_WIDTH;
+            const z = 0;
+
+            const i = this.idx(r, c);
+            const i3 = i * 3;
+            this.restPos[i3] = x;
+            this.restPos[i3 + 1] = y;
+            this.restPos[i3 + 2] = z;
+
+            this.pos[i3] = x;
+            this.pos[i3 + 1] = y;
+            this.pos[i3 + 2] = z;
+
+            this.prevPos[i3] = x;
+            this.prevPos[i3 + 1] = y;
+            this.prevPos[i3 + 2] = z;
+
+            const i2 = i * 2;
+            this.uvs[i2] = uFrac;
+            // Canvas texture has v=1 at top, v=0 at bottom in Three.js default flipY=true
+            this.uvs[i2 + 1] = 1.0 - vFrac;
+          }
+        }
+
+        const addSpring = (r1, c1, r2, c2, stiffness, type, seamCols = null) => {
+          const a = this.idx(r1, c1);
+          const b = this.idx(r2, c2);
+          const dx = this.restPos[a * 3] - this.restPos[b * 3];
+          const dy = this.restPos[a * 3 + 1] - this.restPos[b * 3 + 1];
+          const dz = this.restPos[a * 3 + 2] - this.restPos[b * 3 + 2];
+          const restLen = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+          // Automatically detect if this spring crosses the split seam between row 24 and row 25
+          const crossesSeam = (r1 <= UPPER_SEAM_ROW && r2 >= LOWER_SEAM_ROW) ||
+                              (r2 <= UPPER_SEAM_ROW && r1 >= LOWER_SEAM_ROW);
+          const linkedCols = seamCols || (crossesSeam ? [c1, c2] : null);
+
+          const sIndex = this.springs.length;
+          this.springs.push({
+            a,
+            b,
+            restLen,
+            stiffness,
+            type,
+            active: true,
+            crossesSeam,
+            linkedCols,
+            strain: 0
+          });
+          return sIndex;
+        };
+
+        // d) 25 Breakable Perforation Seam Springs bridging UPPER_SEAM_ROW (24) and LOWER_SEAM_ROW (25)
+        for (let c = 0; c < this.cols; c++) {
+          const sIdx = addSpring(UPPER_SEAM_ROW, c, LOWER_SEAM_ROW, c, 0.94, SPRING_SEAM, [c]);
+          this.seamFibers[c] = {
+            col: c,
+            intact: true,
+            strain: 0,
+            springIndex: sIdx
+          };
+        }
+
+        // a) Structural Springs (stiffness = 0.94) along horizontal and vertical grid edges
+        for (let r = 0; r < this.rows; r++) {
+          for (let c = 0; c < this.cols; c++) {
+            if (c + 1 < this.cols) {
+              addSpring(r, c, r, c + 1, 0.94, SPRING_STRUCTURAL);
+            }
+            if (r + 1 < this.rows && r !== UPPER_SEAM_ROW) {
+              addSpring(r, c, r + 1, c, 0.94, SPRING_STRUCTURAL);
+            }
+          }
+        }
+
+        // b) Shear Springs (stiffness = 0.82) across diagonals to prevent skewing
+        for (let r = 0; r < this.rows - 1; r++) {
+          for (let c = 0; c < this.cols - 1; c++) {
+            addSpring(r, c, r + 1, c + 1, 0.82, SPRING_SHEAR);
+            addSpring(r + 1, c, r, c + 1, 0.82, SPRING_SHEAR);
+          }
+        }
+
+        // c) 2-hop Bending Springs (stiffness = 0.76) and 4-hop Bending Springs (stiffness = 0.56)
+        for (let r = 0; r < this.rows; r++) {
+          for (let c = 0; c < this.cols; c++) {
+            if (c + 2 < this.cols) addSpring(r, c, r, c + 2, 0.76, SPRING_BEND2);
+            if (r + 2 < this.rows) addSpring(r, c, r + 2, c, 0.76, SPRING_BEND2);
+
+            if (c + 4 < this.cols) addSpring(r, c, r, c + 4, 0.56, SPRING_BEND4);
+            if (r + 4 < this.rows) addSpring(r, c, r + 4, c, 0.56, SPRING_BEND4);
+          }
+        }
+      }
+
+      // Build triangle indices: Upper Pass (rows 0..24) and Lower Stub (rows 25..35)
+      // NO triangles bridge row 24 and row 25 so tearing creates a true physical V-gap!
+      buildTriangleIndices() {
+        const indices = [];
+        for (let r = 0; r < this.rows - 1; r++) {
+          if (r === UPPER_SEAM_ROW) continue; // Split-seam topology gap!
+          for (let c = 0; c < this.cols - 1; c++) {
+            const i00 = this.idx(r, c);
+            const i10 = this.idx(r, c + 1);
+            const i01 = this.idx(r + 1, c);
+            const i11 = this.idx(r + 1, c + 1);
+
+            indices.push(i00, i01, i10);
+            indices.push(i10, i01, i11);
+          }
+        }
+        return indices;
+      }
+
+      // Sever perforation fiber at column c (0..24) and deactivate all seam-crossing springs at c
+      severFiber(c, pullDirZ = 0.04) {
+        if (c < 0 || c >= this.cols) return false;
+        const fiber = this.seamFibers[c];
+        if (!fiber || !fiber.intact) return false;
+
+        fiber.intact = false;
+        fiber.strain = 0;
+        this.severedCount++;
+
+        // Deactivate structural, shear, and bending springs crossing the seam at column c
+        for (let i = 0; i < this.springs.length; i++) {
+          const s = this.springs[i];
+          if (s.active && s.crossesSeam && s.linkedCols && s.linkedCols.includes(c)) {
+            s.active = false;
+          }
+        }
+
+        // Apply physical 3D curl & V-gap impulse to row 24 (upper edge) and row 25 (lower stub edge)
+        const uIdx = this.idx(UPPER_SEAM_ROW, c) * 3;
+        const lIdx = this.idx(LOWER_SEAM_ROW, c) * 3;
+
+        // Upper edge recoils slightly upward and backward; lower stub curls forward and downward
+        this.pos[uIdx + 1] += 0.018;
+        this.pos[uIdx + 2] -= 0.024;
+
+        this.pos[lIdx + 1] -= 0.036;
+        this.pos[lIdx + 2] += 0.045 + pullDirZ * 0.35;
+
+        // Also nudge row 26 & 27 slightly downward so the V-gap opens cleanly like stiff card stock
+        for (let r = LOWER_SEAM_ROW + 1; r < this.rows; r++) {
+          const falloff = (r - LOWER_SEAM_ROW) / (this.rows - LOWER_SEAM_ROW);
+          const subIdx = this.idx(r, c) * 3;
+          this.pos[subIdx + 1] -= 0.025 * (1.0 + falloff * 0.5);
+          this.pos[subIdx + 2] += 0.028 * (1.0 - falloff * 0.4);
+        }
+
+        audio.playFiberSnap(c, this.severedCount);
+        updateFiberUI();
+
+        if (this.severedCount >= this.cols && !this.fullyDetached) {
+          this.onFullDetachment();
+        }
+        return true;
+      }
+
+      onFullDetachment() {
+        this.fullyDetached = true;
+        this.stubFreeTime = 0;
+        state.autoTearing = false;
+
+        // Give the upper pass an elastic upward recoil impulse
+        for (let r = 0; r <= UPPER_SEAM_ROW; r++) {
+          const rowFactor = r / UPPER_SEAM_ROW;
+          for (let c = 0; c < this.cols; c++) {
+            const idx3 = this.idx(r, c) * 3;
+            this.pos[idx3 + 1] += 0.022 * rowFactor;
+            this.pos[idx3 + 2] -= 0.03 * rowFactor;
+          }
+        }
+
+        // Give the detached lower QR stub a natural rotational tumble & downward release impulse
+        for (let r = LOWER_SEAM_ROW; r < this.rows; r++) {
+          for (let c = 0; c < this.cols; c++) {
+            const idx3 = this.idx(r, c) * 3;
+            const uNorm = (c / (this.cols - 1)) - 0.5;
+            const vNorm = (r - LOWER_SEAM_ROW) / (this.rows - 1 - LOWER_SEAM_ROW);
+            this.pos[idx3 + 1] -= 0.035 + uNorm * 0.018;
+            this.pos[idx3 + 2] += 0.04 * (0.5 - vNorm) + uNorm * 0.025;
+          }
+        }
+
+        if (this.grabbedVertex >= this.idx(LOWER_SEAM_ROW, 0)) {
+          this.grabbedVertex = -1;
+          this.isDraggingStub = false;
+        }
+
+        audio.playVerificationChord();
+        updateVerifiedUI(true);
+      }
+
+      // Compute rotated rest target position for vertex (r, c) given current tilt & 180° flip
+      getRestTarget(r, c, outVec) {
+        const i3 = this.idx(r, c) * 3;
+        let rx = this.restPos[i3];
+        let ry = this.restPos[i3 + 1];
+        let rz = this.restPos[i3 + 2];
+
+        // If partially torn on the lower stub, let the untorn side act as a hinge so the torn side hangs open in a V-gap!
+        if (!this.fullyDetached && r >= LOWER_SEAM_ROW && this.severedCount > 0) {
+          // Measure local tear opening around column c
+          let localTorn = 0;
+          let weightSum = 0;
+          for (let k = 0; k < this.cols; k++) {
+            const dist = Math.abs(c - k);
+            const w = Math.exp(-dist * 0.22);
+            weightSum += w;
+            if (!this.seamFibers[k].intact) localTorn += w;
+          }
+          const openRatio = localTorn / weightSum;
+          const stubRowDepth = (r - LOWER_SEAM_ROW + 1) / (this.rows - LOWER_SEAM_ROW);
+          // Physical V-gap drop & forward curl on the severed side of the stub
+          ry -= openRatio * (0.14 + stubRowDepth * 0.18);
+          rz += openRatio * (0.16 + stubRowDepth * 0.22);
+        }
+
+        // Apply Y rotation (flipAngle + tiltY) and X rotation (tiltX)
+        const rotY = this.flipAngle + this.tiltY;
+        const rotX = this.tiltX;
+
+        const cosY = Math.cos(rotY);
+        const sinY = Math.sin(rotY);
+        const x1 = rx * cosY + rz * sinY;
+        const z1 = -rx * sinY + rz * cosY;
+
+        const cosX = Math.cos(rotX);
+        const sinX = Math.sin(rotX);
+        const y2 = ry * cosX - z1 * sinX;
+        const z2 = ry * sinX + z1 * cosX;
+
+        outVec.set(x1 + state.passSlideOffset, y2, z2);
+      }
+
+      step(dt) {
+        // Smoothly interpolate card tilt, flip, and slide-in offset
+        this.tiltX += (this.targetTiltX - this.tiltX) * 0.12;
+        this.tiltY += (this.targetTiltY - this.tiltY) * 0.12;
+        this.flipAngle += (this.targetFlipAngle - this.flipAngle) * 0.11;
+        state.passSlideOffset *= 0.86;
+
+        const damping = 0.92;
+        const tempTarget = new THREE.Vector3();
+
+        // 1. Verlet Integration Step
+        for (let r = 0; r < this.rows; r++) {
+          const isStub = r >= LOWER_SEAM_ROW;
+          const isFreeStub = isStub && this.fullyDetached;
+
+          for (let c = 0; c < this.cols; c++) {
+            const i = this.idx(r, c);
+            const i3 = i * 3;
+
+            const px = this.pos[i3];
+            const py = this.pos[i3 + 1];
+            const pz = this.pos[i3 + 2];
+
+            let vx = (px - this.prevPos[i3]) * damping;
+            let vy = (py - this.prevPos[i3 + 1]) * damping;
+            let vz = (pz - this.prevPos[i3 + 2]) * damping;
+
+            this.prevPos[i3] = px;
+            this.prevPos[i3 + 1] = py;
+            this.prevPos[i3 + 2] = pz;
+
+            if (isFreeStub) {
+              // Detached stub falls under gravity with aerodynamic air-drag flutter & rotational tumble!
+              this.stubFreeTime += dt / 275;
+              const t = this.stubFreeTime;
+              const uNorm = (c / (this.cols - 1)) - 0.5;
+              const vNorm = (r - LOWER_SEAM_ROW) / (this.rows - 1 - LOWER_SEAM_ROW) - 0.5;
+
+              const gravity = -0.0029;
+              const flutterX = Math.sin(t * 7.5 + vNorm * 2.2) * 0.0014;
+              const flutterZ = Math.cos(t * 6.2 + uNorm * 3.1) * 0.0018;
+              const tumbleTorqueZ = uNorm * Math.sin(t * 5.0) * 0.0016;
+
+              this.pos[i3] = px + vx * 0.985 + flutterX;
+              this.pos[i3 + 1] = py + vy * 0.985 + gravity;
+              this.pos[i3 + 2] = pz + vz * 0.985 + flutterZ + tumbleTorqueZ;
+            } else {
+              // Elastic 350gsm card-stock memory toward tilted/flipped studio pose
+              this.getRestTarget(r, c, tempTarget);
+
+              // Upper card has firmer studio suspension; lower stub hangs purely from the perforation seam!
+              let memoryStrength = 0.085;
+              if (r <= 2) {
+                memoryStrength = 0.24; // Soft top studio suspension mount
+              } else if (isStub) {
+                memoryStrength = 0.026; // Allows stub to flex and pull against the 25 seam fibers
+              }
+
+              this.pos[i3] = px + vx + (tempTarget.x - px) * memoryStrength;
+              this.pos[i3 + 1] = py + vy + (tempTarget.y - py) * memoryStrength;
+              this.pos[i3 + 2] = pz + vz + (tempTarget.z - pz) * memoryStrength;
+            }
+          }
+        }
+
+        // Apply interactive cursor grab & pull before constraint relaxation
+        if (this.grabbedVertex >= 0) {
+          const gRow = Math.floor(this.grabbedVertex / this.cols);
+          const gCol = this.grabbedVertex % this.cols;
+          const radius = this.isDraggingStub ? 5 : 4;
+
+          for (let r = Math.max(0, gRow - radius); r <= Math.min(this.rows - 1, gRow + radius); r++) {
+            // Do not pull across the split seam directly
+            if ((gRow <= UPPER_SEAM_ROW && r >= LOWER_SEAM_ROW) ||
+                (gRow >= LOWER_SEAM_ROW && r <= UPPER_SEAM_ROW)) {
+              continue;
+            }
+            for (let c = Math.max(0, gCol - radius); c <= Math.min(this.cols - 1, gCol + radius); c++) {
+              const dist = Math.hypot(r - gRow, c - gCol);
+              if (dist <= radius) {
+                const influence = Math.pow(1.0 - dist / (radius + 0.5), 2) * 0.45;
+                const vIdx = this.idx(r, c) * 3;
+                const baseIdx = this.grabbedVertex * 3;
+                const offsetX = this.restPos[vIdx] - this.restPos[baseIdx];
+                const offsetY = this.restPos[vIdx + 1] - this.restPos[baseIdx + 1];
+
+                this.pos[vIdx] += (this.grabTarget.x + offsetX - this.pos[vIdx]) * influence;
+                this.pos[vIdx + 1] += (this.grabTarget.y + offsetY - this.pos[vIdx + 1]) * influence;
+                this.pos[vIdx + 2] += (this.grabTarget.z - this.pos[vIdx + 2]) * influence;
+              }
+            }
+          }
+        }
+
+        // 2. 10 Constraint Iterations per Frame (Heavy 350gsm Card-Stock Solver)
+        for (let iter = 0; iter < this.iterations; iter++) {
+          for (let i = 0; i < this.springs.length; i++) {
+            const s = this.springs[i];
+            if (!s.active) continue;
+
+            const a3 = s.a * 3;
+            const b3 = s.b * 3;
+
+            const dx = this.pos[b3] - this.pos[a3];
+            const dy = this.pos[b3 + 1] - this.pos[a3 + 1];
+            const dz = this.pos[b3 + 2] - this.pos[a3 + 2];
+
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.00001;
+            const diff = (dist - s.restLen) / dist;
+
+            if (iter === this.iterations - 1) {
+              s.strain = Math.min(1.0, Math.abs(dist - s.restLen) / (s.restLen + 0.035));
+            }
+
+            const corr = 0.5 * s.stiffness * diff;
+            const cx = dx * corr;
+            const cy = dy * corr;
+            const cz = dz * corr;
+
+            this.pos[a3] += cx;
+            this.pos[a3 + 1] += cy;
+            this.pos[a3 + 2] += cz;
+
+            this.pos[b3] -= cx;
+            this.pos[b3 + 1] -= cy;
+            this.pos[b3 + 2] -= cz;
+          }
+        }
+
+        // 3. Evaluate Perforation Seam Fiber Strain & Sequential Pull-Tear Propagation
+        let strainUpdated = false;
+        for (let c = 0; c < this.cols; c++) {
+          const fiber = this.seamFibers[c];
+          if (!fiber.intact) continue;
+
+          const u3 = this.idx(UPPER_SEAM_ROW, c) * 3;
+          const l3 = this.idx(LOWER_SEAM_ROW, c) * 3;
+          const dx = this.pos[l3] - this.pos[u3];
+          const dy = this.pos[l3 + 1] - this.pos[u3 + 1];
+          const dz = this.pos[l3 + 2] - this.pos[u3 + 2];
+          const seamDist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+          // Adjacent severed fibers concentrate stress at the tear tip (zipper propagation)
+          const leftTorn = (c > 0 && !this.seamFibers[c - 1].intact);
+          const rightTorn = (c < this.cols - 1 && !this.seamFibers[c + 1].intact);
+          const tipMultiplier = (leftTorn || rightTorn) ? 1.85 : 1.0;
+
+          const normalizedStrain = Math.min(1.0, (seamDist * tipMultiplier) / 0.075);
+          if (Math.abs(fiber.strain - normalizedStrain) > 0.08) {
+            strainUpdated = true;
+          }
+          fiber.strain = normalizedStrain;
+
+          // If the user is pulling the lower stub downward and fiber exceeds break threshold, snap it!
+          if (this.isDraggingStub && normalizedStrain >= 0.96) {
+            this.severFiber(c, dz);
+            break; // Snap one fiber per frame for a tactile zipper-tear cascade
+          }
+        }
+        if (strainUpdated) {
+          updateFiberUI();
+        }
+      }
+    }
+
+    // ============================================================================
+    // 5. CUSTOM GLSL PRISMATIC HOLOGRAPHIC FOIL, EMBOSS & VORONOI GLITTER SHADER
+    // ============================================================================
+    const ticketVertexShader = /* glsl */ `
+      varying vec2 vUv;
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec3 vViewPosition;
+
+      void main() {
+        vUv = uv;
+        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+        vWorldPos = worldPosition.xyz;
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+
+        vec4 mvPosition = viewMatrix * worldPosition;
+        vViewPosition = -mvPosition.xyz;
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `;
+
+    const ticketFragmentShader = /* glsl */ `
+      uniform sampler2D uFrontDiffuse;
+      uniform sampler2D uFrontMask;
+      uniform sampler2D uBackDiffuse;
+      uniform sampler2D uBackMask;
+
+      uniform vec3 uLightPos1;
+      uniform vec3 uLightPos2;
+      uniform vec3 uBaseTint;
+      uniform float uIridescenceShift;
+      uniform float uSaturation;
+      uniform float uTime;
+      uniform float uXrayOpacity;
+      uniform float uSeveredProgress;
+
+      varying vec2 vUv;
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec3 vViewPosition;
+
+      // Spectral thin-film interference rainbow palette
+      vec3 spectralRainbow(float t) {
+        vec3 a = vec3(0.54, 0.52, 0.56);
+        vec3 b = vec3(0.46, 0.48, 0.44);
+        vec3 c = vec3(1.0, 1.0, 1.0);
+        vec3 d = vec3(0.00, 0.33, 0.67);
+        return a + b * cos(6.2831853 * (c * t + d));
+      }
+
+      // 2D Hash for Voronoi cellular micro-glitter flakes
+      vec2 hash22(vec2 p) {
+        p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+        return fract(sin(p) * 43758.5453123);
+      }
+
+      // Returns Voronoi cell random ID & distance for micro-glitter normal perturbation
+      vec3 voronoiGlitter(vec2 uv) {
+        vec2 n = floor(uv);
+        vec2 f = fract(uv);
+        float minDist = 8.0;
+        vec2 cellId = vec2(0.0);
+
+        for (int j = -1; j <= 1; j++) {
+          for (int i = -1; i <= 1; i++) {
+            vec2 g = vec2(float(i), float(j));
+            vec2 o = hash22(n + g);
+            vec2 r = g + o - f;
+            float d = dot(r, r);
+            if (d < minDist) {
+              minDist = d;
+              cellId = n + g;
+            }
+          }
+        }
+        vec2 rnd = hash22(cellId * 1.73);
+        return vec3(rnd, minDist);
+      }
+
+      void main() {
+        // Mirror UV horizontally when inspecting the back face
+        vec2 faceUv = gl_FrontFacing ? vUv : vec2(1.0 - vUv.x, vUv.y);
+
+        vec4 texColor = gl_FrontFacing
+          ? texture2D(uFrontDiffuse, faceUv)
+          : texture2D(uBackDiffuse, faceUv);
+
+        // Discard alpha for rounded corners, side security notches, and the 24 punched perforation holes!
+        if (texColor.a < 0.45) {
+          discard;
+        }
+
+        vec3 maskSample = gl_FrontFacing
+          ? texture2D(uFrontMask, faceUv).rgb
+          : texture2D(uBackMask, faceUv).rgb;
+
+        float foilMask = maskSample.r;
+        float heightCenter = maskSample.g;
+        float phaseOffset = maskSample.b;
+
+        // Finite-difference normal perturbation from Green channel embossed heightfield
+        vec2 texel = vec2(1.0 / 1024.0, 1.0 / 1740.0) * 1.75;
+        float hRight = (gl_FrontFacing
+          ? texture2D(uFrontMask, faceUv + vec2(texel.x, 0.0)).g
+          : texture2D(uBackMask, faceUv + vec2(texel.x, 0.0)).g);
+        float hUp = (gl_FrontFacing
+          ? texture2D(uFrontMask, faceUv + vec2(0.0, texel.y)).g
+          : texture2D(uBackMask, faceUv + vec2(0.0, texel.y)).g);
+
+        float dHx = (hRight - heightCenter) * 4.5;
+        float dHy = (hUp - heightCenter) * 4.5;
+
+        vec3 N = normalize(vWorldNormal);
+        if (!gl_FrontFacing) N = -N;
+
+        // Construct tangent-space basis from derivatives to apply heightfield bump
+        vec3 dPdx = dFdx(vWorldPos);
+        vec3 dPdy = dFdy(vWorldPos);
+        vec3 T = normalize(dPdx + vec3(1e-5, 0.0, 0.0));
+        vec3 B = normalize(cross(N, T));
+        N = normalize(N - (T * dHx + B * dHy) * 0.32);
+
+        vec3 V = normalize(cameraPosition - vWorldPos);
+        vec3 L1 = normalize(uLightPos1 - vWorldPos);
+        vec3 L2 = normalize(uLightPos2 - vWorldPos);
+        vec3 H1 = normalize(V + L1);
+        vec3 H2 = normalize(V + L2);
+
+        // Studio diffuse & satin card-stock shading
+        float diff1 = max(dot(N, L1), 0.0);
+        float diff2 = max(dot(N, L2), 0.0);
+        float ambient = 0.66;
+        float paperLight = ambient + diff1 * 0.34 + diff2 * 0.16;
+
+        // Subtle tactile 350gsm paper fiber micro-grain
+        vec2 grainSeed = faceUv * vec2(520.0, 880.0);
+        float paperGrain = (fract(sin(dot(grainSeed, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.032;
+
+        vec3 basePaper = texColor.rgb * paperLight + paperGrain;
+
+        // Prismatic Holographic Foil Evaluation (Diagonal thin-film rainbow sweep)
+        float ndotv = clamp(dot(N, V), 0.0, 1.0);
+        float diagProj = (faceUv.x * 1.15 + faceUv.y * 1.65);
+        float viewTiltShift = (N.x * 1.45 + N.y * 1.25 + (1.0 - ndotv) * 1.8) + dot(L1, N) * 0.65;
+        float wavePhase = diagProj * 1.8 + viewTiltShift + phaseOffset * 1.35 + uIridescenceShift;
+
+        vec3 rainbow = spectralRainbow(wavePhase);
+        rainbow = mix(vec3(dot(rainbow, vec3(0.299, 0.587, 0.114))), rainbow, uSaturation);
+        vec3 foilTint = mix(rainbow, rainbow * uBaseTint * 1.35, 0.55);
+
+        // Specular sheen across embossed foil ridges
+        float spec1 = pow(max(dot(N, H1), 0.0), 42.0);
+        float spec2 = pow(max(dot(N, H2), 0.0), 24.0);
+
+        // 2D Voronoi Cellular Micro-Glitter Flakes
+        vec3 vor = voronoiGlitter(faceUv * vec2(190.0, 320.0));
+        vec3 flakeOffset = normalize(vec3((vor.x - 0.5) * 1.8, (vor.y - 0.5) * 1.8, 1.0));
+        vec3 flakeNormal = normalize(N + (T * flakeOffset.x + B * flakeOffset.y) * 0.55);
+        float flakeAlign1 = pow(max(dot(flakeNormal, H1), 0.0), 68.0);
+        float flakeAlign2 = pow(max(dot(flakeNormal, H2), 0.0), 52.0);
+        float sparkle = (flakeAlign1 + flakeAlign2 * 0.7) * step(0.15, foilMask);
+        vec3 sparkleColor = spectralRainbow(wavePhase + vor.x * 0.9) * 2.4 + vec3(0.8);
+
+        // Combine base paper ink with prismatic foil reflectivity & micro-glitter
+        float dynamicFoilStrength = foilMask * (0.48 + 0.52 * pow(1.0 - ndotv * 0.55, 1.2) + spec1 * 0.85);
+        vec3 finalColor = mix(basePaper, foilTint + spec1 * 0.55 + spec2 * 0.25, clamp(dynamicFoilStrength, 0.0, 0.95));
+        finalColor += sparkle * sparkleColor * (0.45 + foilMask * 0.85);
+
+        // Paper satin rim reflection
+        float paperSpec = pow(max(dot(N, H1), 0.0), 18.0) * 0.09 * (1.0 - foilMask);
+        finalColor += vec3(paperSpec);
+
+        gl_FragColor = vec4(finalColor, uXrayOpacity);
+      }
+    `;
+
+    // Soft Deforming Contact Shadow Shader (projects Verlet vertices onto studio backdrop/floor)
+    const shadowVertexShader = /* glsl */ `
+      varying vec2 vUv;
+      varying float vElevation;
+
+      void main() {
+        vUv = uv;
+        vElevation = position.z;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const shadowFragmentShader = /* glsl */ `
+      uniform sampler2D uAlphaMap;
+      uniform float uShadowOpacity;
+      varying vec2 vUv;
+      varying float vElevation;
+
+      void main() {
+        float a = texture2D(uAlphaMap, vUv).a;
+        if (a < 0.35) discard;
+        // Soft edge attenuation + height-based contact falloff
+        float edgeFade = smoothstep(0.0, 0.04, vUv.x) * smoothstep(1.0, 0.96, vUv.x);
+        float distFactor = clamp(1.0 - vElevation * 0.18, 0.25, 1.0);
+        gl_FragColor = vec4(0.04, 0.04, 0.06, uShadowOpacity * distFactor * edgeFade * 0.85);
+      }
+    `;
+
+    // ============================================================================
+    // 6. THREE.JS SCENE, MESHES, SHADOWS & X-RAY LATTICE SETUP
+    // ============================================================================
+    const stageContainer = document.getElementById('stageContainer');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    stageContainer.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+
+    // Camera shifted slightly left in view space so the 3D pass sits proudly in the Right/Center stage
+    const camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.1, 50);
+    camera.position.set(-0.62, 0.0, 6.65);
+
+    const physics = new VerletPaperEngine();
+    const indices = physics.buildTriangleIndices();
+
+    // Main Deforming Ticket BufferGeometry (900 vertices)
+    const ticketGeo = new THREE.BufferGeometry();
+    const posAttr = new THREE.BufferAttribute(physics.pos, 3);
+    posAttr.setUsage(THREE.DynamicDrawUsage);
+    ticketGeo.setAttribute('position', posAttr);
+    ticketGeo.setAttribute('uv', new THREE.BufferAttribute(physics.uvs, 2));
+    ticketGeo.setIndex(indices);
+    ticketGeo.computeVertexNormals();
+
+    let textures = generateTicketTextures();
+
+    const ticketMat = new THREE.ShaderMaterial({
+      vertexShader: ticketVertexShader,
+      fragmentShader: ticketFragmentShader,
+      side: THREE.DoubleSide,
+      transparent: true,
+      uniforms: {
+        uFrontDiffuse: { value: textures.frontDiffuse },
+        uFrontMask: { value: textures.frontMask },
+        uBackDiffuse: { value: textures.backDiffuse },
+        uBackMask: { value: textures.backMask },
+        uLightPos1: { value: new THREE.Vector3(2.8, 3.2, 4.5) },
+        uLightPos2: { value: new THREE.Vector3(-3.4, -1.8, 3.8) },
+        uBaseTint: { value: FOIL_EDITIONS[0].baseTint.clone() },
+        uIridescenceShift: { value: FOIL_EDITIONS[0].iridescenceShift },
+        uSaturation: { value: FOIL_EDITIONS[0].saturation },
+        uTime: { value: 0 },
+        uXrayOpacity: { value: 1.0 },
+        uSeveredProgress: { value: 0 }
+      }
+    });
+
+    const ticketMesh = new THREE.Mesh(ticketGeo, ticketMat);
+    scene.add(ticketMesh);
+
+    // Deforming Soft Contact Shadow Mesh (shares UV & split-seam triangle indices)
+    const shadowPositions = new Float32Array(TOTAL_VERTS * 3);
+    const shadowGeo = new THREE.BufferGeometry();
+    const shadowPosAttr = new THREE.BufferAttribute(shadowPositions, 3);
+    shadowPosAttr.setUsage(THREE.DynamicDrawUsage);
+    shadowGeo.setAttribute('position', shadowPosAttr);
+    shadowGeo.setAttribute('uv', new THREE.BufferAttribute(physics.uvs, 2));
+    shadowGeo.setIndex(indices);
+
+    const shadowMat = new THREE.ShaderMaterial({
+      vertexShader: shadowVertexShader,
+      fragmentShader: shadowFragmentShader,
+      side: THREE.DoubleSide,
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uAlphaMap: { value: textures.frontDiffuse },
+        uShadowOpacity: { value: 0.16 }
+      }
+    });
+
+    const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+    scene.add(shadowMesh);
+
+    // [X] Physics & Shader X-Ray Live THREE.LineSegments Lattice
+    const numSprings = physics.springs.length;
+    const linePositions = new Float32Array(numSprings * 2 * 3);
+    const lineColors = new Float32Array(numSprings * 2 * 3);
+    const xrayGeo = new THREE.BufferGeometry();
+    const linePosAttr = new THREE.BufferAttribute(linePositions, 3);
+    const lineColAttr = new THREE.BufferAttribute(lineColors, 3);
+    linePosAttr.setUsage(THREE.DynamicDrawUsage);
+    lineColAttr.setUsage(THREE.DynamicDrawUsage);
+    xrayGeo.setAttribute('position', linePosAttr);
+    xrayGeo.setAttribute('color', lineColAttr);
+
+    const xrayMat = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.92,
+      depthTest: false
+    });
+
+    const xrayLines = new THREE.LineSegments(xrayGeo, xrayMat);
+    xrayLines.visible = false;
+    xrayLines.renderOrder = 10;
+    scene.add(xrayLines);
+
+    function updateXrayLattice() {
+      if (!state.xrayMode) return;
+      for (let i = 0; i < numSprings; i++) {
+        const s = physics.springs[i];
+        const i6 = i * 6;
+        if (!s.active) {
+          linePositions[i6] = 0;
+          linePositions[i6 + 1] = 0;
+          linePositions[i6 + 2] = 0;
+          linePositions[i6 + 3] = 0;
+          linePositions[i6 + 4] = 0;
+          linePositions[i6 + 5] = 0;
+          continue;
+        }
+
+        const a3 = s.a * 3;
+        const b3 = s.b * 3;
+        const seamStitchOffset = (s.type === SPRING_SEAM) ? 0.038 : 0.0;
+        const zLift = (s.type === SPRING_SEAM) ? 0.012 : 0.004;
+
+        linePositions[i6] = physics.pos[a3];
+        linePositions[i6 + 1] = physics.pos[a3 + 1] + seamStitchOffset;
+        linePositions[i6 + 2] = physics.pos[a3 + 2] + zLift;
+
+        linePositions[i6 + 3] = physics.pos[b3];
+        linePositions[i6 + 4] = physics.pos[b3 + 1] - seamStitchOffset;
+        linePositions[i6 + 5] = physics.pos[b3 + 2] + zLift;
+
+        let r = 0, g = 0.89, b = 1.0; // Default Cyan = Structural (stiffness 0.94)
+        if (s.type === SPRING_SHEAR || s.type === SPRING_BEND2 || s.type === SPRING_BEND4) {
+          // Indigo = Shear/Bending
+          r = 0.42;
+          g = 0.45;
+          b = 0.96;
+        } else if (s.type === SPRING_SEAM) {
+          // Amber -> Hot Red as perforation seam fiber strain increases
+          const st = Math.min(1.0, s.strain * 3.5);
+          r = 0.98;
+          g = 0.65 * (1.0 - st * 0.85);
+          b = 0.08;
+        }
+
+        lineColors[i6] = r;
+        lineColors[i6 + 1] = g;
+        lineColors[i6 + 2] = b;
+        lineColors[i6 + 3] = r;
+        lineColors[i6 + 4] = g;
+        lineColors[i6 + 5] = b;
+      }
+      linePosAttr.needsUpdate = true;
+      lineColAttr.needsUpdate = true;
+    }
+
+    function updateShadowMesh() {
+      const lightDir = new THREE.Vector3(-0.22, 0.28, 1.0).normalize();
+      const shadowPlaneZ = -0.52;
+
+      for (let i = 0; i < TOTAL_VERTS; i++) {
+        const i3 = i * 3;
+        const vx = physics.pos[i3];
+        const vy = physics.pos[i3 + 1];
+        const vz = physics.pos[i3 + 2];
+
+        const dz = Math.max(0.05, vz - shadowPlaneZ);
+        shadowPositions[i3] = vx - lightDir.x * dz * 0.85 + 0.14;
+        shadowPositions[i3 + 1] = vy - lightDir.y * dz * 0.85 - 0.18;
+        shadowPositions[i3 + 2] = shadowPlaneZ;
+      }
+      shadowPosAttr.needsUpdate = true;
+    }
+
+    // ============================================================================
+    // 7. 2D SLICE TRAIL OVERLAY & TACTILE RAYCAST INTERACTION
+    // ============================================================================
+    const trailCanvas = document.getElementById('sliceTrailCanvas');
+    const trailCtx = trailCanvas.getContext('2d');
+    trailCanvas.width = window.innerWidth;
+    trailCanvas.height = window.innerHeight;
+    const sliceTrail = [];
+
+    const raycaster = new THREE.Raycaster();
+    const pointerNDC = new THREE.Vector2();
+    const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const planeIntersect = new THREE.Vector3();
+
+    let isPointerDown = false;
+    let isSlicingMode = false;
+    let prevSliceWorldPos = null;
+
+    function screenToNDC(clientX, clientY) {
+      pointerNDC.x = (clientX / window.innerWidth) * 2 - 1;
+      pointerNDC.y = -(clientY / window.innerHeight) * 2 + 1;
+    }
+
+    // Check if pointer segment crosses or touches any of the 25 perforation seam fibers
+    function checkSeamSlice(worldPtA, worldPtB) {
+      let anySevered = false;
+      for (let c = 0; c < COLS; c++) {
+        if (!physics.seamFibers[c].intact) continue;
+        const u3 = physics.idx(UPPER_SEAM_ROW, c) * 3;
+        const l3 = physics.idx(LOWER_SEAM_ROW, c) * 3;
+        const fx = 0.5 * (physics.pos[u3] + physics.pos[l3]);
+        const fy = 0.5 * (physics.pos[u3 + 1] + physics.pos[l3 + 1]);
+
+        // Distance from fiber (fx, fy) to segment AB in XY
+        const abx = worldPtB.x - worldPtA.x;
+        const aby = worldPtB.y - worldPtA.y;
+        const abLenSq = abx * abx + aby * aby;
+        let t = 0;
+        if (abLenSq > 1e-6) {
+          t = ((fx - worldPtA.x) * abx + (fy - worldPtA.y) * aby) / abLenSq;
+          t = Math.max(0, Math.min(1, t));
+        }
+        const closestX = worldPtA.x + t * abx;
+        const closestY = worldPtA.y + t * aby;
+        const dist = Math.hypot(fx - closestX, fy - closestY);
+
+        const sliceRadius = window.innerWidth <= 840 ? 0.19 : 0.14;
+        if (dist < sliceRadius) {
+          if (physics.severFiber(c, 0.08)) {
+            anySevered = true;
+          }
+        }
+      }
+      return anySevered;
+    }
+
+    let lastTouchTapTime = 0;
+
+    stageContainer.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+      audio.ensureContext();
+
+      // Support Double-Tap to Flip on Mobile Touchscreens
+      if (e.pointerType === 'touch') {
+        const nowTap = performance.now();
+        if (nowTap - lastTouchTapTime < 280) {
+          toggleFlipPass();
+          lastTouchTapTime = 0;
+          return;
+        }
+        lastTouchTapTime = nowTap;
+      }
+
+      isPointerDown = true;
+      screenToNDC(e.clientX, e.clientY);
+      raycaster.setFromCamera(pointerNDC, camera);
+
+      const hits = raycaster.intersectObject(ticketMesh, false);
+      if (hits.length > 0) {
+        const hit = hits[0];
+        const hitUv = hit.uv;
+        // Note: canvas UV v = 1.0 - SEAM_V = 0.28 at the 72% seam line
+        const seamUvY = 1.0 - SEAM_V;
+        const distToSeamUv = Math.abs(hitUv.y - seamUvY);
+
+        // If clicking very close to the perforation seam line, enter direct Slice mode
+        if (distToSeamUv < 0.055 && !physics.fullyDetached) {
+          isSlicingMode = true;
+          stageContainer.classList.add('slicing');
+          dragPlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), hit.point);
+          prevSliceWorldPos = hit.point.clone();
+          checkSeamSlice(hit.point, hit.point);
+          sliceTrail.push({ x: e.clientX, y: e.clientY, alpha: 1.0 });
+          return;
+        }
+
+        // Otherwise, find closest Verlet vertex to grab & flex (or pull stub down!)
+        let bestVert = -1;
+        let bestDist = Infinity;
+        for (let i = 0; i < TOTAL_VERTS; i++) {
+          const i3 = i * 3;
+          const d = Math.hypot(
+            physics.pos[i3] - hit.point.x,
+            physics.pos[i3 + 1] - hit.point.y,
+            physics.pos[i3 + 2] - hit.point.z
+          );
+          if (d < bestDist) {
+            bestDist = d;
+            bestVert = i;
+          }
+        }
+
+        if (bestVert >= 0) {
+          physics.grabbedVertex = bestVert;
+          const grabRow = Math.floor(bestVert / COLS);
+          physics.isDraggingStub = (grabRow >= LOWER_SEAM_ROW);
+          dragPlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), hit.point);
+          physics.grabTarget.copy(hit.point);
+          physics.grabTarget.z += 0.16; // Tactile forward lift when grabbing card stock
+          stageContainer.classList.add('dragging');
+        }
+      } else {
+        // Started drag outside the pass: allow slicing across the perforation seam!
+        isSlicingMode = true;
+        stageContainer.classList.add('slicing');
+        dragPlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0));
+        raycaster.ray.intersectPlane(dragPlane, planeIntersect);
+        prevSliceWorldPos = planeIntersect.clone();
+        sliceTrail.push({ x: e.clientX, y: e.clientY, alpha: 1.0 });
+      }
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      screenToNDC(e.clientX, e.clientY);
+
+      // Update studio light & subtle card tilt toward cursor so holographic foil shimmers
+      physics.targetTiltY = pointerNDC.x * 0.28;
+      physics.targetTiltX = -pointerNDC.y * 0.20;
+      ticketMat.uniforms.uLightPos1.value.set(
+        2.4 + pointerNDC.x * 2.2,
+        2.8 + pointerNDC.y * 2.0,
+        4.4
+      );
+
+      if (!isPointerDown) return;
+
+      raycaster.setFromCamera(pointerNDC, camera);
+      raycaster.ray.intersectPlane(dragPlane, planeIntersect);
+
+      if (isSlicingMode && prevSliceWorldPos) {
+        checkSeamSlice(prevSliceWorldPos, planeIntersect);
+        prevSliceWorldPos.copy(planeIntersect);
+        sliceTrail.push({ x: e.clientX, y: e.clientY, alpha: 1.0 });
+      } else if (physics.grabbedVertex >= 0) {
+        physics.grabTarget.copy(planeIntersect);
+        physics.grabTarget.z += physics.isDraggingStub ? 0.22 : 0.18;
+
+        // If user drags a grabbed vertex right across the perforation seam, also slice fibers!
+        if (!physics.fullyDetached && prevSliceWorldPos) {
+          checkSeamSlice(prevSliceWorldPos, planeIntersect);
+        }
+        if (!prevSliceWorldPos) prevSliceWorldPos = new THREE.Vector3();
+        prevSliceWorldPos.copy(planeIntersect);
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      isPointerDown = false;
+      isSlicingMode = false;
+      prevSliceWorldPos = null;
+      physics.grabbedVertex = -1;
+      physics.isDraggingStub = false;
+      stageContainer.classList.remove('dragging', 'slicing');
+    });
+
+    // Double-click on stage flips pass 180 degrees to inspect back face
+    stageContainer.addEventListener('dblclick', () => {
+      toggleFlipPass();
+    });
+
+    // ============================================================================
+    // 8. UI CONTROLS, LIVE FIBER METER & KEYBOARD SHORTCUTS ([F], [X], [R])
+    // ============================================================================
+    const fiberBarsContainer = document.getElementById('fiberBarsContainer');
+    const fiberCells = [];
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'fiber-cell';
+      cell.title = `Perforation Seam Fiber #${String(c + 1).padStart(2, '0')}`;
+      fiberBarsContainer.appendChild(cell);
+      fiberCells.push(cell);
+    }
+
+    function updateFiberUI() {
+      const intactCount = COLS - physics.severedCount;
+      const pctTorn = Math.round((physics.severedCount / COLS) * 100);
+      const counterEl = document.getElementById('fiberCounterText');
+      counterEl.textContent = `${intactCount} / ${COLS} FIBERS (${pctTorn}% TORN)`;
+
+      for (let c = 0; c < COLS; c++) {
+        const f = physics.seamFibers[c];
+        const cell = fiberCells[c];
+        if (!f.intact) {
+          cell.className = 'fiber-cell severed';
+        } else if (f.strain > 0.32) {
+          cell.className = 'fiber-cell strained';
+        } else {
+          cell.className = 'fiber-cell';
+        }
+      }
+
+      const statusPill = document.getElementById('passStatusPill');
+      const statusText = document.getElementById('passStatusText');
+      if (physics.fullyDetached) {
+        statusPill.classList.add('verified');
+        statusText.textContent = 'PASS VERIFIED · ADMIT ONE';
+      } else if (physics.severedCount > 0) {
+        statusPill.classList.remove('verified');
+        statusText.textContent = `TEARING SEAM (${pctTorn}%)`;
+      } else {
+        statusPill.classList.remove('verified');
+        statusText.textContent = 'SEAM INTACT';
+      }
+
+      ticketMat.uniforms.uSeveredProgress.value = physics.severedCount / COLS;
+    }
+
+    function updateVerifiedUI(isVerified) {
+      const actionBtn = document.getElementById('primaryActionBtn');
+      const actionText = document.getElementById('primaryActionText');
+      const actionIcon = document.getElementById('primaryActionIcon');
+      const hashEl = document.getElementById('verificationHash');
+
+      if (isVerified) {
+        actionBtn.classList.add('verified-state');
+        actionText.textContent = 'PASS VERIFIED · ADMIT ONE (ISSUE FRESH [R])';
+        actionIcon.textContent = '✓ VERIFIED';
+        const randomHex = Array.from({ length: 8 }, () => Math.floor(Math.random() * 16).toString(16).toUpperCase()).join('');
+        hashEl.textContent = `VERIFIED #${randomHex}`;
+      } else {
+        actionBtn.classList.remove('verified-state');
+        actionText.textContent = 'SLICE SEAM OR CLICK TO TEAR STUB';
+        actionIcon.textContent = '✂ →';
+        hashEl.textContent = 'SHA-256: PENDING TEAR';
+      }
+      updateFiberUI();
+    }
+
+    function refreshPassTextures() {
+      const oldTextures = textures;
+      textures = generateTicketTextures();
+      ticketMat.uniforms.uFrontDiffuse.value = textures.frontDiffuse;
+      ticketMat.uniforms.uFrontMask.value = textures.frontMask;
+      ticketMat.uniforms.uBackDiffuse.value = textures.backDiffuse;
+      ticketMat.uniforms.uBackMask.value = textures.backMask;
+      shadowMat.uniforms.uAlphaMap.value = textures.frontDiffuse;
+
+      if (oldTextures) {
+        oldTextures.frontDiffuse.dispose();
+        oldTextures.frontMask.dispose();
+        oldTextures.backDiffuse.dispose();
+        oldTextures.backMask.dispose();
+      }
+    }
+
+    function toggleFlipPass() {
+      state.flipped = !state.flipped;
+      physics.targetFlipAngle = state.flipped ? Math.PI : 0;
+      document.getElementById('btnFlip').classList.toggle('active', state.flipped);
+      audio.playUiClick(state.flipped ? 540 : 720);
+    }
+
+    function toggleXrayMode() {
+      state.xrayMode = !state.xrayMode;
+      xrayLines.visible = state.xrayMode;
+      ticketMat.uniforms.uXrayOpacity.value = state.xrayMode ? 0.34 : 1.0;
+      document.getElementById('btnXray').classList.toggle('active', state.xrayMode);
+      document.getElementById('xrayLegend').classList.toggle('visible', state.xrayMode);
+      audio.playUiClick(state.xrayMode ? 880 : 620);
+    }
+
+    function issueFreshPass() {
+      state.autoTearing = false;
+      state.flipped = false;
+      physics.targetFlipAngle = 0;
+      physics.flipAngle = 0;
+      document.getElementById('btnFlip').classList.remove('active');
+
+      // Generate new serial suffix for the fresh pass
+      const num = Math.floor(1000 + Math.random() * 9000);
+      const char = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      state.serialNumber = `KL-${num}-${char}`;
+      document.getElementById('metaSerial').textContent = `#${state.serialNumber}`;
+
+      physics.initTopology();
+      state.passSlideOffset = 2.4; // Slide in smoothly from the right
+      refreshPassTextures();
+      updateVerifiedUI(false);
+      audio.playSlideFreshPass();
+    }
+
+    // Header Button Listeners
+    document.getElementById('btnFlip').addEventListener('click', toggleFlipPass);
+    document.getElementById('btnXray').addEventListener('click', toggleXrayMode);
+    document.getElementById('btnReset').addEventListener('click', issueFreshPass);
+
+    document.getElementById('btnAudio').addEventListener('click', () => {
+      state.audioEnabled = !state.audioEnabled;
+      document.getElementById('audioLabel').textContent = `Audio: ${state.audioEnabled ? 'ON' : 'OFF'}`;
+      document.getElementById('btnAudio').classList.toggle('active', !state.audioEnabled);
+      if (state.audioEnabled) audio.playUiClick(760);
+    });
+
+    document.getElementById('btnTheme').addEventListener('click', () => {
+      state.darkMode = !state.darkMode;
+      document.documentElement.setAttribute('data-theme', state.darkMode ? 'dark' : 'light');
+      document.getElementById('themeLabel').textContent = state.darkMode
+        ? 'Warm Gallery Alabaster'
+        : 'Dark Concert Hall';
+      shadowMat.uniforms.uShadowOpacity.value = state.darkMode ? 0.36 : 0.16;
+      audio.playUiClick(640);
+    });
+
+    // 3-Way Holographic Foil Edition Selector
+    document.querySelectorAll('.foil-option').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.foil, 10);
+        state.foilIndex = idx;
+        document.querySelectorAll('.foil-option').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const ed = FOIL_EDITIONS[idx];
+        document.getElementById('foilPriceDisplay').textContent = ed.price;
+        ticketMat.uniforms.uBaseTint.value.copy(ed.baseTint);
+        ticketMat.uniforms.uIridescenceShift.value = ed.iridescenceShift;
+        ticketMat.uniforms.uSaturation.value = ed.saturation;
+
+        refreshPassTextures();
+        audio.playUiClick(680 + idx * 110);
+      });
+    });
+
+    // Seat / Zone Selector
+    document.querySelectorAll('.zone-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.zone, 10);
+        state.zoneIndex = idx;
+        document.querySelectorAll('.zone-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('zoneGateDisplay').textContent = ZONES[idx].gate;
+
+        refreshPassTextures();
+        audio.playUiClick(740 + idx * 60);
+      });
+    });
+
+    // Primary Action Button: triggers sequential tear across remaining fibers (or issues fresh pass if already torn)
+    document.getElementById('primaryActionBtn').addEventListener('click', () => {
+      audio.ensureContext();
+      if (physics.fullyDetached) {
+        issueFreshPass();
+      } else {
+        state.autoTearing = true;
+        state.autoTearCol = 0;
+        state.autoTearTimer = 0;
+      }
+    });
+
+    // Keyboard Shortcuts: [F] Flip, [X] X-Ray, [R] Issue Fresh Pass
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      const key = e.key.toLowerCase();
+      if (key === 'f') {
+        toggleFlipPass();
+      } else if (key === 'x') {
+        toggleXrayMode();
+      } else if (key === 'r') {
+        issueFreshPass();
+      }
+    });
+
+    // Mobile Bottom-Sheet Collapse/Expand Toggle & Responsive 3D Camera Framing
+    const checkoutCardEl = document.getElementById('checkoutCard');
+    const checkoutColEl = document.querySelector('.checkout-column');
+    const mobileSheetToggleBtn = document.getElementById('mobileSheetToggle');
+    const mobileSheetToggleLabel = document.getElementById('mobileSheetToggleLabel');
+    const targetCamPos = new THREE.Vector3(-0.62, 0.0, 6.65);
+
+    function updateResponsiveStage(immediate = false) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const aspect = w / Math.max(h, 1);
+      const tanHalfFov = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5));
+
+      camera.aspect = aspect;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      trailCanvas.width = w;
+      trailCanvas.height = h;
+
+      if (w <= 840) {
+        // Mobile Portrait / Compact Layout:
+        // Center the 3D pass horizontally (x = 0) and shift camera down (y < 0)
+        // so the pass floats in the upper stage above the bottom checkout sheet
+        const isCollapsed = checkoutCardEl.classList.contains('mobile-collapsed');
+        const camY = isCollapsed ? -0.68 : -0.92;
+        const camZ = Math.max(7.6, 4.35 / Math.min(aspect, 0.65));
+        targetCamPos.set(0.0, camY, camZ);
+      } else {
+        // Responsive Desktop & Laptop Studio Layout:
+        // Measure live left checkout column width and available stage area
+        const colRect = checkoutColEl ? checkoutColEl.getBoundingClientRect() : { right: 420 };
+        const leftOccupied = Math.max(320, colRect.right + 16);
+        const stageW = Math.max(320, w - leftOccupied - 24);
+        const topOccupied = 68;
+        const bottomOccupied = 58;
+        const stageH = Math.max(320, h - topOccupied - bottomOccupied);
+
+        // Compute required Z distance so the 3D pass (CARD_WIDTH x CARD_HEIGHT) fits both stageW and stageH
+        const reqZHeight = (CARD_HEIGHT * 1.18) / (2 * tanHalfFov * (stageH / h));
+        const reqZWidth = (CARD_WIDTH * 1.42) / (2 * tanHalfFov * aspect * (stageW / w));
+        const camZ = Math.max(6.4, reqZHeight, reqZWidth);
+
+        // Compute visible world dimensions at z = 0 and center the pass in the open Right Stage
+        const worldH = 2 * camZ * tanHalfFov;
+        const worldW = worldH * aspect;
+
+        const stageCenterX = leftOccupied + stageW * 0.5;
+        const stageCenterY = topOccupied + stageH * 0.5;
+
+        const ndcOffsetX = (stageCenterX / w) * 2 - 1;
+        const ndcOffsetY = 1 - (stageCenterY / h) * 2;
+
+        const camX = -ndcOffsetX * (worldW * 0.5);
+        const camY = -ndcOffsetY * (worldH * 0.5);
+
+        targetCamPos.set(camX, camY, camZ);
+      }
+
+      if (immediate) {
+        camera.position.copy(targetCamPos);
+      }
+    }
+
+    mobileSheetToggleBtn.addEventListener('click', () => {
+      const collapsed = checkoutCardEl.classList.toggle('mobile-collapsed');
+      mobileSheetToggleLabel.textContent = collapsed ? '▲ MORE OPTIONS' : '▼ COMPACT VIEW';
+      updateResponsiveStage(false);
+      audio.playUiClick(collapsed ? 620 : 740);
+    });
+
+    // Responsive Window Resize
+    window.addEventListener('resize', () => {
+      updateResponsiveStage(false);
+    });
+
+    // ============================================================================
+    // 9. MAIN ANIMATION LOOP (Verlet Step, Normals Recompute, Shadow & Trail Render)
+    // ============================================================================
+    let lastTime = performance.now();
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+      const dt = Math.min(0.033, (now - lastTime) * 0.001);
+      lastTime = now;
+
+      // Smoothly glide camera to responsive stage framing
+      camera.position.lerp(targetCamPos, 0.12);
+
+      // Handle automated sequential tear if user clicked Primary Action Button
+      if (state.autoTearing && !physics.fullyDetached) {
+        state.autoTearTimer += dt;
+        if (state.autoTearTimer >= 0.024) {
+          state.autoTearTimer = 0;
+          while (state.autoTearCol < COLS && !physics.seamFibers[state.autoTearCol].intact) {
+            state.autoTearCol++;
+          }
+          if (state.autoTearCol < COLS) {
+            physics.severFiber(state.autoTearCol, 0.09);
+            state.autoTearCol++;
+          } else {
+            state.autoTearing = false;
+          }
+        }
+      }
+
+      // Step the 900-vertex 3D Verlet card-stock physics solver (10 iterations)
+      physics.step(dt);
+
+      // Recompute position and vertex normals every frame after the Verlet step
+      posAttr.needsUpdate = true;
+      ticketGeo.computeVertexNormals();
+
+      // Update deforming floor contact shadow & optional X-Ray spring lattice
+      updateShadowMesh();
+      updateXrayLattice();
+
+      ticketMat.uniforms.uTime.value = now * 0.001;
+      renderer.render(scene, camera);
+
+      // Render 2D tactile cutter slice trail overlay
+      trailCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+      if (sliceTrail.length > 1) {
+        trailCtx.save();
+        trailCtx.lineCap = 'round';
+        trailCtx.lineJoin = 'round';
+        for (let i = 1; i < sliceTrail.length; i++) {
+          const p0 = sliceTrail[i - 1];
+          const p1 = sliceTrail[i];
+          trailCtx.strokeStyle = `rgba(239, 68, 68, ${p1.alpha * 0.75})`;
+          trailCtx.lineWidth = p1.alpha * 3.5;
+          trailCtx.beginPath();
+          trailCtx.moveTo(p0.x, p0.y);
+          trailCtx.lineTo(p1.x, p1.y);
+          trailCtx.stroke();
+        }
+        trailCtx.restore();
+      }
+      for (let i = sliceTrail.length - 1; i >= 0; i--) {
+        sliceTrail[i].alpha -= dt * 3.8;
+        if (sliceTrail[i].alpha <= 0) sliceTrail.splice(i, 1);
+      }
+    }
+
+    updateResponsiveStage(true);
+    updateFiberUI();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+
+</html>
