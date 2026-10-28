@@ -31,7 +31,7 @@
    - [2. Indentation and nested blocks](#part-4-indentation)
    - [3. Comments](#part-4-comments)
 6. [Part 5: Simple Geometry Study Cases](#part-5)
-7. [Part 6: Summary & Practice](#part-6)
+7. [Part 6: Summary](#part-6)
 
 ---
 
@@ -412,7 +412,7 @@ print(width * height)
 
 <span id="part-6"></span>
 
-## Part 6: Summary & Practice
+## Part 6: Summary
 
 | Section 1.1 idea           | Plain-language meaning                                                              | Rectangle-card example                                    |
 | :------------------------- | :---------------------------------------------------------------------------------- | :-------------------------------------------------------- |
@@ -423,14 +423,5 @@ print(width * height)
 | **Newline / continuation** | A line usually ends a statement; open delimiters or a backslash allow continuation. | Split `6 + 16` over two lines.                            |
 | **Indentation**            | Leading spaces define loops and decision blocks.                                    | Only a valid card reaches the area calculation.           |
 | **Comment**                | A note for readers that Python ignores.                                             | `# Each card stores (width, height)`.                     |
-
-**Try it yourself:**
-
-1. Calculate the area of a 5 cm × 3 cm card at the interactive prompt. Check that the result is `15` cm².
-2. Add `"D": (5, 3)` to the dictionary, update both messages that list available cards to include `D`, then run the script and enter `D`. Its reported area should be `15 cm^2`.
-3. Enter `A`, `D`, then a blank line. Predict `count`, `total_area`, and average area before looking at the output. They should be `2`, `21 cm^2`, and `10.5 cm^2`.
-4. Run `python -i rectangle_cards.py`, choose at least one card, then inspect `count` and `total_area` at the final prompt.
-
-The main path through Section 1.1 is: **describe a problem precisely → try one command → save a repeatable program → use indentation and comments to make its steps clear**.
 
 [🔝 Back to Top](#top)
