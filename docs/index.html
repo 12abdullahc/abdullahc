@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Documentation — Abdullah C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+  />
+  <link
+    id="hljsThemeLink"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+  />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("docs_theme");
+        var theme = saved === "dark" || saved === "light" ? saved : "light";
+        document.documentElement.setAttribute("data-theme", theme);
+        if (theme === "dark") {
+          var hljsLink = document.getElementById("hljsThemeLink");
+          if (hljsLink) {
+            hljsLink.href =
+              "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
+          }
+        }
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/docs.css" />
+</head>
+
+<body>
+  <!-- ══════════════════════════════════════
+       FIXED TOP HEADER
+  ══════════════════════════════════════ -->
+  <header class="docs-header">
+    <div class="header-left">
+      <button
+        type="button"
+        class="icon-btn mobile-nav-btn"
+        id="mobileNavBtn"
+        aria-label="Toggle documentation navigation"
+        title="Navigation"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <a href="../index.html" class="back-btn" title="Back to portfolio">
+        <i class="fas fa-arrow-left"></i>
+        <span>Home</span>
+      </a>
+
+      <a href="#getting-started/overview" class="brand-link" id="brandHomeLink">
+        <span class="brand-title">Abdullah C</span>
+        <span class="brand-sep">/</span>
+        <span class="brand-subtitle">Docs</span>
+      </a>
+    </div>
+
+    <div class="header-right">
+      <button
+        type="button"
+        class="search-trigger-btn"
+        id="searchTriggerBtn"
+        aria-label="Search documentation pages"
+        title="Search docs (Ctrl+K)"
+      >
+        <i class="fas fa-search"></i>
+        <span class="search-trigger-label">Search docs...</span>
+        <kbd class="kbd-hint">Ctrl K</kbd>
+      </button>
+
+      <button
+        type="button"
+        class="theme-toggle-btn"
+        id="themeToggleBtn"
+        aria-label="Switch between Light and Dark theme"
+        title="Switch to Dark mode"
+      >
+        <i class="fas fa-moon" id="themeToggleIcon"></i>
+      </button>
+
+      <button
+        type="button"
+        class="icon-btn mobile-toc-btn"
+        id="mobileTocBtn"
+        aria-label="Toggle On This Page table of contents"
+        title="On this page"
+      >
+        <i class="fas fa-list-ul"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile / Tablet Overlays -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <!-- ══════════════════════════════════════
+       3-COLUMN DOCUMENTATION SHELL
+  ══════════════════════════════════════ -->
+  <div class="docs-shell">
+    <!-- LEFT SIDEBAR: Project & Page Navigation -->
+    <aside class="nav-sidebar" id="navSidebar" aria-label="Documentation navigation">
+      <div class="nav-search-box">
+        <div class="search-input-wrap">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            class="nav-search-input"
+            id="navSearchInput"
+            placeholder="Filter pages..."
+            aria-label="Filter documentation pages"
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            class="clear-search-btn"
+            id="clearNavSearchBtn"
+            aria-label="Clear search"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <nav class="nav-tree" id="navTree" aria-label="Documentation sections"></nav>
+
+      <div class="nav-sidebar-footer">
+        <span id="navDocCount">Loading docs...</span>
+        <a href="../sql-server/index.html" class="nav-footer-link" title="Open SQL Server Workspace">
+          <i class="fas fa-database"></i> SQL Notes
+        </a>
+      </div>
+    </aside>
+
+    <!-- CENTER PANE: Markdown & Mermaid Content -->
+    <main class="content-pane" id="contentPane">
+      <div class="content-inner">
+        <!-- Breadcrumbs & Doc Meta -->
+        <div class="doc-topbar" id="docTopbar">
+          <nav class="breadcrumbs" id="breadcrumbs" aria-label="Breadcrumb"></nav>
+          <div class="doc-meta-actions">
+            <span class="doc-meta-pill" id="readingTimeBadge">
+              <i class="far fa-clock"></i> <span>-- min read</span>
+            </span>
+            <button
+              type="button"
+              class="doc-action-btn"
+              id="copyPageLinkBtn"
+              title="Copy link to this page"
+            >
+              <i class="fas fa-link"></i>
+              <span>Copy link</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-container" id="errorContainer" role="alert">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3 id="errorTitle">Failed to load document</h3>
+          <p id="errorMsg"></p>
+          <div class="error-tip" id="errorTip" style="display: none;"></div>
+        </div>
+
+        <!-- Rendered Markdown Document -->
+        <article class="markdown-body" id="markdownContent"></article>
+
+        <!-- Previous / Next Page Navigation -->
+        <nav class="doc-pagination" id="docPagination" aria-label="Page pagination"></nav>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR: On This Page (Scroll-Spy TOC) -->
+    <aside class="toc-sidebar" id="tocSidebar" aria-label="On this page">
+      <div class="toc-header">
+        <span class="toc-label">On This Page</span>
+        <span class="toc-count" id="tocCount">0</span>
+      </div>
+      <div class="toc-scroll-area" id="tocScrollArea">
+        <ul class="toc-list" id="tocList"></ul>
+      </div>
+      <div class="toc-footer">
+        <button type="button" class="toc-top-btn" id="tocTopBtn">
+          <i class="fas fa-arrow-up"></i>
+          <span>Back to top</span>
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Loading documentation...</p>
+  </div>
+
+  <!-- Floating Back to Top Button -->
+  <button
+    type="button"
+    class="scroll-top-btn"
+    id="scrollTopBtn"
+    title="Scroll to top"
+    aria-label="Scroll to top"
+  >
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- Mermaid Diagram Lightbox Modal -->
+  <div class="diagram-lightbox" id="diagramLightbox" role="dialog" aria-modal="true" aria-label="Expanded diagram view">
+    <div class="diagram-lightbox-toolbar">
+      <span class="diagram-lightbox-title" id="diagramLightboxTitle">Diagram Preview</span>
+      <div class="diagram-lightbox-controls">
+        <button type="button" class="lightbox-btn" id="zoomOutBtn" title="Zoom out" aria-label="Zoom out">
+          <i class="fas fa-minus"></i>
+        </button>
+        <span class="lightbox-zoom-level" id="zoomLevelText">100%</span>
+        <button type="button" class="lightbox-btn" id="zoomInBtn" title="Zoom in" aria-label="Zoom in">
+          <i class="fas fa-plus"></i>
+        </button>
+        <button type="button" class="lightbox-btn" id="zoomResetBtn" title="Reset zoom" aria-label="Reset zoom">
+          <i class="fas fa-compress-arrows-alt"></i>
+        </button>
+        <button type="button" class="lightbox-btn lightbox-close-btn" id="closeLightboxBtn" title="Close (Esc)" aria-label="Close diagram preview">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="diagram-lightbox-stage" id="diagramLightboxStage">
+      <div class="diagram-lightbox-canvas" id="diagramLightboxCanvas"></div>
+    </div>
+  </div>
+
+  <!-- CDN Dependencies (Pinned stable versions) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+  <script src="assets/docs.js"></script>
+</body>
+
+</html>

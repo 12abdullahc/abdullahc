@@ -1,0 +1,71 @@
+{
+  "siteTitle": "Documentation",
+  "brandName": "Abdullah C",
+  "defaultPage": "getting-started/overview",
+  "groups": [
+    {
+      "id": "getting-started",
+      "title": "Documentation Portal",
+      "icon": "fa-compass",
+      "badge": "Hub",
+      "pages": [
+        {
+          "id": "overview",
+          "title": "Welcome & Index",
+          "file": "getting-started/overview.md",
+          "summary": "Portal navigation, structure, and how to add new project documentation."
+        }
+      ]
+    },
+    {
+      "id": "hdp-oee-neo-spray",
+      "title": "HDP OEE Neo Spray",
+      "icon": "fa-chart-line",
+      "badge": "MVC 5",
+      "pages": [
+        {
+          "id": "overview",
+          "title": "Overview",
+          "file": "hdp-oee-neo-spray/overview.md",
+          "summary": "Module scope, technology stack, active and planned pages, and shopfloor topology."
+        },
+        {
+          "id": "system-architecture",
+          "title": "System Architecture",
+          "file": "hdp-oee-neo-spray/system-architecture.md",
+          "summary": "Dual-DbContext design, frontend layout event bus, Live vs Historical pipeline, and Mermaid diagrams."
+        },
+        {
+          "id": "pages-and-ui",
+          "title": "Pages, UI & Right Sidebar",
+          "file": "hdp-oee-neo-spray/pages-and-ui.md",
+          "summary": "Shared HDP Studio shell, 5-panel right sidebar, Live Layout charts & floor grid, Input Reject, and Power BI views."
+        },
+        {
+          "id": "oee-formulas-and-logic",
+          "title": "OEE Formulas & Business Logic",
+          "file": "hdp-oee-neo-spray/oee-formulas-and-logic.md",
+          "summary": "Simple vs Aggregate OEE modes, dynamic shift windows, Live vs Historical rules, Last OEE S1-S3, and reject math."
+        },
+        {
+          "id": "api-and-exports",
+          "title": "API & Data Export Reference",
+          "file": "hdp-oee-neo-spray/api-and-exports.md",
+          "summary": "Complete OEEController JSON endpoints, POST mutations, parameters, payloads, and CSV/XLSX/PDF export specs."
+        },
+        {
+          "id": "database-schema",
+          "title": "Database Schema & Views",
+          "file": "hdp-oee-neo-spray/database-schema.md",
+          "summary": "Column-by-column definitions across HDPStudioEntities and HDPStudioOEEStudioEntities."
+        },
+        {
+          "id": "user-guide",
+          "title": "Operator & Supervisor Guide",
+          "file": "hdp-oee-neo-spray/user-guide.md",
+          "summary": "Day-to-day dashboard monitoring, cascading filters, exports, throw-off reject input, shift reset, and troubleshooting."
+        }
+      ]
+    }
+  ]
+}
