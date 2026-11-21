@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════
    Documentation Portal Engine
    Manifest-driven multi-page Markdown + Mermaid viewer
-   Supports live Light / Dark mode with synced Highlight.js & Mermaid
+   Claude-inspired Editorial Dual-Mode (Ivory / Charcoal)
 ═══════════════════════════════════════════════ */
 
 (function () {
@@ -49,6 +49,7 @@
   const errorMsg = document.getElementById("errorMsg");
   const errorTip = document.getElementById("errorTip");
 
+  const brandHomeLink = document.getElementById("brandHomeLink");
   const mobileNavBtn = document.getElementById("mobileNavBtn");
   const mobileTocBtn = document.getElementById("mobileTocBtn");
   const searchTriggerBtn = document.getElementById("searchTriggerBtn");
@@ -79,60 +80,60 @@
     if (theme === "dark") {
       return {
         darkMode: true,
-        background: "#121216",
-        primaryColor: "#18181e",
-        primaryTextColor: "#fafafa",
-        primaryBorderColor: "rgba(148, 163, 184, 0.32)",
-        lineColor: "#60a5fa",
-        secondaryColor: "#15151b",
-        tertiaryColor: "#111116",
-        mainBkg: "#18181e",
-        nodeBorder: "rgba(148, 163, 184, 0.32)",
-        clusterBkg: "rgba(255, 255, 255, 0.025)",
-        clusterBorder: "rgba(148, 163, 184, 0.22)",
-        edgeLabelBackground: "#141418",
-        actorBkg: "#18181e",
-        actorBorder: "rgba(96, 165, 250, 0.45)",
-        actorTextColor: "#fafafa",
-        actorLineColor: "rgba(148, 163, 184, 0.35)",
-        signalColor: "#60a5fa",
-        signalTextColor: "#fafafa",
-        noteBkgColor: "#1c2030",
-        noteBorderColor: "rgba(96, 165, 250, 0.35)",
-        noteTextColor: "#e4e4e7",
-        attributeBackgroundColorOdd: "#141419",
-        attributeBackgroundColorEven: "#1a1a22",
-        fontFamily: "Manrope, Segoe UI, sans-serif",
+        background: "#1f1f1d",
+        primaryColor: "#2e2e2b",
+        primaryTextColor: "#faf9f5",
+        primaryBorderColor: "#4a4a46",
+        lineColor: "#bf6542",
+        secondaryColor: "#262624",
+        tertiaryColor: "#1f1f1d",
+        mainBkg: "#2e2e2b",
+        nodeBorder: "#4a4a46",
+        clusterBkg: "rgba(250, 249, 245, 0.04)",
+        clusterBorder: "#3d3d3a",
+        edgeLabelBackground: "#262624",
+        actorBkg: "#2e2e2b",
+        actorBorder: "#bf6542",
+        actorTextColor: "#faf9f5",
+        actorLineColor: "#52524e",
+        signalColor: "#df825d",
+        signalTextColor: "#faf9f5",
+        noteBkgColor: "#2e2e2b",
+        noteBorderColor: "#bf6542",
+        noteTextColor: "#f5f4f0",
+        attributeBackgroundColorOdd: "#262624",
+        attributeBackgroundColorEven: "#2e2e2b",
+        fontFamily: "Figtree, system-ui, -apple-system, sans-serif",
         fontSize: "13px"
       };
     }
 
     return {
       darkMode: false,
-      background: "#f8fafc",
-      primaryColor: "#ffffff",
-      primaryTextColor: "#09090b",
-      primaryBorderColor: "#cbd5e1",
-      lineColor: "#2563eb",
-      secondaryColor: "#f1f5f9",
-      tertiaryColor: "#f8fafc",
-      mainBkg: "#ffffff",
-      nodeBorder: "#cbd5e1",
-      clusterBkg: "rgba(37, 99, 235, 0.03)",
-      clusterBorder: "#cbd5e1",
-      edgeLabelBackground: "#f8fafc",
-      actorBkg: "#ffffff",
-      actorBorder: "#2563eb",
-      actorTextColor: "#09090b",
-      actorLineColor: "#94a3b8",
-      signalColor: "#2563eb",
-      signalTextColor: "#09090b",
-      noteBkgColor: "#eff6ff",
-      noteBorderColor: "#93c5fd",
-      noteTextColor: "#1e3a8a",
-      attributeBackgroundColorOdd: "#ffffff",
-      attributeBackgroundColorEven: "#f8fafc",
-      fontFamily: "Manrope, Segoe UI, sans-serif",
+      background: "#f4f3ee",
+      primaryColor: "#faf9f5",
+      primaryTextColor: "#141413",
+      primaryBorderColor: "#d4d1c5",
+      lineColor: "#bf6542",
+      secondaryColor: "#f0eee6",
+      tertiaryColor: "#f4f3ee",
+      mainBkg: "#faf9f5",
+      nodeBorder: "#d4d1c5",
+      clusterBkg: "rgba(20, 20, 19, 0.028)",
+      clusterBorder: "#d4d1c5",
+      edgeLabelBackground: "#f4f3ee",
+      actorBkg: "#faf9f5",
+      actorBorder: "#bf6542",
+      actorTextColor: "#141413",
+      actorLineColor: "#a3a096",
+      signalColor: "#bf6542",
+      signalTextColor: "#141413",
+      noteBkgColor: "#f0eee6",
+      noteBorderColor: "#d4d1c5",
+      noteTextColor: "#3d3d3a",
+      attributeBackgroundColorOdd: "#faf9f5",
+      attributeBackgroundColorEven: "#f0eee6",
+      fontFamily: "Figtree, system-ui, -apple-system, sans-serif",
       fontSize: "13px"
     };
   }
@@ -1105,11 +1106,20 @@
         });
       });
 
+      const defaultRoute = manifest.defaultPage || (flatPages[0] && flatPages[0].route) || "";
+      if (brandHomeLink && defaultRoute) {
+        brandHomeLink.setAttribute("href", "#" + defaultRoute);
+      }
+
       renderNavTree("");
 
       const initial = parseHash();
-      const targetRoute = initial.route || manifest.defaultPage || (flatPages[0] && flatPages[0].route);
-      await loadPage(targetRoute, initial.heading);
+      const matchedInitial = findPageByRoute(initial.route);
+      const targetRoute = matchedInitial ? matchedInitial.route : defaultRoute;
+      if (initial.route && !matchedInitial && targetRoute) {
+        history.replaceState(null, "", "#" + targetRoute);
+      }
+      await loadPage(targetRoute, matchedInitial ? initial.heading : "");
     } catch (err) {
       console.error("Failed to initialize documentation portal:", err);
       showError(
