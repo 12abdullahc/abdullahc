@@ -14,6 +14,23 @@ HDP OEE Neo Spray serves two primary operational use cases:
 1. **Shopfloor Live Monitoring (Andon / TV & Supervisor View):** Continuously tracks machine running states across 6 spray lines (`A`–`F`), live shift OEE metrics (`OEE`, `Availability`, `Performance`, `Quality`, `Utilization`), previous shift OEE benchmarks (`S1`, `S2`, `S3`), and pareto charts for **Lowest OEE**, **Reject (pcs)**, and **Downtime (min)**.
 2. **Historical Analysis & Data Operations:** Supports multi-dimensional filtering (`Year`, `Month`, `Week Ending`, `Date`, `Shift`, `Machine`), switching between **Simple** and **Aggregate** OEE calculation modes, logging throw-off rejects per machine/shift/toy, resetting active shift machine state (`EndShift`), and exporting filtered records to **CSV**, **Excel (`.xlsx`)**, or **PDF**.
 
+![HDP OEE Neo Spray — Live Layout Dashboard](./assets/live-layout-dashboard.jpg)
+
+---
+
+## Entry Points & HDP Studio Integration
+
+HDP OEE Neo Spray is accessible across three navigation surfaces inside `inside-mvc`:
+
+| Entry Point | Source File | Label / Presentation | Target Route |
+| :--- | :--- | :--- | :--- |
+| **HDP Studio Hub** | `Views/HDPStudio/Index.cshtml` | Card **#1 — OEE Neo Spray** (category `Neo Spray`, banner `#D97757`, searchable via `oee neo spray layout live throw-off reject availability performance quality`) | `~/OEE/NeoSprayLayout` *(new tab)* |
+| **HDP Studio App Launcher** | `Views/Shared/_Layout_HDPStudio.cshtml` | **OEE Neo Spray** tile | `~/OEE/NeoSprayLayout` *(new tab)* |
+| **Legacy INSIDE Sidebar** | `Views/Shared/Sidebar/_Decoration.cshtml` | **OEE Neo Spray** (`fa-spray-can`) | `~/OEE/NeoSprayLayout` *(new tab)* |
+
+> [!TIP]
+> **New vs. Legacy App Tiles:** Both the HDP Studio Hub (`~/OEE/HDPOEEStudio`, banner `#EBC9B7`) and the App Launcher (`~/OEE/SemiAutoSprayLayout`) also display an adjacent **OEE Neo Spray (OLD)** tile for legacy Semi-Auto Spray archival reference. Always choose **OEE Neo Spray** for the active `C073` dashboard.
+
 ---
 
 ## Technology Stack

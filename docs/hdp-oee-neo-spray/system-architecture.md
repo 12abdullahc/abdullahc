@@ -145,7 +145,7 @@ flowchart TD
     CalcBranch -- "Mode 2: Aggregate OEE" --> Agg["Sum raw numerators & denominators:<br/>A = Sum(foperating_time) / Sum(favailable_time)<br/>P = Sum(factual_output) / Sum(fstandard_output)<br/>Q = Sum(fgood_output) / Sum(factual_output)<br/>OEE = A * P * Q"]
     CalcBranch -- "Mode 1: Simple OEE" --> Simple["Arithmetic mean of record ratios:<br/>A = Avg(favailability)<br/>P = Avg(fperformance)<br/>Q = Avg(fquality)<br/>OEE = Avg(foee) or A * P * Q"]
 
-    Agg --> AuxData["Join Downtime & Reject Totals by foee_id<br/>vw_hdps_oeens_log_downtime (excl. Break)<br/>vw_hdps_oeens_log_reject"]
+    Agg --> AuxData["Join Downtime & Reject Totals by foee_id<br/>vw_hdps_oeens_log_downtime (all rows, hrs)<br/>vw_hdps_oeens_log_reject"]
     Simple --> AuxData
 
     AuxData --> PureLive{"Pure Live Mode?<br/>(no shift or machine filter)"}
@@ -385,6 +385,10 @@ erDiagram
 - **No Hardcoded External Links:** Power BI report URLs are stored in `hdps_pbi_link` and injected server-side via `ViewBag.PbiLink`, keeping deployment configuration out of source code.
 - **Cache Control:** `GetNeoSprayOEEMetrics` and `GetOEECalculationMode` explicitly disable response caching (`[OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]`) to prevent stale KPI values on long-running shopfloor browsers.
 - **Client Resilience:** Failed 3-second polling cycles in `loadMachineStatus()` fail silently so temporary network blips do not interrupt shopfloor TV displays.
+- **Downtime Break Handling Difference:** `GetNeoSprayDowntime` (the **Downtime (min)** pareto chart) excludes `"Break"` / `"BREAK"` and converts `fduration` from hours to minutes (`* 60`), whereas `GetNeoSprayOEEMetrics.totalDowntimeDuration` sums raw `fduration` hours across all linked downtime rows without excluding breaks.
+- **Unfiltered `AS_OEE` Lookups in Input Reject:** `NeoSprayInputReject()`, `GetDatesByMachine`, `GetShiftsByMachineAndDate`, and `GetToysByShift` query `AS_OEE` without filtering `Process_Code == "C07"` (unlike `GetNeoSprayFilterOptions` and `ExportNeoSpray`).
+- **Strict Filter Parsing in `ExportNeoSpray`:** Query parameters (`year`, `month`, `we`, `date`, `shift`, `machine`) are parsed with `int.Parse` / `double.Parse` / `DateTime.Parse`, so malformed query strings return `HTTP 500` rather than `400 Bad Request`.
+- **Legacy / Duplicate Controller Artifacts:** `GET /OEE/GetSemiAutoSprayStatus` exists in `OEEController.cs` as an unused lightweight sibling of `GetSemiAutoSprayMachines`, and `OEEController` instantiates two separate `HDPStudioOEEStudioEntities` fields (`db` and `dbHdpsOeeStudio`).
 
 ---
 

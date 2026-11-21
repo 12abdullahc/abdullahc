@@ -6,7 +6,10 @@ This guide covers day-to-day operational workflows for supervisors, leaders, ope
 
 ## 1. Monitoring the Live Dashboard (`Live Layout`)
 
-Open **HDP Studio → App Launcher → OEE Neo Spray** (or navigate directly to `/OEE/NeoSprayLayout`). No login is required for read-only shopfloor monitoring.
+Open **HDP Studio Hub → OEE Neo Spray**, **HDP Studio App Launcher → OEE Neo Spray**, or **INSIDE Sidebar → Decoration → OEE Neo Spray** (or navigate directly to `/OEE/NeoSprayLayout`). No login is required for read-only shopfloor monitoring.
+
+> [!TIP]
+> Be sure to select **OEE Neo Spray** rather than the legacy **OEE Neo Spray (OLD)** tile (`SemiAutoSprayLayout` / `HDPOEEStudio`).
 
 ### Reading the Dashboard at a Glance
 
@@ -56,6 +59,9 @@ Click the **Filter** button (sliders icon) on the top-right sidebar strip to ana
 ## 4. Recording Throw-Off Rejects (`Input Reject`)
 
 Use **More → Input Reject (Throw-off)** (`/OEE/NeoSprayInputReject`) whenever post-run or throw-off rejects need to be added to an existing OEE record:
+
+> [!WARNING]
+> **Line F Machine Labels (`47–51`):** In the Input Reject **Machine** dropdown (and the right-sidebar Machine filter), numeric machine IDs `47–51` (Line `F01`–`F05` on the floor grid) currently display as `E05`–`E09`. Double-check the selected machine ID and `Last actual output` before saving throw-off rejects for Line F.
 
 1. **Select Machine:** Choose the target machine (`A01`–`F05`).
 2. **Select Date:** Pick the production date (`MM/DD/YYYY`) from available recorded dates for that machine.
@@ -110,3 +116,4 @@ Open **More → Report (Power BI)** (`/OEE/NeoSprayReport`):
 | **Report (Power BI)** displays `"No report link configured."` | Missing record in `hdps_pbi_link` for `fprocess_code = 'C07'`, `fproject_name = 'OEE Neo Spray'`, `fno_link = 1` | Insert or update the row in `hdps_pbi_link` with a non-empty `flink` URL. |
 | **Toy** dropdown shows `"No toys available"` in Input Reject | No `AS_OEE` record matches the selected `(Machine, Date, Shift)` combination | Confirm the production run was saved to `AS_OEE` for that machine, date, and shift. |
 | Filter dropdown shows options that return empty charts | Filter options load from `AS_OEE` (`Process_Code = 'C07'`) while charts query `vw_hdps_oeens_log_oee` (`fmachine_code = 'C073'`) | Verify the view `vw_hdps_oeens_log_oee` includes records for the selected dates/machines. |
+| Right-sidebar **Live** green dot is pulsing, yet data is stale | The **Live** panel (`Last scan HH:mm:ss`) is a local browser clock (`rsTickRadar()`), not a live server/database health check | Check browser Network tab for `GetSemiAutoSprayMachines` / `GetNeoSprayOEEMetrics` errors or verify IIS / SQL Server connectivity. |

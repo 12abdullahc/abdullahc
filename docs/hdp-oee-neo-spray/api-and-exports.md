@@ -52,7 +52,8 @@ Returns aggregated KPI metrics, downtime/reject totals, machine utilization, and
 ```
 
 > [!NOTE]
-> In Historical mode, `currentShift`, `lastOeeS1`, `lastOeeS2`, and `lastOeeS3` return `null`.
+> - In Historical mode, `currentShift`, `lastOeeS1`, `lastOeeS2`, and `lastOeeS3` return `null`.
+> - `totalDowntimeDuration` sums raw `vw_hdps_oeens_log_downtime.fduration` in **hours** across all linked `foee_id` rows (including `"Break"`), whereas `GetNeoSprayDowntime` excludes `"Break"` / `"BREAK"` and returns **minutes**.
 
 ---
 
@@ -122,6 +123,7 @@ Polled every **3 seconds** by `NeoSprayLayout.cshtml` to paint live floor status
 
 - **Query Params:** None
 - **DbContext:** `HDPStudioOEEStudioEntities` (`hdps_oee_cur_condition`)
+- **Sibling Endpoint:** `GET /OEE/GetSemiAutoSprayStatus` returns a minimal subset (`machineCode`, `machineStatus`, `pcServerState`) for `fprocess_code == "C07"` *(exists in `OEEController.cs`, currently unused by `NeoSprayLayout.cshtml`)*.
 
 **Success Response:**
 ```json
@@ -213,6 +215,9 @@ Resets all operational columns (including `foee_id`, `fdate`, `fshift`, metrics,
 
 ## 4. Input Reject (Throw-Off) Endpoints
 
+> [!NOTE]
+> Unlike `GetNeoSprayFilterOptions` and `ExportNeoSpray`, the `NeoSprayInputReject()` page loader and the three cascading lookup endpoints below query `AS_OEE` without filtering `Process_Code == "C07"`.
+
 ### `GET /OEE/GetDatesByMachine`
 - **Params:** `machine` (`double`)
 - **Returns:** `{ "success": true, "dates": [{ "value": "2026-04-20", "text": "04/20/2026" }] }` ordered descending.
@@ -269,7 +274,7 @@ Streams filtered `AS_OEE` rows (`Process_Code == "C07" && Date.HasValue`, ordere
 
 `Date` · `WE` · `Machine` · `Shift` · `Total Time` · `Break` · `Briefing` · `Available Time` · `Total Breakdown Time` · `Operating Time` · `Standard Output` · `Good Output` · `Reject` · `Actual Output` · `Var` · `Availability` · `Performance` · `Quality` · `OEE`
 
-On unhandled exceptions, returns `HTTP 500 Internal Server Error` with the exception message.
+Filter parameters are parsed strictly with `int.Parse` / `double.Parse` / `DateTime.Parse`; malformed query values or unhandled exceptions return `HTTP 500 Internal Server Error` with the exception message.
 
 ---
 

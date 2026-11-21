@@ -653,6 +653,15 @@
         }
       }
     });
+
+    markdownContent.querySelectorAll("img[src]").forEach(function (img) {
+      const src = img.getAttribute("src") || "";
+      if (!src || /^(https?:|data:|\/)/i.test(src)) return;
+      img.setAttribute("src", resolveRelativePath(pageEntry.file, src));
+      if (!img.getAttribute("loading")) {
+        img.setAttribute("loading", "lazy");
+      }
+    });
   }
 
   // Extract ```mermaid blocks before syntax highlighting

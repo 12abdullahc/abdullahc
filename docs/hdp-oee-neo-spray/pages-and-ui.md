@@ -27,7 +27,7 @@ bool isNeoSpraySidebar = currentController == "OEE" && (
 
 | Element | Behavior on `isNeoSpray` Routes |
 | :--- | :--- |
-| **App Launcher (9-dot menu)** | Opens the HDP Studio app switcher modal containing links to *OEE Studio*, *OEE Neo Spray* (`~/OEE/NeoSprayLayout`), *Preventive Maintenance*, *Sample Tracking*, and *INSIDE*. |
+| **App Launcher (9-dot menu)** | Opens the HDP Studio app switcher modal containing links to *OEE Neo Spray* (`~/OEE/NeoSprayLayout`), *OEE Neo Spray (OLD)* (`~/OEE/SemiAutoSprayLayout`), *Locator Nest DIJ*, *Piloting Report DIJ*, *Counting Downtime DIJ*, *Sample Tracking*, *Preventive Maintenance*, and *INSIDE*. |
 | **Brand Title & Link** | Displays `HDP OEE Neo Spray` and navigates back to `Url.Action("NeoSprayLayout", "OEE")`. |
 | **Primary Tabs** | `OEE`, `Availability`, `Performance`, `Quality` — highlighted via `ViewBag.ActiveTab`. |
 | **More Dropdown** | Contains **Live Layout** (`NeoSprayLayout`), **Report (Power BI)** (`NeoSprayReport`), and **Input Reject (Throw-off)** (`NeoSprayInputReject`). *Live Preview* (`NeoSprayMore`) is currently commented out in markup. |
@@ -39,15 +39,15 @@ bool isNeoSpraySidebar = currentController == "OEE" && (
 
 ## 2. Right Sidebar Workspace (`isNeoSpraySidebar`)
 
-When `isNeoSpraySidebar == true`, the `<body>` receives class `has-rs-strip`, docking a vertical icon strip (`#rsSidebarStrip`) on the right edge and a slide-out drawer (`#rsSidebarPanel`) with **five panels**:
+When `isNeoSpraySidebar == true`, the `<body>` receives class `has-rs-strip`, docking a vertical icon strip (`#rsSidebarStrip`) on the right edge — split into a **top group** (`Filter`, `Export`) and a **bottom group** (`Live`, `Changelog`, `Settings`) — plus a slide-out drawer (`#rsSidebarPanel`) with **five panels**:
 
-| Strip Button ID | Panel Section ID | Icon | Purpose |
-| :--- | :--- | :--- | :--- |
-| `#rsBtn-filter` | `#rs-filter` | `fa-sliders` | Multi-dimensional historical filter with active indicator dot (`#rsFilterDot`). |
-| `#rsBtn-convert` | `#rs-convert` | `fa-file-export` | Download currently filtered OEE dataset as `CSV`, `Excel (.xlsx)`, or `PDF`. |
-| `#rsBtn-live` | `#rs-live` | Pulsing dot | Live connection / scanning indicator panel (`#rsLiveStatus`). |
-| `#rsBtn-changelog` | `#rs-changelog` | `fa-clock-rotate-left` | Release history timeline (*Jan 2, 2026*; *Apr 20, 2026*; *Aug 12, 2026*). |
-| `#rsBtn-settings` | `#rs-settings` | `fa-gear` | **Reset active machines** (`EndShift`) and **Simple / Aggregate** OEE mode toggle. |
+| Strip Button ID | Panel Section ID | Strip Position | Icon | Purpose |
+| :--- | :--- | :---: | :--- | :--- |
+| `#rsBtn-filter` | `#rs-filter` | Top | `fa-sliders` | Multi-dimensional historical filter with active indicator dot (`#rsFilterDot`). |
+| `#rsBtn-convert` | `#rs-convert` | Top | `fa-file-export` | Download currently filtered OEE dataset as `CSV`, `Excel (.xlsx)`, or `PDF`. |
+| `#rsBtn-live` | `#rs-live` | Bottom | Pulsing green dot | Live radar clock panel (`#rsLiveStatus`) ticking `Last scan HH:mm:ss` every second locally via `rsTickRadar()` *(client-side clock — does not query backend health)*. |
+| `#rsBtn-changelog` | `#rs-changelog` | Bottom | `fa-clock-rotate-left` | Release history timeline (*Jan 2, 2026*; *Apr 20, 2026*; *Aug 12, 2026*). |
+| `#rsBtn-settings` | `#rs-settings` | Bottom | `fa-gear` | **Reset active machines** (`EndShift`) and **Simple / Aggregate** OEE mode toggle. |
 
 Pressing `Escape` or clicking the close button (`×`) collapses `#rsSidebarPanel`.
 
@@ -76,7 +76,7 @@ On page load, `initNeoSprayFilter()` calls `GET /OEE/GetNeoSprayFilterOptions` a
 - **Clear All:** Clicking **Clear all filters** resets all six dropdowns to `Live`, restores all cascaded options, hides the footer/dot, and dispatches `CustomEvent('neoSprayFilterCleared')`.
 
 > [!WARNING]
-> **Known Machine-Label Range Discrepancy (`#rsFilterMachine`):** In `_Layout_HDPStudio.cshtml`, the machine dropdown label formatter maps numeric IDs `43–53` to Line `E` (`E01`–`E11`) and `54–63` to Line `F` (`F01`–`F10`), whereas `NeoSprayLayout.cshtml` (`lineConfig`) and `OEEController.GetMachineDisplayCode()` map `43–46` to Line `E` (`E01`–`E04`) and `47–51` to Line `F` (`F01`–`F05`). Keep this in mind if filtering Line `F` machines by numeric ID (`47–51`).
+> **Known Machine-Label Range Discrepancy (`#rsFilterMachine` & `NeoSprayInputReject`):** Both `#rsFilterMachine` in `_Layout_HDPStudio.cshtml` and `FormatMachineName(int n)` in `NeoSprayInputReject.cshtml` map numeric IDs `43–53` to Line `E` (`E01`–`E11`) and `54–63` to Line `F` (`F01`–`F10`), whereas `NeoSprayLayout.cshtml` (`lineConfig`) and `OEEController.GetMachineDisplayCode()` map `43–46` to Line `E` (`E01`–`E04`) and `47–51` to Line `F` (`F01`–`F05`). As a result, Line `F` machines (`47–51`) appear as `E05`–`E09` in both the right-sidebar Machine filter and the Input Reject Machine dropdown.
 
 ### Settings & Export Controls (`#rs-settings`, `#rs-convert`)
 
@@ -91,6 +91,8 @@ On page load, `initNeoSprayFilter()` calls `GET /OEE/GetNeoSprayFilterOptions` a
 ## 3. Live Layout Dashboard (`NeoSprayLayout.cshtml`)
 
 `NeoSprayLayout.cshtml` (1,671 lines) is the default landing page for **HDP OEE Neo Spray**. It is structured into two vertical zones: the **Layout Header** (machine photo, KPI tables, and three pareto charts) and the **Lines Grid** (51 real-time machine cards).
+
+![HDP OEE Neo Spray — Live Layout Dashboard](./assets/live-layout-dashboard.jpg)
 
 ### Zone A: Machine Photo Lightbox & Summary Tables
 
