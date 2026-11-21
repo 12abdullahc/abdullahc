@@ -6,8 +6,6 @@
     {
       "id": "hdp-oee-neo-spray",
       "title": "HDP OEE Neo Spray",
-      "icon": "fa-chart-line",
-      "badge": "MVC 5",
       "pages": [
         {
           "id": "overview",
@@ -50,6 +48,48 @@
           "title": "Operator & Supervisor Guide",
           "file": "hdp-oee-neo-spray/user-guide.md",
           "summary": "Day-to-day dashboard monitoring, cascading filters, exports, throw-off reject input, shift reset, and troubleshooting."
+        }
+      ]
+    },
+    {
+      "id": "hdp-counting-downtime-dij",
+      "title": "HDP Counting Downtime DIJ",
+      "pages": [
+        {
+          "id": "overview",
+          "title": "Overview",
+          "file": "hdp-counting-downtime-dij/overview.md",
+          "summary": "Operational scope (C05), technology stack, HDP Studio entry points, shopfloor auth bypass, and key capabilities."
+        },
+        {
+          "id": "system-architecture",
+          "title": "System Architecture",
+          "file": "hdp-counting-downtime-dij/system-architecture.md",
+          "summary": "Single-DbContext architecture, transaction sequence, 4-layer sync, EPPlus auto-export pipeline, and operational caveats."
+        },
+        {
+          "id": "ui-pwa-and-sync",
+          "title": "UI, PWA & Real-Time Sync",
+          "file": "hdp-counting-downtime-dij/ui-pwa-and-sync.md",
+          "summary": "2-column dark layout, 12-color machine palette, UI state machine, URL deep-linking, dynamic PWA manifest, and 4-layer sync."
+        },
+        {
+          "id": "api-and-auto-export",
+          "title": "API & Auto-Export Reference",
+          "file": "hdp-counting-downtime-dij/api-and-auto-export.md",
+          "summary": "All 7 CountingDowntimeDIJController endpoints, CSRF contracts, FormatSeconds rules, and scheduled EPPlus .xlsx schema."
+        },
+        {
+          "id": "database-schema",
+          "title": "Database Schema",
+          "file": "hdp-counting-downtime-dij/database-schema.md",
+          "summary": "ER diagram and column-by-column definitions for hdps_common_mst_machine, hdps_cddij_log_downtime, and hdps_common_mst_exportedpath."
+        },
+        {
+          "id": "user-guide",
+          "title": "Operator & Supervisor Guide",
+          "file": "hdp-counting-downtime-dij/user-guide.md",
+          "summary": "Shopfloor downtime workflows, per-machine standalone PWA installation, SQL export tuning, and troubleshooting."
         }
       ]
     }

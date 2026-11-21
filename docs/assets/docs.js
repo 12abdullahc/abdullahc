@@ -7,10 +7,8 @@
 (function () {
   "use strict";
 
-  const HLJS_LIGHT_URL =
-    "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
-  const HLJS_DARK_URL =
-    "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
+  const MERMAID_CDN_URL =
+    "https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js";
 
   // ── State ──
   let manifest = null;
@@ -19,6 +17,11 @@
   let headingsData = [];
   let currentActiveHeadingId = "";
   let currentMermaidEntries = [];
+  let mermaidLoadPromise = null;
+  let mermaidInitializedTheme = "";
+  let mermaidRenderToken = 0;
+  let mermaidObserver = null;
+  let mermaidQueue = Promise.resolve();
   let currentTheme =
     document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
   let isTocHovered = false;
@@ -35,7 +38,6 @@
   const tocScrollArea = document.getElementById("tocScrollArea");
   const tocList = document.getElementById("tocList");
   const tocCount = document.getElementById("tocCount");
-  const tocTopBtn = document.getElementById("tocTopBtn");
 
   const breadcrumbs = document.getElementById("breadcrumbs");
   const readingTimeBadge = document.getElementById("readingTimeBadge");
@@ -55,7 +57,6 @@
   const searchTriggerBtn = document.getElementById("searchTriggerBtn");
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const themeToggleIcon = document.getElementById("themeToggleIcon");
-  const hljsThemeLink = document.getElementById("hljsThemeLink");
   const drawerOverlay = document.getElementById("drawerOverlay");
   const scrollTopBtn = document.getElementById("scrollTopBtn");
 
@@ -138,8 +139,29 @@
     };
   }
 
+  function ensureMermaidLoaded() {
+    if (window.mermaid) return Promise.resolve(true);
+    if (mermaidLoadPromise) return mermaidLoadPromise;
+
+    mermaidLoadPromise = new Promise(function (resolve) {
+      const script = document.createElement("script");
+      script.src = MERMAID_CDN_URL;
+      script.async = true;
+      script.onload = function () {
+        resolve(Boolean(window.mermaid));
+      };
+      script.onerror = function () {
+        mermaidLoadPromise = null;
+        resolve(false);
+      };
+      document.head.appendChild(script);
+    });
+
+    return mermaidLoadPromise;
+  }
+
   function initMermaid(theme) {
-    if (!window.mermaid) return;
+    if (!window.mermaid || mermaidInitializedTheme === theme) return;
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: "loose",
@@ -158,17 +180,16 @@
       },
       themeVariables: getMermaidThemeVariables(theme)
     });
+    mermaidInitializedTheme = theme;
   }
 
-  async function applyTheme(theme, rerenderDiagrams) {
+  function applyTheme(theme, rerenderDiagrams) {
     currentTheme = theme === "dark" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", currentTheme);
+    const root = document.documentElement;
 
-    try {
-      localStorage.setItem("docs_theme", currentTheme);
-    } catch (e) {
-      /* ignore storage errors */
-    }
+    // Disable transitions for 1 frame so mobile GPUs repaint instantly without jank
+    root.classList.add("theme-switching");
+    root.setAttribute("data-theme", currentTheme);
 
     if (themeToggleIcon && themeToggleBtn) {
       if (currentTheme === "dark") {
@@ -180,17 +201,36 @@
       }
     }
 
-    if (hljsThemeLink) {
-      const targetHref = currentTheme === "dark" ? HLJS_DARK_URL : HLJS_LIGHT_URL;
-      if (hljsThemeLink.getAttribute("href") !== targetHref) {
-        hljsThemeLink.setAttribute("href", targetHref);
-      }
+    void root.offsetHeight;
+    requestAnimationFrame(function () {
+      root.classList.remove("theme-switching");
+    });
+
+    try {
+      localStorage.setItem("docs_theme", currentTheme);
+    } catch (e) {
+      /* ignore storage errors */
     }
 
-    initMermaid(currentTheme);
-
     if (rerenderDiagrams && currentMermaidEntries.length > 0) {
-      await renderMermaidDiagrams(currentMermaidEntries, true);
+      mermaidRenderToken++;
+      const activeToken = mermaidRenderToken;
+      const targetTheme = currentTheme;
+
+      // Instant swap for any diagram already cached in targetTheme
+      currentMermaidEntries.forEach(function (entry) {
+        if (entry.svgCache[targetTheme]) {
+          applyCachedMermaidSvg(entry, targetTheme);
+        }
+      });
+
+      // Defer uncached visible diagrams until after the theme has painted
+      requestAnimationFrame(function () {
+        setTimeout(function () {
+          if (activeToken !== mermaidRenderToken) return;
+          scheduleMermaidDiagrams(currentMermaidEntries, activeToken, targetTheme);
+        }, 0);
+      });
     }
   }
 
@@ -382,16 +422,10 @@
       headerBtn.type = "button";
       headerBtn.className = "nav-group-header";
       headerBtn.innerHTML =
-        '<span class="nav-group-title-wrap">' +
-        '<i class="fas ' + escapeHtml(group.icon || "fa-folder") + '"></i>' +
-        "<span>" + escapeHtml(group.title) + "</span>" +
+        '<span class="nav-group-title">' +
+        escapeHtml(group.title) +
         "</span>" +
-        '<span class="nav-group-right">' +
-        (group.badge
-          ? '<span class="nav-group-badge">' + escapeHtml(group.badge) + "</span>"
-          : "") +
-        '<i class="fas fa-chevron-down nav-group-chevron"></i>' +
-        "</span>";
+        '<i class="fas fa-chevron-down nav-group-chevron"></i>';
 
       headerBtn.addEventListener("click", function () {
         groupEl.classList.toggle("collapsed");
@@ -457,6 +491,8 @@
 
     currentRoute = pageEntry.route;
     currentActiveHeadingId = "";
+    disconnectMermaidObserver();
+    mermaidRenderToken++;
     currentMermaidEntries = [];
     hideError();
     showLoading(true);
@@ -482,8 +518,6 @@
       highlightAndWrapCodeBlocks();
       buildTocAndAnchors();
 
-      await renderMermaidDiagrams(currentMermaidEntries, false);
-
       document.title =
         pageEntry.title + " — " + pageEntry.groupTitle + " | " + (manifest.siteTitle || "Docs");
 
@@ -493,6 +527,11 @@
         window.scrollTo({ top: 0 });
       }
       scrollSpy();
+      showLoading(false);
+
+      if (currentMermaidEntries.length > 0) {
+        scheduleMermaidDiagrams(currentMermaidEntries, mermaidRenderToken, currentTheme);
+      }
     } catch (err) {
       console.error("Failed to load documentation page:", err);
       markdownContent.innerHTML = "";
@@ -503,7 +542,6 @@
         'Could not load "' + pageEntry.file + '". ' + err.message,
         buildFileCorsTip()
       );
-    } finally {
       showLoading(false);
     }
   }
@@ -656,15 +694,20 @@
 
       const canvas = document.createElement("div");
       canvas.className = "mermaid-canvas";
-
-      const mermaidDiv = document.createElement("div");
-      mermaidDiv.className = "mermaid";
-      mermaidDiv.textContent = source;
-      canvas.appendChild(mermaidDiv);
+      canvas.innerHTML = '<div class="mermaid-loading">Loading diagram...</div>';
 
       card.appendChild(header);
       card.appendChild(canvas);
       pre.parentNode.replaceChild(card, pre);
+
+      const entry = {
+        card: card,
+        canvas: canvas,
+        source: source,
+        label: label,
+        svgCache: {},
+        renderedTheme: ""
+      };
 
       const copyBtn = header.querySelector(".mermaid-copy-btn");
       copyBtn.addEventListener("click", function () {
@@ -672,55 +715,96 @@
       });
 
       const expandBtn = header.querySelector(".mermaid-expand-btn");
-      expandBtn.addEventListener("click", function () {
+      expandBtn.addEventListener("click", async function () {
+        if (entry.renderedTheme !== currentTheme || !canvas.querySelector("svg")) {
+          await queueMermaidEntryRender(entry, mermaidRenderToken, currentTheme);
+        }
         const svg = canvas.querySelector("svg");
         if (svg) {
           openLightbox(label, svg);
         }
       });
 
-      entries.push({ node: mermaidDiv, canvas: canvas, source: source, label: label });
+      entries.push(entry);
     });
 
     return entries;
   }
 
-  async function renderMermaidDiagrams(mermaidEntries, rebuildNodes) {
-    if (!mermaidEntries.length) return;
-    if (!window.mermaid) {
-      mermaidEntries.forEach(function (entry) {
+  function disconnectMermaidObserver() {
+    if (mermaidObserver) {
+      mermaidObserver.disconnect();
+      mermaidObserver = null;
+    }
+  }
+
+  function styleMermaidSvg(svg) {
+    const naturalW = getSvgNaturalWidth(svg);
+    const minReadableW = Math.min(naturalW, 640);
+    svg.removeAttribute("height");
+    svg.setAttribute("width", "100%");
+    svg.style.width = "100%";
+    svg.style.maxWidth = Math.max(naturalW, 680) + "px";
+    svg.style.minWidth = minReadableW + "px";
+    svg.style.height = "auto";
+  }
+
+  function applyCachedMermaidSvg(entry, theme) {
+    const cachedHtml = entry.svgCache[theme];
+    if (!cachedHtml) return false;
+    entry.canvas.innerHTML = cachedHtml;
+    entry.renderedTheme = theme;
+    return true;
+  }
+
+  function isElementNearViewport(el, marginPx) {
+    const rect = el.getBoundingClientRect();
+    const viewH = window.innerHeight || document.documentElement.clientHeight || 800;
+    return rect.bottom >= -marginPx && rect.top <= viewH + marginPx;
+  }
+
+  function queueMermaidEntryRender(entry, token, theme) {
+    if (entry.renderedTheme === theme && entry.canvas.querySelector("svg")) {
+      return Promise.resolve();
+    }
+    if (applyCachedMermaidSvg(entry, theme)) {
+      return Promise.resolve();
+    }
+
+    mermaidQueue = mermaidQueue.then(async function () {
+      if (token !== mermaidRenderToken) return;
+      if (entry.renderedTheme === theme && entry.canvas.querySelector("svg")) return;
+      if (applyCachedMermaidSvg(entry, theme)) return;
+
+      const loaded = await ensureMermaidLoaded();
+      if (token !== mermaidRenderToken) return;
+      if (!loaded) {
         entry.canvas.innerHTML =
           '<div class="mermaid-error">Mermaid library failed to load from CDN.\n\n' +
           escapeHtml(entry.source) +
           "</div>";
-      });
-      return;
-    }
+        return;
+      }
 
-    for (let i = 0; i < mermaidEntries.length; i++) {
-      const entry = mermaidEntries[i];
       try {
-        if (rebuildNodes) {
-          entry.canvas.innerHTML = "";
-          const freshDiv = document.createElement("div");
-          freshDiv.className = "mermaid";
-          freshDiv.textContent = entry.source;
-          entry.canvas.appendChild(freshDiv);
-          entry.node = freshDiv;
-        }
-        await mermaid.run({ nodes: [entry.node] });
-        const svg = entry.node.querySelector("svg");
+        initMermaid(theme);
+        const freshDiv = document.createElement("div");
+        freshDiv.className = "mermaid";
+        freshDiv.textContent = entry.source;
+        entry.canvas.innerHTML = "";
+        entry.canvas.appendChild(freshDiv);
+
+        await mermaid.run({ nodes: [freshDiv] });
+        if (token !== mermaidRenderToken) return;
+
+        const svg = freshDiv.querySelector("svg");
         if (svg) {
-          const naturalW = getSvgNaturalWidth(svg);
-          const minReadableW = Math.min(naturalW, 640);
-          svg.removeAttribute("height");
-          svg.setAttribute("width", "100%");
-          svg.style.width = "100%";
-          svg.style.maxWidth = Math.max(naturalW, 680) + "px";
-          svg.style.minWidth = minReadableW + "px";
-          svg.style.height = "auto";
+          styleMermaidSvg(svg);
+          entry.svgCache[theme] = entry.canvas.innerHTML;
+          entry.renderedTheme = theme;
         }
       } catch (err) {
+        if (token !== mermaidRenderToken) return;
         console.error("Mermaid render error:", err);
         entry.canvas.innerHTML =
           '<div class="mermaid-error">Diagram rendering error: ' +
@@ -729,7 +813,57 @@
           escapeHtml(entry.source) +
           "</div>";
       }
+
+      // Yield briefly to keep mobile scrolling and taps responsive between diagrams
+      await new Promise(function (r) {
+        setTimeout(r, 0);
+      });
+    });
+
+    return mermaidQueue;
+  }
+
+  function scheduleMermaidDiagrams(mermaidEntries, token, theme) {
+    disconnectMermaidObserver();
+    if (!mermaidEntries.length) return;
+
+    const pendingEntries = mermaidEntries.filter(function (entry) {
+      if (entry.renderedTheme === theme && entry.canvas.querySelector("svg")) return false;
+      if (applyCachedMermaidSvg(entry, theme)) return false;
+      return true;
+    });
+
+    if (!pendingEntries.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+      pendingEntries.forEach(function (entry) {
+        queueMermaidEntryRender(entry, token, theme);
+      });
+      return;
     }
+
+    const entryMap = new WeakMap();
+    mermaidObserver = new IntersectionObserver(
+      function (items) {
+        items.forEach(function (item) {
+          if (!item.isIntersecting) return;
+          const entry = entryMap.get(item.target);
+          if (!entry) return;
+          if (mermaidObserver) mermaidObserver.unobserve(item.target);
+          queueMermaidEntryRender(entry, token, theme);
+        });
+      },
+      { rootMargin: "320px 0px" }
+    );
+
+    pendingEntries.forEach(function (entry) {
+      if (isElementNearViewport(entry.card, 320)) {
+        queueMermaidEntryRender(entry, token, theme);
+      } else {
+        entryMap.set(entry.card, entry);
+        mermaidObserver.observe(entry.card);
+      }
+    });
   }
 
   function highlightAndWrapCodeBlocks() {
@@ -999,10 +1133,6 @@
       isTocHovered = false;
     });
 
-    tocTopBtn.addEventListener("click", function () {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
     scrollTopBtn.addEventListener("click", function () {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -1080,7 +1210,7 @@
   // ── Bootstrap ──
   async function init() {
     bindEvents();
-    await applyTheme(currentTheme, false);
+    applyTheme(currentTheme, false);
     showLoading(true);
 
     try {
@@ -1097,7 +1227,6 @@
             route: group.id + "/" + page.id,
             groupId: group.id,
             groupTitle: group.title,
-            groupBadge: group.badge || "",
             id: page.id,
             title: page.title,
             file: page.file,

@@ -56,6 +56,18 @@
   --code-inline-border: #e3e0d5;
   --code-inline-color: #1f1f1d;
 
+  --hljs-base: #24292e;
+  --hljs-comment: #6a737d;
+  --hljs-keyword: #cf222e;
+  --hljs-string: #0a3069;
+  --hljs-number: #0550ae;
+  --hljs-title: #8250df;
+  --hljs-attr: #0550ae;
+  --hljs-built-in: #953800;
+  --hljs-tag: #116329;
+  --hljs-addition: #116329;
+  --hljs-deletion: #82071e;
+
   --success-color: #57734d;
   --success-bg: rgba(87, 115, 77, 0.1);
   --success-border: rgba(87, 115, 77, 0.32);
@@ -138,6 +150,18 @@
   --code-inline-border: #3d3d3a;
   --code-inline-color: #f5f4f0;
 
+  --hljs-base: #e2e0d8;
+  --hljs-comment: #8b949e;
+  --hljs-keyword: #ff7b72;
+  --hljs-string: #a5d6ff;
+  --hljs-number: #79c0ff;
+  --hljs-title: #d2a8ff;
+  --hljs-attr: #79c0ff;
+  --hljs-built-in: #ffa657;
+  --hljs-tag: #7ee787;
+  --hljs-addition: #aff5b4;
+  --hljs-deletion: #ffdcd7;
+
   --success-color: #8ab07d;
   --success-bg: rgba(138, 176, 125, 0.12);
   --success-border: rgba(138, 176, 125, 0.36);
@@ -182,6 +206,13 @@ html {
   scroll-padding-top: calc(var(--header-height) + 28px);
 }
 
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
 body {
   background-color: var(--bg-base);
   color: var(--text-primary);
@@ -192,7 +223,6 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ── Custom Scrollbars ── */
@@ -502,43 +532,14 @@ body {
   background: var(--bg-subtle);
 }
 
-.nav-group-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.nav-group-title {
   min-width: 0;
-}
-
-.nav-group-title-wrap i {
-  color: var(--accent);
-  font-size: 12px;
-  width: 14px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.nav-group-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.nav-group-badge {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0.02em;
-  padding: 1px 7px;
-  border-radius: 999px;
-  background: var(--bg-base);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
 }
 
 .nav-group-chevron {
   font-size: 10px;
   color: var(--text-muted);
+  flex-shrink: 0;
   transition: transform 0.2s ease;
 }
 
@@ -805,35 +806,6 @@ body {
   padding: 8px 10px;
 }
 
-.toc-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border-color);
-}
-
-.toc-top-btn {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-panel);
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-
-.toc-top-btn:hover {
-  border-color: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  background: var(--btn-primary-bg);
-}
-
 /* ═══════════════════════════════════════════════
    MARKDOWN CONTENT TYPOGRAPHY (CLAUDE EDITORIAL)
 ═══════════════════════════════════════════════ */
@@ -1021,8 +993,78 @@ body {
   font-size: 13px;
   line-height: 1.6;
   background: transparent !important;
+  color: var(--hljs-base);
   padding: 0;
   border: none;
+}
+
+/* Built-in Dual-Mode Highlight.js Tokens (zero CDN fetch on theme switch) */
+.hljs {
+  color: var(--hljs-base);
+}
+.hljs-comment,
+.hljs-quote,
+.hljs-formula {
+  color: var(--hljs-comment);
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-doctag,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  color: var(--hljs-keyword);
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-meta .hljs-string {
+  color: var(--hljs-string);
+}
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-meta,
+.hljs-operator,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: var(--hljs-number);
+}
+.hljs-attr,
+.hljs-attribute {
+  color: var(--hljs-attr);
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.function_,
+.hljs-section {
+  color: var(--hljs-title);
+}
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-code {
+  color: var(--hljs-built-in);
+}
+.hljs-name,
+.hljs-selector-pseudo,
+.hljs-tag {
+  color: var(--hljs-tag);
+}
+.hljs-addition {
+  color: var(--hljs-addition);
+}
+.hljs-deletion {
+  color: var(--hljs-deletion);
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 600;
 }
 
 .copy-code-btn {
@@ -1249,6 +1291,12 @@ body {
   display: block;
   margin: 0 auto;
   height: auto;
+}
+
+.mermaid-loading {
+  padding: 28px 16px;
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .mermaid-error {
